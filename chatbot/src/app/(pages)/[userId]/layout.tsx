@@ -14,12 +14,13 @@ export default function UserLayout({
       <Appbar />
       <div className="flex">
         <SideBar 
-          links={[
-            `/dashboard`,
-            `/messages`,
-            `/workflow`
-          ]} 
-          user={{ username: params.userId }}
+          links={{
+            home:`/dashboard`,
+            chat:`/messages`,
+            workflow:`/workflow`,
+          }
+          } 
+          user={{ username: params.userId,pfp:"linkhere",subscription:"Premium" }}
         />
         <main className="flex-1 ml-[270px] p-6">
           {children}
