@@ -2,14 +2,15 @@ import React from 'react';
 import { Home, Workflow, MessageCircle, Box, HelpCircle, Settings, X, ChevronRight } from 'lucide-react';
 import { SideBarUserProps } from '../interface/user';
 import { SideBarProps } from '../interface/components';
+import Link from 'next/link';
 
-const SideBar = ({ links, user }: { links: SideBarProps; user: SideBarUserProps }) => {
+const SideBar = ({  user }: {  user: SideBarUserProps }) => {
   const navItems = [
-    { icon: <Home size={20} />, label: 'Home', path: links.home },
-    { icon: <Workflow size={20} />, label: 'Workflow', path: links.workflow },
-    { icon: <MessageCircle size={20} />, label: 'Chat', path: links.chat },
-    { icon: <Box size={20} />, label: 'Product', path: links.product },
-    { icon: <HelpCircle size={20} />, label: 'Help', path: links.help },
+    { icon: <Home size={20} />, label: 'Home', path: "/dashboard" },
+    { icon: <Workflow size={20} />, label: 'Workflow', path: "/workflow" },
+    { icon: <MessageCircle size={20} />, label: 'Chat', path: "/messages" },
+    { icon: <Box size={20} />, label: 'Product', path: "/product" },
+    { icon: <HelpCircle size={20} />, label: 'Help', path: "/help" },
   ];
 
   return (
@@ -26,7 +27,7 @@ const SideBar = ({ links, user }: { links: SideBarProps; user: SideBarUserProps 
         <ul className="space-y-2">
           {navItems.map((item, index) => (
             <li key={index}>
-              <a
+              <Link
                 href={item.path}
                 className="flex items-center px-6 py-2 text-sm hover:bg-gray-100 transition-colors group"
               >
@@ -38,7 +39,7 @@ const SideBar = ({ links, user }: { links: SideBarProps; user: SideBarUserProps 
                   size={16}
                   className="text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity"
                 />
-              </a>
+              </Link>
             </li>
           ))}
         </ul>

@@ -1,10 +1,10 @@
 'use client'
 import React, { useState } from 'react';
 import { Plus, Layout, ArrowRight, Copy, MoreVertical, Clock, Users, Folder } from 'lucide-react';
+import Link from 'next/link';
 
 const WorkflowPage = () => {
   const [activeTab, setActiveTab] = useState('my-workflows');
-
   // Mock user's existing workflows
   const userWorkflows = [
     {
@@ -138,7 +138,7 @@ const WorkflowPage = () => {
         /* Templates Grid */
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Create New Template Card */}
-          <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 hover:border-blue-500 transition-colors cursor-pointer group">
+          <Link href="../studio"><div className="border-2 border-dashed border-gray-300 rounded-xl p-6 hover:border-blue-500 transition-colors cursor-pointer group">
             <div className="flex flex-col items-center justify-center h-full min-h-[200px] text-gray-500 group-hover:text-blue-500">
               <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4 group-hover:bg-blue-50">
                 <Plus size={24} className="group-hover:text-blue-500" />
@@ -146,8 +146,7 @@ const WorkflowPage = () => {
               <h3 className="text-lg font-medium mb-2">Create New Workflow</h3>
               <p className="text-sm text-center">Start from scratch and build your custom workflow</p>
             </div>
-          </div>
-
+          </div></Link>
           {/* Template Cards */}
           {templates.map((template) => (
             <div key={template.id} className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
