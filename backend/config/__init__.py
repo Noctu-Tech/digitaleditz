@@ -2,7 +2,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    app_name: str = "Awesome API"
+    app_name: str = "Chat CRM API"
     admin_email: str
     items_per_user: int = 50
     mongo_uri:str

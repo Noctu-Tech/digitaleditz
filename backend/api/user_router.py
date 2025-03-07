@@ -1,9 +1,10 @@
 from fastapi import APIRouter
 router=APIRouter()
-@router.get('/get-many')
+
+@router.get('/')
 async def getmany():
     return "get many users detail"
-@router.get('/get-one')
+@router.get('/{userid}')
 async def getone():
     return "get one user"
 
@@ -14,3 +15,9 @@ async def createnew():
 @router.put('/update')
 async def update():
     return "update user"
+@router.delete("/")
+async def deletemany():
+    return "bulk delete"
+@router.delete("/{userid}")
+async def deleteone():
+    return "delete user"

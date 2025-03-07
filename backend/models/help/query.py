@@ -7,4 +7,5 @@ class HelpModel(BaseModel):
     q_description:str
     q_media:Optional[str]
     q_duration:str
+    # q_status:str  come back to this to make it for  admin side
     timestamp:str
