@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./ui/styles/globals.css";
 import { ReactScan } from "./ui/components/ReactScan";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,8 +28,14 @@ export default function RootLayout({
     <html lang="en"><ReactScan/>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased w-full h-full`}
-      >
-        {children}
+      > <ThemeProvider
+      attribute="class"
+      defaultTheme="system"
+      enableSystem
+      disableTransitionOnChange
+    >
+      {children}
+    </ThemeProvider>
       </body>
     </html>
   );

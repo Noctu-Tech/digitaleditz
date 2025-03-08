@@ -3,21 +3,22 @@ import { Home, Workflow, MessageCircle, Box, HelpCircle, Settings, X, ChevronRig
 import { SideBarUserProps } from '../interface/user';
 import { SideBarProps } from '../interface/components';
 import Link from 'next/link';
+import { ModeToggle } from '@/components/mode-toggle';
 
 const SideBar = ({  user }: {  user: SideBarUserProps }) => {
   const navItems = [
-    { icon: <Home size={20} />, label: 'Home', path: "/dashboard" },
-    { icon: <Workflow size={20} />, label: 'Workflow', path: "/workflow" },
-    { icon: <MessageCircle size={20} />, label: 'Chat', path: "/messages" },
-    { icon: <Box size={20} />, label: 'Product', path: "/product" },
-    { icon: <HelpCircle size={20} />, label: 'Help', path: "/help" },
+    { icon: <Home size={20} />, label: 'Home', path: "dashboard" },
+    { icon: <Workflow size={20} />, label: 'Workflow', path: "workflow" },
+    { icon: <MessageCircle size={20} />, label: 'Chat', path: "messages" },
+    { icon: <Box size={20} />, label: 'Product', path: "product" },
+    { icon: <HelpCircle size={20} />, label: 'Help', path: "help" },
   ];
 
   return (
-    <div className="w-[270px] h-4/6 rounded-2xl bg-white text-gray-700 flex flex-col fixed bottom-20 left-0 shadow-lg">
+    <div className="w-[270px] z-10 h-4/6 rounded-2xl flex flex-col fixed bottom-20 left-0 shadow-lg">
       {/* Header with close button */}
-      <div className="w-full p-4 border-b border-gray-200 flex justify-end items-center">
-        <button className="h-8 w-8 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center justify-center transition-colors">
+      <div className="w-full p-4 border-b flex justify-end items-center">
+        <button className="h-8 w-8 rounded-lg flex items-center justify-center transition-colors">
           <X size={20} />
         </button>
       </div>
@@ -29,15 +30,15 @@ const SideBar = ({  user }: {  user: SideBarUserProps }) => {
             <li key={index}>
               <Link
                 href={item.path}
-                className="flex items-center px-6 py-2 text-sm hover:bg-gray-100 transition-colors group"
+                className="flex items-center px-6 py-2 text-sm transition-colors group"
               >
-                <span className="mr-3 text-gray-500 group-hover:text-blue-500">
+                <span className="mr-3 ">
                   {item.icon}
                 </span>
-                <span className="flex-grow group-hover:text-blue-500">{item.label}</span>
+                <span className="flex-grow ">{item.label}</span>
                 <ChevronRight
                   size={16}
-                  className="text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="opacity-0 group-hover:opacity-100 transition-opacity"
                 />
               </Link>
             </li>
@@ -62,7 +63,7 @@ const SideBar = ({  user }: {  user: SideBarUserProps }) => {
             </p>
           </div>
           <button className="h-8 w-8 rounded-lg hover:bg-gray-100 flex items-center justify-center transition-colors">
-            <Settings size={18} className="text-gray-500" />
+            <ModeToggle/>
           </button>
         </div>
       </div>

@@ -1,8 +1,14 @@
+import { Meteors } from "@/components/magicui/meteors"
+
 // app/[userId]/page.tsx
-export default function UserPage({ params }: { params: { userId: string } }) {
+export default async function Page({ params }: { params: { userId: string } }) {
+  const {userId}= await params
   return (
-    <div>
-      <h1>Welcome {params.userId}</h1>
-    </div>
+    <div className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden rounded-lg border">
+    <Meteors number={30} />
+    <span className="pointer-events-none whitespace-pre-wrap bg-gradient-to-b from-black to-gray-300/80 bg-clip-text text-center text-8xl font-semibold leading-none text-transparent dark:from-white dark:to-slate-900/10">
+        Welcome {userId}
+    </span>
+  </div>
   )
 }

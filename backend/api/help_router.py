@@ -12,3 +12,11 @@ def getforuserid():
 @router.post("{userid}")
 def creatqueryuserid():
     return "create query for user id"
+
+# @router.delete("/{userid}")
+# def deletequery():
+#     return "delete help"
+
+@router.put("/{userid}")
+def updateticket():
+    return "update help"

@@ -1,9 +1,11 @@
 import React from 'react'
+import HomePage from './(pages)/HomePage'
 
 function Page() {
   return (
-    <div>Page</div>
-  )
+   <>
+   <HomePage/>
+   </>)
 }
 
 export default Page

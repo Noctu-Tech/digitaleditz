@@ -1,3 +1,4 @@
+
 from fastapi import APIRouter
 router=APIRouter()
 @router.post('/new-items')
@@ -12,18 +13,18 @@ async def createitem():
 async def updateitem():
     return "item updated successfully"
 
-@router.get('/get-all')
+@router.get('/')
 async def getall():
     return "got all items"
 
-@router.get('/get-one')
+@router.get('/{productid}')
 async def getone():
     return "got one item"
 
-@router.delete('/delete-one')
+@router.delete('/{productid}')
 async def deleteone():
     return "deleted one"
 
-@router.delete('/delete-many')
+@router.delete('/')
 async def deletemany():
     return "deleted many"

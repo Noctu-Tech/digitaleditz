@@ -94,7 +94,7 @@ const Page = () => {
                           }`}>
                             {user.status}
                           </span>
-                        </td>
+                        </td>+
                         <td className="py-3 text-gray-500">{user.lastActive}</td>
                       </tr>
                     ))}
