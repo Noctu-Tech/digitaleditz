@@ -1,22 +1,19 @@
 from fastapi import APIRouter
 router = APIRouter()
 
-@router.get("/")
-def getall():
-    return "al queries"
 
-@router.get("/{userid}")
-def getforuserid():
-    return "get queries for user id"
+@router.post('/create-new')
+def createnew():
+    return 0
 
-@router.post("{userid}")
-def creatqueryuserid():
-    return "create query for user id"
+@router.get("/view")
+def getone():
+    return 0
 
-# @router.delete("/{userid}")
-# def deletequery():
-#     return "delete help"
+@router.get("/view-many")
+def getmany():
+    return 0
 
-@router.put("/{userid}")
-def updateticket():
-    return "update help"
+@router.post('/update')
+def updatestatus():
+    return 0
