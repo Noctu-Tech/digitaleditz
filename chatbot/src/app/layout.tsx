@@ -25,7 +25,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en"><ReactScan/>
+    <html lang="en">
+      {/* <ReactScan/> */}
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased w-full h-full`}
       > <ThemeProvider

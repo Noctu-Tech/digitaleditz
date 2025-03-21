@@ -4,7 +4,7 @@ import { Send, Paperclip, Smile, User, Search, Mail, Phone, MessageCircle } from
 
 const Page = () => {
   const [message, setMessage] = useState('');
-  const [selectedContact, setSelectedContact] = useState(null);
+  const [selectedContact, setSelectedContact] = useState({ id: 1, name: 'John Doe', status: 'online', unread: 3, lastMessage: 'Hey, how are you?', lastActive: '2m ago' });
   const [searchQuery, setSearchQuery] = useState('');
 
   // Mock contacts data
@@ -23,7 +23,7 @@ const Page = () => {
     { id: 4, sender: 'Me', content: 'That sounds interesting! Need any help?', timestamp: '10:33 AM', isSender: true },
   ];
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e:any) => {
     e.preventDefault();
     if (message.trim()) {
       setMessage('');
@@ -31,9 +31,9 @@ const Page = () => {
   };
 
   return (
-    <div className="h-screen flex bg-gray-50">
+    <div className="h-screen flex">
       {/* Contacts Sidebar */}
-      <div className="w-80 bg-white border-r flex flex-col">
+      <div className="w-80 border-r flex flex-col">
         {/* Search Header */}
         <div className="p-4 border-b">
           <div className="relative">
@@ -42,9 +42,9 @@ const Page = () => {
               placeholder="Search contacts..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-4 py-2 pl-10 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 pl-10 rounded-lg focus:outline-none focus:ring-2"
             />
-            <Search className="absolute left-3 top-2.5 text-gray-400" size={20} />
+            <Search className="absolute left-3 top-2.5" size={20} />
           </div>
         </div>
 
@@ -54,29 +54,29 @@ const Page = () => {
             <div
               key={contact.id}
               onClick={() => setSelectedContact(contact)}
-              className={`p-4 border-b hover:bg-gray-50 cursor-pointer ${
-                selectedContact?.id === contact.id ? 'bg-blue-50' : ''
+              className={`p-4 border-b hover:bg-opacity-50 cursor-pointer ${
+                selectedContact?.id === contact.id ? 'bg-opacity-10' : ''
               }`}
             >
               <div className="flex items-center gap-3">
                 <div className="relative">
-                  <div className="h-12 w-12 bg-gray-200 rounded-full flex items-center justify-center">
-                    <User size={24} className="text-gray-500" />
+                  <div className="h-12 w-12 rounded-full flex items-center justify-center">
+                    <User size={24} />
                   </div>
-                  <div className={`absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white ${
+                  <div className={`absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 ${
                     contact.status === 'online' ? 'bg-green-500' :
-                    contact.status === 'busy' ? 'bg-red-500' : 'bg-gray-500'
+                    contact.status === 'busy' ? 'bg-red-500' : ''
                   }`} />
                 </div>
                 <div className="flex-1">
                   <div className="flex justify-between items-start">
                     <h3 className="font-medium">{contact.name}</h3>
-                    <span className="text-xs text-gray-500">{contact.lastActive}</span>
+                    <span className="text-xs">{contact.lastActive}</span>
                   </div>
-                  <p className="text-sm text-gray-500 truncate">{contact.lastMessage}</p>
+                  <p className="text-sm truncate">{contact.lastMessage}</p>
                 </div>
                 {contact.unread > 0 && (
-                  <div className="bg-blue-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  <div className="text-xs rounded-full h-5 w-5 flex items-center justify-center">
                     {contact.unread}
                   </div>
                 )}
@@ -84,7 +84,6 @@ const Page = () => {
             </div>
           ))}
         </div>
-
       </div>
 
       {/* Chat Area */}
@@ -92,14 +91,14 @@ const Page = () => {
         {selectedContact ? (
           <>
             {/* Chat Header */}
-            <div className="bg-white border-b px-6 py-4 flex items-center">
+            <div className="border-b px-6 py-4 flex items-center">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center">
-                  <User size={20} className="text-blue-600" />
+                <div className="h-10 w-10 rounded-full flex items-center justify-center">
+                  <User size={20} />
                 </div>
                 <div>
                   <h2 className="font-semibold">{selectedContact.name}</h2>
-                  <p className="text-sm text-green-500">{selectedContact.status}</p>
+                  <p className="text-sm">{selectedContact.status}</p>
                 </div>
               </div>
             </div>
@@ -111,27 +110,25 @@ const Page = () => {
                   key={msg.id}
                   className={`flex ${msg.isSender ? 'justify-end' : 'justify-start'}`}
                 >
-                  <div className={`max-w-[70%] ${msg.isSender ? 'bg-blue-600 text-white' : 'bg-white'} rounded-2xl px-4 py-2 shadow-sm`}>
+                  <div className={`max-w-[70%] rounded-2xl px-4 py-2 shadow-sm`}>
                     {!msg.isSender && (
-                      <p className="text-sm font-medium text-gray-900 mb-1">{msg.sender}</p>
+                      <p className="text-sm font-medium mb-1">{msg.sender}</p>
                     )}
                     <p className="text-sm">{msg.content}</p>
-                    <p className={`text-xs mt-1 ${msg.isSender ? 'text-blue-100' : 'text-gray-500'}`}>
-                      {msg.timestamp}
-                    </p>
+                    <p className="text-xs mt-1">{msg.timestamp}</p>
                   </div>
                 </div>
               ))}
             </div>
 
             {/* Message Input */}
-            <div className="bg-white border-t p-4">
+            <div className="border-t p-4">
               <form onSubmit={handleSubmit} className="flex items-center gap-4">
                 <button
                   type="button"
-                  className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                  className="p-2 rounded-full transition-colors"
                 >
-                  <Paperclip size={20} className="text-gray-500" />
+                  <Paperclip size={20} />
                 </button>
                 
                 <input
@@ -139,19 +136,19 @@ const Page = () => {
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder="Type a message..."
-                  className="flex-1 px-4 py-2 bg-gray-100 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="flex-1 px-4 py-2 rounded-full focus:outline-none focus:ring-2"
                 />
                 
                 <button
                   type="button"
-                  className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                  className="p-2 rounded-full transition-colors"
                 >
-                  <Smile size={20} className="text-gray-500" />
+                  <Smile size={20} />
                 </button>
                 
                 <button
                   type="submit"
-                  className="p-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
+                  className="p-3 rounded-full transition-colors"
                 >
                   <Send size={20} />
                 </button>
@@ -159,7 +156,7 @@ const Page = () => {
             </div>
           </>
         ) : (
-          <div className="flex-1 flex items-center justify-center text-gray-500">
+          <div className="flex-1 flex items-center justify-center">
             Select a contact to start chatting
           </div>
         )}

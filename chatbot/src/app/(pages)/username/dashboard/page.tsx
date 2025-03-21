@@ -1,7 +1,7 @@
+"use client"
 import React from 'react';
 import { Users, Settings, TrendingUp, BarChart2, DollarSign } from 'lucide-react';
-import Appbar from '@/app/ui/components/Appbar';
-import SideBar from '@/app/ui/components/SideBar';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 // Mock data for demonstration
 const analyticsData = [
   { title: 'Total Users', value: '1,234', change: '+12%', icon: <Users size={24} /> },
@@ -23,15 +23,15 @@ const usersList = [
 
 const Page = () => {
   return (
-    <div className="w-full min-h-screen bg-gray-50">
+    <div className="w-full min-h-screen ">
       {/* Main Content */}
       <div className="">
         {/* Analytics Section */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           {analyticsData.map((item, index) => (
-            <div key={index} className="bg-white p-6 rounded-xl shadow-sm">
+            <div key={index} className=" p-6 rounded-xl shadow-sm">
               <div className="flex items-center justify-between mb-4">
-                <div className="p-2 bg-blue-50 rounded-lg text-blue-600">
+                <div className="p-2  rounded-lg ">
                   {item.icon}
                 </div>
                 <span className={`text-sm font-medium ${
@@ -40,7 +40,7 @@ const Page = () => {
                   {item.change}
                 </span>
               </div>
-              <h3 className="text-gray-500 text-sm">{item.title}</h3>
+              <h3 className=" text-sm">{item.title}</h3>
               <p className="text-2xl font-semibold mt-1">{item.value}</p>
             </div>
           ))}
@@ -50,16 +50,16 @@ const Page = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Settings Section */}
           <div className="lg:col-span-1">
-            <div className="bg-white p-6 rounded-xl shadow-sm">
+            <div className="p-6 rounded-xl shadow-sm">
               <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
                 <Settings size={20} />
                 Quick Settings
               </h2>
               <div className="space-y-4">
                 {settingsData.map((setting, index) => (
-                  <div key={index} className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer">
+                  <div key={index} className="p-4 rounded-lg transition-colors cursor-pointer">
                     <h3 className="font-medium">{setting.title}</h3>
-                    <p className="text-sm text-gray-500 mt-1">{setting.description}</p>
+                    <p className="text-sm mt-1">{setting.description}</p>
                   </div>
                 ))}
               </div>
@@ -68,38 +68,31 @@ const Page = () => {
 
           {/* Users List Section */}
           <div className="lg:col-span-2">
-            <div className="bg-white p-6 rounded-xl shadow-sm">
+            <div className=" p-6 rounded-xl shadow-sm">
               <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
                 <Users size={20} />
                 Recent Users
               </h2>
               <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="text-left text-sm text-gray-500 border-b">
-                      <th className="pb-3">Name</th>
-                      <th className="pb-3">Email</th>
-                      <th className="pb-3">Status</th>
-                      <th className="pb-3">Last Active</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+                <Table>
+                  <TableHeader>
+
+                    <TableCell>Name</TableCell>
+                    <TableCell>Email</TableCell>
+                    <TableCell>Status</TableCell>
+                    <TableCell>Last Active</TableCell>
+                  </TableHeader>
+                  <TableBody>
                     {usersList.map((user, index) => (
-                      <tr key={index} className="border-b last:border-b-0">
-                        <td className="py-3">{user.name}</td>
-                        <td className="py-3 text-gray-500">{user.email}</td>
-                        <td className="py-3">
-                          <span className={`px-2 py-1 rounded-full text-xs ${
-                            user.status === 'Active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
-                          }`}>
-                            {user.status}
-                          </span>
-                        </td>+
-                        <td className="py-3 text-gray-500">{user.lastActive}</td>
-                      </tr>
+                      <TableRow key={index}>
+                        <TableCell>{user.name}</TableCell>
+                        <TableCell>{user.email}</TableCell>
+                        <TableCell>{user.status}</TableCell>
+                        <TableCell>{user.lastActive}</TableCell>
+                      </TableRow>
                     ))}
-                  </tbody>
-                </table>
+                  </TableBody>
+                </Table>
               </div>
             </div>
           </div>

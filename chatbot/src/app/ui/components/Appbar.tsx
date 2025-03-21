@@ -1,7 +1,25 @@
-import React from 'react';
-import { Search, Bell, Menu, User } from 'lucide-react';
+"use client"
+import React, { useState } from 'react';
+import { Search, Bell, Menu, User, X, Settings, LogOut, UserCircle } from 'lucide-react';
+import { NotificationDrawer } from './NotificationDrawer';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Appbar = () => {
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
+  const [showNotificationDot, setShowNotificationDot] = useState(true);
+
+  const notifications = [
+    { id: 1, text: 'New message received', time: '5m ago' },
+    { id: 2, text: 'Your post was viewed', time: '1h ago' },
+  ];
+
   return (
     <div className="h-20 w-full border-b shadow-sm z-10  ">
       <div className="max-w-7xl mx-auto h-full px-4 flex items-center justify-between">
@@ -27,20 +45,59 @@ const Appbar = () => {
 
         {/* Right section with notifications and profile */}
         <div className="flex items-center gap-4">
-          <button className="relative p-2 rounded-lg">
-            <Bell size={24} className="" />
-            <span className="absolute top-1 right-1 h-2 w-2 rounded-full"></span>
-          </button>
-          
-          <div className="flex items-center gap-2">
-            <button className="flex items-center gap-2 px-3 py-2 rounded-lg">
-              <div className="h-8 w-8 rounded-full flex items-center justify-center">
-                <User size={20} className="" />
-              </div>
-              <span className="hidden md:inline text-sm font-medium ">
-                John Doe
-              </span>
+            <div className="relative">
+            {/* Add state for managing notifications */}
+            <button 
+              className="relative p-2 rounded-lg hover:bg-gray-100"
+              onClick={() => setShowNotifications(true)}
+            >
+              <Bell size={24} className="" />
+              {notifications.length > 0 && (
+              <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
+              )}
             </button>
+            <NotificationDrawer 
+              open={showNotifications}
+              onOpenChange={setShowNotifications}
+              notifications={notifications}
+              setShowNotificationDot={setShowNotificationDot}
+              onClearAll={() => {
+              // Clear all notifications
+              notifications.length = 0;
+              setShowNotifications(false);
+              setShowNotificationDot(false);
+              }}
+            />
+            </div>
+          
+          <div className="relative">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100">
+                  <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
+                    <User size={20} />
+                  </div>
+                  <span className="hidden md:inline text-sm font-medium">
+                    John Doe
+                  </span>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem className="cursor-pointer">
+                  <UserCircle className="mr-2 h-4 w-4" />
+                  <span>Profile</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer">
+                  <Settings className="mr-2 h-4 w-4" />
+                  <span>Settings</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem className="cursor-pointer text-red-600">
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Sign out</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </div>

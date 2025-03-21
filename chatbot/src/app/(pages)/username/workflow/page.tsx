@@ -101,21 +101,21 @@ const WorkflowPage = () => {
           {/* Quick Actions */}
          
           {/* User's Workflows */}
-          <div className="bg-white rounded-xl shadow-sm divide-y">
+          <div className=" rounded-xl shadow-sm divide-y">
             {userWorkflows.map((workflow) => (
-              <div key={workflow.id} className="p-6 hover:bg-gray-50 transition-colors">
+              <div key={workflow.id} className="p-6  transition-colors">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
                       <h3 className="text-lg font-medium">{workflow.title}</h3>
                       <span className={`text-xs px-2 py-1 rounded-full ${
-                        workflow.status === 'Active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
+                        workflow.status === 'Active' ? ' text-green-700' : 'bg-gray-100 text-gray-700'
                       }`}>
                         {workflow.status}
                       </span>
                     </div>
-                    <p className="text-gray-500 text-sm mb-4">{workflow.description}</p>
-                    <div className="flex items-center gap-4 text-sm text-gray-500">
+                    <p className="text-sm mb-4">{workflow.description}</p>
+                    <div className="flex items-center gap-4 text-sm ">
                       <span className="flex items-center gap-1">
                         <Clock size={16} />
                         {workflow.lastEdited}
@@ -126,8 +126,8 @@ const WorkflowPage = () => {
                       </span>
                     </div>
                   </div>
-                  <button className="p-2 hover:bg-gray-100 rounded-lg">
-                    <MoreVertical size={20} className="text-gray-700" />
+                  <button className="p-2  rounded-lg">
+                    <MoreVertical size={20} className=" " />
                   </button>
                 </div>
               </div>
@@ -138,9 +138,9 @@ const WorkflowPage = () => {
         /* Templates Grid */
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Create New Template Card */}
-          <Link href="../studio"><div className="border-2 border-dashed border-gray-300 rounded-xl p-6 hover:border-blue-500 transition-colors cursor-pointer group">
+          <Link href="studio"><div className="border-2 border-dashed  rounded-xl p-6 hover:border-blue-500 transition-colors cursor-pointer group">
             <div className="flex flex-col items-center justify-center h-full min-h-[200px] text-gray-500 group-hover:text-blue-500">
-              <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4 group-hover:bg-blue-50">
+              <div className="w-16 h-16 rounded-full  flex items-center justify-center mb-4 group-hover:bg-blue-50">
                 <Plus size={24} className="group-hover:text-blue-500" />
               </div>
               <h3 className="text-lg font-medium mb-2">Create New Workflow</h3>
@@ -149,7 +149,7 @@ const WorkflowPage = () => {
           </div></Link>
           {/* Template Cards */}
           {templates.map((template) => (
-            <div key={template.id} className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+            <div key={template.id} className=" rounded-xl shadow-sm hover:shadow-md transition-shadow">
               <div className={`h-3 ${template.color} rounded-t-xl`} />
               <div className="p-6">
                 <div className="flex items-start justify-between mb-4">

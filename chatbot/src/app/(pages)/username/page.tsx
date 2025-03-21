@@ -1,8 +1,8 @@
 import { Meteors } from "@/components/magicui/meteors"
 
 // app/[userId]/page.tsx
-export default async function Page({ params }: { params: { userId: string } }) {
-  const {userId}= await params
+export default function Page( ) {
+  const userId= "Something here"
   return (
     <div className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden rounded-lg border">
     <Meteors number={30} />
