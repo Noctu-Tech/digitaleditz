@@ -98,4 +98,4 @@ const SideBar = ({ user }: { user: SideBarUserProps }) => {
   );
 };
 
-export default SideBar;
+export default React.memo(SideBar);

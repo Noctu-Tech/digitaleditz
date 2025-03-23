@@ -1,6 +1,7 @@
 'use client'
 import React, { useState } from 'react';
 import { Send, Paperclip, Smile, User, Search, Mail, Phone, MessageCircle } from 'lucide-react';
+import { Button } from "@/components/ui/button";
 
 const Page = () => {
   const [message, setMessage] = useState('');
@@ -124,12 +125,13 @@ const Page = () => {
             {/* Message Input */}
             <div className="border-t p-4">
               <form onSubmit={handleSubmit} className="flex items-center gap-4">
-                <button
+                <Button
                   type="button"
-                  className="p-2 rounded-full transition-colors"
+                  size="icon"
+                  variant="ghost"
                 >
                   <Paperclip size={20} />
-                </button>
+                </Button>
                 
                 <input
                   type="text"
@@ -139,19 +141,21 @@ const Page = () => {
                   className="flex-1 px-4 py-2 rounded-full focus:outline-none focus:ring-2"
                 />
                 
-                <button
+                <Button
                   type="button"
-                  className="p-2 rounded-full transition-colors"
+                  size="icon"
+                  variant="ghost"
                 >
                   <Smile size={20} />
-                </button>
+                </Button>
                 
-                <button
+                <Button
                   type="submit"
-                  className="p-3 rounded-full transition-colors"
+                  size="icon"
+                  variant="default"
                 >
                   <Send size={20} />
-                </button>
+                </Button>
               </form>
             </div>
           </>

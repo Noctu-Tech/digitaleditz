@@ -10,7 +10,7 @@ function Signup() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [passwordMatch, setPasswordMatch] = useState(true);
+    const [passwordMatch, setPasswordMatch] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     useEffect(() => {
       setPasswordMatch(password === confirmPassword)
@@ -18,7 +18,8 @@ function Signup() {
 const handleSignup = async (e:any) => {
     setIsLoading(true)
     e.preventDefault()
-if(!passwordMatch){
+if(passwordMatch){
+
 }} 
   return (
     <Card className="p-6">

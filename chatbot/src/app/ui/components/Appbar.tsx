@@ -9,8 +9,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import Link from 'next/link';
 
-const Appbar = () => {
+const  Appbar = ({data}:{data:any}) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [showNotificationDot, setShowNotificationDot] = useState(true);
@@ -48,7 +49,7 @@ const Appbar = () => {
             <div className="relative">
             {/* Add state for managing notifications */}
             <button 
-              className="relative p-2 rounded-lg hover:bg-gray-100"
+              className="relative p-2 rounded-lg"
               onClick={() => setShowNotifications(true)}
             >
               <Bell size={24} className="" />
@@ -73,29 +74,31 @@ const Appbar = () => {
           <div className="relative">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100">
-                  <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
-                    <User size={20} />
+                <button className="flex items-center gap-2 px-3 py-2 rounded-lg">
+                  <div className="h-8 w-8 rounded-fullflex items-center justify-center">
+                    <User size={26} />
                   </div>
                   <span className="hidden md:inline text-sm font-medium">
-                    John Doe
+                {data.name}
                   </span>
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuItem className="cursor-pointer">
+                <Link href="profile"><DropdownMenuItem className="cursor-pointer">
                   <UserCircle className="mr-2 h-4 w-4" />
                   <span>Profile</span>
-                </DropdownMenuItem>
+                </DropdownMenuItem></Link>
+                <Link href="settings">
                 <DropdownMenuItem className="cursor-pointer">
                   <Settings className="mr-2 h-4 w-4" />
                   <span>Settings</span>
-                </DropdownMenuItem>
+                </DropdownMenuItem></Link>
                 <DropdownMenuSeparator />
+                <Link href='logout'>
                 <DropdownMenuItem className="cursor-pointer text-red-600">
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Sign out</span>
-                </DropdownMenuItem>
+                </DropdownMenuItem></Link>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

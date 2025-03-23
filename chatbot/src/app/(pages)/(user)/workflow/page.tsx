@@ -138,7 +138,7 @@ const WorkflowPage = () => {
         /* Templates Grid */
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Create New Template Card */}
-          <Link href="studio"><div className="border-2 border-dashed  rounded-xl p-6 hover:border-blue-500 transition-colors cursor-pointer group">
+          <Link href="/studio"><div className="border-2 border-dashed  rounded-xl p-6 hover:border-blue-500 transition-colors cursor-pointer group">
             <div className="flex flex-col items-center justify-center h-full min-h-[200px] text-gray-500 group-hover:text-blue-500">
               <div className="w-16 h-16 rounded-full  flex items-center justify-center mb-4 group-hover:bg-blue-50">
                 <Plus size={24} className="group-hover:text-blue-500" />
@@ -166,7 +166,7 @@ const WorkflowPage = () => {
                 
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-700">{template.usage}</span>
-                  <button className="flex items-center gap-2 text-sm font-medium text-blue-500 hover:text-blue-600">
+                  <button className="flex items-center gap-2 text-sm font-medium text-blue-500 hover:text-blue-600" >
                     Use template
                     <ArrowRight size={16} />
                   </button>

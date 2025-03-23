@@ -1,11 +1,12 @@
 "use client"
-import React from 'react'
+import React, { useState } from 'react'
 import { ModeToggle } from '@/components/mode-toggle'
 import { Dock } from '@/components/magicui/dock'
 import { Button } from '@/components/ui/button'
 import { Particles } from '@/components/magicui/particles'
 import Link from 'next/link'
-import { NeonGradientCard } from '@/components/magicui/neon-gradient-card'
+import { useDebounce } from '@/hooks/use-debounce'
+import { handleDemo } from '@/lib/public'
 const HomePage = () => {
   const sections = [
     { id: 'home', label: 'Home' },
@@ -25,6 +26,8 @@ const HomePage = () => {
     const element = document.getElementById(id)
     element?.scrollIntoView({ behavior: 'smooth' })
   }
+  const [demo,setDemo]=useState({name:"",email:"",message:""})
+  const demoform=useDebounce(demo,500)
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-background/50">
@@ -32,12 +35,12 @@ const HomePage = () => {
         <div className="flex justify-between items-center py-4">
           <ModeToggle />
           <div className="flex gap-2">
-            <Button variant="ghost" asChild>
-              <Link href="/auth/signin">Sign In</Link>
-            </Button>
-            <Button asChild>
-              <Link href="/auth/signup">Sign Up</Link>
-            </Button>
+          <Link href="/auth/signin">
+            <Button variant="ghost" asChild>Sign In
+            </Button></Link>
+           
+            <Link href="/auth/signup"> <Button asChild>Sign Up
+            </Button></Link>
           </div>
         </div>
         <Dock className="fixed bottom-5 z-10 left-1/2 transform -translate-x-1/2 backdrop-blur-md shadow-lg">
@@ -223,7 +226,7 @@ const HomePage = () => {
             placeholder="Your message"
           />
         </div>
-        <Button className="w-full">Send Message</Button>
+        <Button className="w-full" onClick={()=>{handleDemo(demoform)}}>Send Message</Button>
           </form>
         </div>
       </section>

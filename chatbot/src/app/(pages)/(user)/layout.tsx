@@ -2,7 +2,7 @@
 import React from 'react'
 import SideBar from '@/app/ui/components/SideBar';
 import Appbar from '@/app/ui/components/Appbar';
-import { GridPattern } from '@/components/magicui/grid-pattern';
+import Footer from '@/app/ui/components/Footer';
 export default function UserLayout({
   children,
 }: {
@@ -11,18 +11,21 @@ export default function UserLayout({
   const  userId ="John123"
   return (  
     <div className="min-h-screen w-full overflow-hidden flex flex-col gap-3 relative">
-      <Appbar />
-      {/* <GridPattern width={80} height={80} className="fixed inset-0 -z-10" /> */}
+      <Appbar data={{name:"JohnDoe",uuid:"something here"}} />
       <div className="flex flex-row gap-3 flex-1 relative">
-        <aside className="flex-shrink-0 relative  w-fit h-screen">
+        <aside className="flex-shrink-0 relative  w-fit h-full">
           <SideBar 
             user={{ username: userId,pfp:"https://picsum.photos/200",subscription:"Premium" }}
           />
         </aside>
+        
         <main className="w-full h-full flex-1 mt-2 p-6 relative ">
+          
           {children}
         </main>
       </div>
+      
+      <Footer />
     </div>
   )
 }

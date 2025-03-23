@@ -1,5 +1,6 @@
 import React from "react"
 import { ModeToggle } from "@/components/mode-toggle"
+import Footer from "@/app/ui/components/Footer"
 
 export default function AuthLayout({
   children,
@@ -31,6 +32,8 @@ export default function AuthLayout({
           </div>
         </div>
       </div>
+
+      <Footer />
     </section>
   )
 }
