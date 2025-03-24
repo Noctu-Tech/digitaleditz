@@ -79,8 +79,8 @@ from fastapi.responses import PlainTextResponse
 from typing import Optional
 
 # Import the workflow and message managers
-from workflow_model import workflow_manager
-from message_logging_model import message_manager, MessageDirection
+from services.workflow.workflow import workflow_manager,Workflow
+from services.message.message import message_manager, MessageDirection
 
 whatsapp_router = APIRouter()
 

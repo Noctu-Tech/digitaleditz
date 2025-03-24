@@ -104,7 +104,8 @@ class MongoWorkflowManager:
         :param phone_number: Phone number to check
         :return: Workflow ID or None
         """
-        phone_number = phone_number.split(":")[1]
+        print(phone_number)
+        phone_number = phone_number
         user_workflow = self.user_workflows_collection.find_one({'phone_number': phone_number})
         return user_workflow['workflow_id'] if user_workflow else None
 
