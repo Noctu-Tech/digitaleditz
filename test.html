@@ -8,7 +8,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
 </head>
 <body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
-    <div class="w-full max-w-2xl bg-white shadow-md rounded-lg p-8">
+    <div class="w-full max-w-3xl bg-white shadow-md rounded-lg p-8">
         <h1 class="text-3xl font-bold mb-6 text-center text-blue-600">WhatsApp Workflow Manager</h1>
 
         <div class="grid md:grid-cols-2 gap-6">
@@ -26,20 +26,59 @@
                         >
                     </div>
 
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Workflow Description (Optional)</label>
+                        <textarea 
+                            id="workflowDescription"
+                            rows="2"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200"
+                        ></textarea>
+                    </div>
+
                     <div id="stepsContainer">
-                        <div class="workflow-step mb-4">
-                            <label class="block text-sm font-medium text-gray-700">Step 1</label>
-                            <div class="flex space-x-2 mb-2">
+                        <div class="workflow-step mb-4 bg-white p-4 rounded-lg shadow-sm">
+                            <div class="flex justify-between items-center mb-2">
+                                <label class="text-sm font-medium text-gray-700">Step 1</label>
+                                <button 
+                                    type="button" 
+                                    class="remove-step text-red-500 hover:text-red-700"
+                                    style="display: none;"
+                                >
+                                    Remove Step
+                                </button>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
                                 <input 
                                     type="text" 
                                     placeholder="Keyword" 
-                                    class="keyword-input flex-1 rounded-md border-gray-300"
+                                    class="keyword-input rounded-md border-gray-300"
+                                    required
                                 >
                                 <input 
                                     type="text" 
-                                    placeholder="Response" 
-                                    class="response-input flex-1 rounded-md border-gray-300"
+                                    placeholder="Display Text" 
+                                    class="display-input rounded-md border-gray-300"
+                                    required
                                 >
+                            </div>
+                            <textarea 
+                                placeholder="Response Template" 
+                                class="response-input mt-2 block w-full rounded-md border-gray-300"
+                                rows="2"
+                            ></textarea>
+                            
+                            <div class="mt-2">
+                                <label class="inline-flex items-center">
+                                    <input 
+                                        type="checkbox" 
+                                        class="add-substeps-checkbox form-checkbox"
+                                    >
+                                    <span class="ml-2 text-sm text-gray-600">Add Sub-steps</span>
+                                </label>
+                            </div>
+                            
+                            <div class="sub-steps-container hidden mt-2 pl-4 border-l-2 border-gray-200">
+                                <!-- Sub-steps will be dynamically added here -->
                             </div>
                         </div>
                     </div>
@@ -74,6 +113,7 @@
                             id="phoneNumber" 
                             required 
                             placeholder="+1234567890"
+                            pattern="^\+[1-9]\d{1,14}$"
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200"
                         >
                     </div>
@@ -107,38 +147,120 @@
         // Backend URL
         const BASE_URL = 'http://localhost:8000/whatsapp';
 
+        // Function to create a sub-step input
+        function createSubStepInput() {
+            const subStep = document.createElement('div');
+            subStep.className = 'sub-step mb-2 grid grid-cols-2 gap-2';
+            subStep.innerHTML = `
+                <input 
+                    type="text" 
+                    placeholder="Sub-step Keyword" 
+                    class="sub-keyword-input rounded-md border-gray-300"
+                >
+                <input 
+                    type="text" 
+                    placeholder="Sub-step Display Text" 
+                    class="sub-display-input rounded-md border-gray-300"
+                >
+                <textarea 
+                    placeholder="Sub-step Response" 
+                    class="sub-response-input col-span-2 mt-2 rounded-md border-gray-300"
+                    rows="2"
+                ></textarea>
+                <button 
+                    type="button" 
+                    class="remove-sub-step text-red-500 hover:text-red-700 col-span-2 text-right"
+                >
+                    Remove Sub-step
+                </button>
+            `;
+
+            // Add remove functionality for sub-step
+            subStep.querySelector('.remove-sub-step').addEventListener('click', function() {
+                subStep.remove();
+            });
+
+            return subStep;
+        }
+
         // Add Step Button
         document.getElementById('addStepBtn').addEventListener('click', function() {
             const container = document.getElementById('stepsContainer');
             const stepCount = container.children.length + 1;
             
             const newStep = document.createElement('div');
-            newStep.className = 'workflow-step mb-4';
+            newStep.className = 'workflow-step mb-4 bg-white p-4 rounded-lg shadow-sm';
             newStep.innerHTML = `
-                <label class="block text-sm font-medium text-gray-700">Step ${stepCount}</label>
-                <div class="flex space-x-2 mb-2">
+                <div class="flex justify-between items-center mb-2">
+                    <label class="text-sm font-medium text-gray-700">Step ${stepCount}</label>
+                    <button 
+                        type="button" 
+                        class="remove-step text-red-500 hover:text-red-700"
+                    >
+                        Remove Step
+                    </button>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
                     <input 
                         type="text" 
                         placeholder="Keyword" 
-                        class="keyword-input flex-1 rounded-md border-gray-300"
+                        class="keyword-input rounded-md border-gray-300"
+                        required
                     >
                     <input 
                         type="text" 
-                        placeholder="Response" 
-                        class="response-input flex-1 rounded-md border-gray-300"
+                        placeholder="Display Text" 
+                        class="display-input rounded-md border-gray-300"
+                        required
                     >
-                    <button 
-                        type="button" 
-                        class="remove-step bg-red-500 text-white px-2 py-1 rounded"
-                    >
-                        -
-                    </button>
+                </div>
+                <textarea 
+                    placeholder="Response Template" 
+                    class="response-input mt-2 block w-full rounded-md border-gray-300"
+                    rows="2"
+                ></textarea>
+                
+                <div class="mt-2">
+                    <label class="inline-flex items-center">
+                        <input 
+                            type="checkbox" 
+                            class="add-substeps-checkbox form-checkbox"
+                        >
+                        <span class="ml-2 text-sm text-gray-600">Add Sub-steps</span>
+                    </label>
+                </div>
+                
+                <div class="sub-steps-container hidden mt-2 pl-4 border-l-2 border-gray-200">
+                    <!-- Sub-steps will be dynamically added here -->
                 </div>
             `;
 
             // Add remove functionality
-            newStep.querySelector('.remove-step').addEventListener('click', function() {
+            const removeStepBtn = newStep.querySelector('.remove-step');
+            removeStepBtn.addEventListener('click', function() {
                 newStep.remove();
+            });
+
+            // Add sub-steps functionality
+            const subStepsCheckbox = newStep.querySelector('.add-substeps-checkbox');
+            const subStepsContainer = newStep.querySelector('.sub-steps-container');
+            subStepsCheckbox.addEventListener('change', function() {
+                if (this.checked) {
+                    subStepsContainer.classList.remove('hidden');
+                    const addSubStepBtn = document.createElement('button');
+                    addSubStepBtn.type = 'button';
+                    addSubStepBtn.textContent = 'Add Sub-step';
+                    addSubStepBtn.className = 'mt-2 bg-green-400 text-white px-2 py-1 rounded text-sm';
+                    
+                    addSubStepBtn.addEventListener('click', function() {
+                        subStepsContainer.appendChild(createSubStepInput());
+                    });
+                    
+                    subStepsContainer.appendChild(addSubStepBtn);
+                } else {
+                    subStepsContainer.innerHTML = '';
+                    subStepsContainer.classList.add('hidden');
+                }
             });
 
             container.appendChild(newStep);
@@ -149,14 +271,30 @@
             e.preventDefault();
             
             // Collect workflow steps
-            const steps = Array.from(document.querySelectorAll('.workflow-step')).map(step => ({
-                keyword: step.querySelector('.keyword-input').value,
-                response_template: step.querySelector('.response-input').value
-            }));
+            const steps = Array.from(document.querySelectorAll('.workflow-step')).map(step => {
+                const stepData = {
+                    keyword: step.querySelector('.keyword-input').value,
+                    display_text: step.querySelector('.display-input').value,
+                    response_template: step.querySelector('.response-input').value
+                };
+
+                // Check for sub-steps
+                const subStepsContainer = step.querySelector('.sub-steps-container');
+                if (!subStepsContainer.classList.contains('hidden')) {
+                    stepData.sub_steps = Array.from(subStepsContainer.querySelectorAll('.sub-step')).map(subStep => ({
+                        keyword: subStep.querySelector('.sub-keyword-input').value,
+                        display_text: subStep.querySelector('.sub-display-input').value,
+                        response_template: subStep.querySelector('.sub-response-input').value
+                    }));
+                }
+
+                return stepData;
+            });
 
             const workflow = {
                 name: document.getElementById('workflowName').value,
-                steps: steps
+                description: document.getElementById('workflowDescription').value || undefined,
+                root_steps: steps
             };
 
             try {
@@ -169,7 +307,7 @@
             }
         });
 
-        // Assign Workflow Form
+        // Assign Workflow Form (remains the same)
         document.getElementById('assignForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
