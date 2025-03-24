@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Workflow Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-2xl bg-white shadow-md rounded-lg p-8">
+        <h1 class="text-3xl font-bold mb-6 text-center text-blue-600">WhatsApp Workflow Manager</h1>
+
+        <div class="grid md:grid-cols-2 gap-6">
+            <!-- Create Workflow Section -->
+            <div class="bg-gray-50 p-6 rounded-lg">
+                <h2 class="text-xl font-semibold mb-4 text-blue-500">Create Workflow</h2>
+                <form id="workflowForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Workflow Name</label>
+                        <input 
+                            type="text" 
+                            id="workflowName" 
+                            required 
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200"
+                        >
+                    </div>
+
+                    <div id="stepsContainer">
+                        <div class="workflow-step mb-4">
+                            <label class="block text-sm font-medium text-gray-700">Step 1</label>
+                            <div class="flex space-x-2 mb-2">
+                                <input 
+                                    type="text" 
+                                    placeholder="Keyword" 
+                                    class="keyword-input flex-1 rounded-md border-gray-300"
+                                >
+                                <input 
+                                    type="text" 
+                                    placeholder="Response" 
+                                    class="response-input flex-1 rounded-md border-gray-300"
+                                >
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between">
+                        <button 
+                            type="button" 
+                            id="addStepBtn" 
+                            class="bg-green-500 text-white px-3 py-2 rounded-md hover:bg-green-600"
+                        >
+                            Add Step
+                        </button>
+                    </div>
+
+                    <button 
+                        type="submit" 
+                        class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600"
+                    >
+                        Create Workflow
+                    </button>
+                </form>
+            </div>
+
+            <!-- Assign Workflow Section -->
+            <div class="bg-gray-50 p-6 rounded-lg">
+                <h2 class="text-xl font-semibold mb-4 text-blue-500">Assign Workflow</h2>
+                <form id="assignForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Phone Number</label>
+                        <input 
+                            type="tel" 
+                            id="phoneNumber" 
+                            required 
+                            placeholder="+1234567890"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200"
+                        >
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Workflow ID</label>
+                        <input 
+                            type="text" 
+                            id="workflowId" 
+                            required 
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200"
+                        >
+                    </div>
+                    <button 
+                        type="submit" 
+                        class="w-full bg-purple-500 text-white py-2 rounded-md hover:bg-purple-600"
+                    >
+                        Assign Workflow
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Feedback Area -->
+        <div id="feedbackArea" class="mt-6 p-4 bg-gray-100 rounded-lg">
+            <h3 class="font-semibold mb-2">Results</h3>
+            <pre id="resultOutput" class="text-sm text-gray-700 whitespace-pre-wrap"></pre>
+        </div>
+    </div>
+
+    <script>
+        // Backend URL
+        const BASE_URL = 'http://localhost:8000/whatsapp';
+
+        // Add Step Button
+        document.getElementById('addStepBtn').addEventListener('click', function() {
+            const container = document.getElementById('stepsContainer');
+            const stepCount = container.children.length + 1;
+            
+            const newStep = document.createElement('div');
+            newStep.className = 'workflow-step mb-4';
+            newStep.innerHTML = `
+                <label class="block text-sm font-medium text-gray-700">Step ${stepCount}</label>
+                <div class="flex space-x-2 mb-2">
+                    <input 
+                        type="text" 
+                        placeholder="Keyword" 
+                        class="keyword-input flex-1 rounded-md border-gray-300"
+                    >
+                    <input 
+                        type="text" 
+                        placeholder="Response" 
+                        class="response-input flex-1 rounded-md border-gray-300"
+                    >
+                    <button 
+                        type="button" 
+                        class="remove-step bg-red-500 text-white px-2 py-1 rounded"
+                    >
+                        -
+                    </button>
+                </div>
+            `;
+
+            // Add remove functionality
+            newStep.querySelector('.remove-step').addEventListener('click', function() {
+                newStep.remove();
+            });
+
+            container.appendChild(newStep);
+        });
+
+        // Create Workflow Form
+        document.getElementById('workflowForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Collect workflow steps
+            const steps = Array.from(document.querySelectorAll('.workflow-step')).map(step => ({
+                keyword: step.querySelector('.keyword-input').value,
+                response_template: step.querySelector('.response-input').value
+            }));
+
+            const workflow = {
+                name: document.getElementById('workflowName').value,
+                steps: steps
+            };
+
+            try {
+                const response = await axios.post(`${BASE_URL}/create-workflow`, workflow);
+                document.getElementById('resultOutput').textContent = 
+                    `Workflow Created Successfully!\nWorkflow ID: ${response.data.workflow_id}`;
+            } catch (error) {
+                document.getElementById('resultOutput').textContent = 
+                    `Error: ${error.response?.data?.detail || error.message}`;
+            }
+        });
+
+        // Assign Workflow Form
+        document.getElementById('assignForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const phoneNumber = document.getElementById('phoneNumber').value;
+            const workflowId = document.getElementById('workflowId').value;
+
+            try {
+                const response = await axios.post(`${BASE_URL}/assign-workflow`, null, {
+                    params: {
+                        phone_number: phoneNumber,
+                        workflow_id: workflowId
+                    }
+                });
+                
+                document.getElementById('resultOutput').textContent = 
+                    'Workflow Assigned Successfully!';
+            } catch (error) {
+                document.getElementById('resultOutput').textContent = 
+                    `Error: ${error.response?.data?.detail || error.message}`;
+            }
+        });
+    </script>
+</body>
+</html>
