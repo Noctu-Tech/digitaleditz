@@ -9,6 +9,7 @@ class UserModel(BaseModel):
     u_password:str
     u_phone:str
     u_role:str
+    u_verified:str
     u_status:str
     u_business_name:str
     u_business_type:str

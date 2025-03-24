@@ -14,4 +14,6 @@ class InventoryModel(BaseModel):
     i_area: int
     i_price:int
     i_location:str
+    i_uuid:str
+    i_cid:Optional[str]
     i_description: Optional[str]

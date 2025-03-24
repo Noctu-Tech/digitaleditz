@@ -1,4 +1,7 @@
-from fastapi import FastAPI
+from backend.api import demo_router
+from permission import TeapotUserAgentPermission
+from fastapi import FastAPI,Depends
+from fastapi_contrib.permissions import PermissionsDependency
 from .admin_router import router as admin_router 
 from .inventory_router import router as inventory_router
 from .user_router import router as user_router
@@ -10,7 +13,7 @@ from .chat_router import router as chat_router
 
 app = FastAPI()
 def create_app():
-    app.include_router(admin_router,prefix="/admin",tags=["Admin"])
+    app.include_router(admin_router,prefix="/admin",tags=["Admin"],dependencies=[Depends(PermissionsDependency([TeapotUserAgentPermission])),Depends()])
     app.include_router(chat_router,prefix="/chat",tags=["Chat"])
     app.include_router(inventory_router,prefix="/inventory",tags=["Inventory"])
     app.include_router(user_router,prefix="/user",tags=["User"])
@@ -18,4 +21,5 @@ def create_app():
     app.include_router(help_router,prefix="/help",tags=["Help"])
     app.include_router(payment_router,prefix="/payment",tags=["Payment"])
     app.include_router(workflow_router,prefix="/workflow",tags=["Workflow"])
+    app.include_router(demo_router,prefix="/demo",tags=["Demo"])
     return app
