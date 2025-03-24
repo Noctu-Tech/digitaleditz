@@ -74,32 +74,62 @@
 #     return Response(status_code=200)
 
 
-
-
 from fastapi import APIRouter, Request, Form
 from fastapi.responses import PlainTextResponse
-from services.workflow.workflow import workflow_manager, Workflow, WorkflowStep, WorkflowStage
+from typing import Optional
+
+# Import the workflow and message managers
+from workflow_model import workflow_manager
+from message_logging_model import message_manager, MessageDirection
 
 whatsapp_router = APIRouter()
 
 @whatsapp_router.post("/webhook")
 async def webhook(
     request: Request,
-    Body: str = Form(None),
-    From: str = Form(None),
-    To: str = Form(None)
+    Body: Optional[str] = Form(None),
+    From: Optional[str] = Form(None),
+    To: Optional[str] = Form(None)
 ):
     """
-    Webhook to receive incoming WhatsApp messages and process through workflows.
+    Webhook to receive incoming WhatsApp messages and process through workflows
     """
     sender_number = From  # The WhatsApp user's number
     receiver_number = To  # Your Twilio WhatsApp number
-    message_body = Body
+    message_body = Body or ""
    
-    print(f"Received message: '{message_body}' from {sender_number} to {receiver_number}")
+    # Log incoming message
+    try:
+        # Find the workflow ID for this phone number (if any)
+        workflow_id = workflow_manager.get_user_workflow(sender_number)
+        
+        # Log the incoming message
+        message_manager.log_message(
+            phone_number=sender_number,
+            message_body=message_body,
+            direction=MessageDirection.INCOMING,
+            workflow_id=workflow_id
+        )
+    except Exception as log_error:
+        print(f"Error logging message: {log_error}")
    
     # Process message through workflow
-    reply_message = workflow_manager.process_message(receiver_number, message_body)
+    try:
+        reply_message = workflow_manager.process_message(sender_number, message_body)
+    except Exception as process_error:
+        print(f"Error processing message: {process_error}")
+        reply_message = "Sorry, there was an error processing your message."
+    
+    # Log outgoing message
+    try:
+        message_manager.log_message(
+            phone_number=sender_number,
+            message_body=reply_message,
+            direction=MessageDirection.OUTGOING,
+            workflow_id=workflow_id
+        )
+    except Exception as log_error:
+        print(f"Error logging reply message: {log_error}")
    
     # Return a TwiML response to send a message back
     twiml_response = f"""<?xml version="1.0" encoding="UTF-8"?>
@@ -110,6 +140,37 @@ async def webhook(
    
     return PlainTextResponse(content=twiml_response, media_type="application/xml")
 
+# Optional: Add endpoints to retrieve message logs
+@whatsapp_router.get("/messages/{phone_number}")
+async def get_messages_by_phone(phone_number: str):
+    """
+    Retrieve message logs for a specific phone number
+    """
+    messages = message_manager.get_messages_by_phone_number(phone_number)
+    return [
+        {
+            "id": msg.id,
+            "message_body": msg.message_body,
+            "direction": msg.direction,
+            "timestamp": msg.timestamp.isoformat()
+        } for msg in messages
+    ]
+
+@whatsapp_router.get("/messages/workflow/{workflow_id}")
+async def get_messages_by_workflow(workflow_id: str):
+    """
+    Retrieve message logs for a specific workflow
+    """
+    messages = message_manager.get_messages_by_workflow(workflow_id)
+    return [
+        {
+            "id": msg.id,
+            "phone_number": msg.phone_number,
+            "message_body": msg.message_body,
+            "direction": msg.direction,
+            "timestamp": msg.timestamp.isoformat()
+        } for msg in messages
+    ]
 @whatsapp_router.post("/create-workflow")
 async def create_workflow(workflow: Workflow):
     """
