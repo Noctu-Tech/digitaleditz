@@ -101,7 +101,7 @@ async def webhook(
     # Log incoming message
     try:
         # Find the workflow ID for this phone number (if any)
-        workflow_id = workflow_manager.get_user_workflow(sender_number)
+        workflow_id = workflow_manager.get_user_workflow(receiver_number)
         
         # Log the incoming message
         message_manager.log_message(
@@ -115,7 +115,7 @@ async def webhook(
    
     # Process message through workflow
     try:
-        reply_message = workflow_manager.process_message(sender_number, message_body)
+        reply_message = workflow_manager.process_message(receiver_number, message_body)
     except Exception as process_error:
         print(f"Error processing message: {process_error}")
         reply_message = "Sorry, there was an error processing your message."
