@@ -73,13 +73,12 @@
 #     # Return a simple acknowledgment
 #     return Response(status_code=200)
 
-
-from fastapi import APIRouter, Request, Form
+from fastapi import APIRouter, Request, Form, HTTPException
 from fastapi.responses import PlainTextResponse
-from typing import Optional
+from typing import Optional, Dict, Union
 
 # Import the workflow and message managers
-from services.workflow.workflow import workflow_manager,Workflow
+from services.workflow.workflow import workflow_manager, Workflow
 from services.message.message import message_manager, MessageDirection
 
 whatsapp_router = APIRouter()
@@ -97,6 +96,7 @@ async def webhook(
     sender_number = From  # The WhatsApp user's number
     receiver_number = To  # Your Twilio WhatsApp number
     message_body = Body or ""
+    workflow_id = None  # Initialize workflow_id to None
    
     # Log incoming message
     try:
@@ -115,7 +115,21 @@ async def webhook(
    
     # Process message through workflow
     try:
-        reply_message = workflow_manager.process_message(receiver_number, message_body)
+        # Enhanced error handling for workflow processing
+        workflow_response = workflow_manager.process_message(receiver_number, message_body)
+        print(f"Workflow response: {workflow_response}")
+        # Handle both string and dictionary responses
+        if isinstance(workflow_response, dict):
+            # Construct a more detailed reply message
+            reply_message = workflow_response.get('message', 'No response')
+            
+            # If steps are available, format them into the reply
+            if 'steps' in workflow_response:
+                steps_list = workflow_response['steps']
+                steps_text = "\n".join([f"{idx+1}. {step['display']}" for idx, step in enumerate(steps_list)])
+                reply_message += f"\n\n{steps_text}"
+        else:
+            reply_message = workflow_response
     except Exception as process_error:
         print(f"Error processing message: {process_error}")
         reply_message = "Sorry, there was an error processing your message."
@@ -139,8 +153,6 @@ async def webhook(
     """
    
     return PlainTextResponse(content=twiml_response, media_type="application/xml")
-
-# Optional: Add endpoints to retrieve message logs
 @whatsapp_router.get("/messages/{phone_number}")
 async def get_messages_by_phone(phone_number: str):
     """
@@ -171,18 +183,49 @@ async def get_messages_by_workflow(workflow_id: str):
             "timestamp": msg.timestamp.isoformat()
         } for msg in messages
     ]
+
 @whatsapp_router.post("/create-workflow")
 async def create_workflow(workflow: Workflow):
     """
     Endpoint to create a new workflow
     """
-    workflow_id = workflow_manager.create_workflow(workflow)
-    return {"workflow_id": workflow_id}
+    try:
+        workflow_id = workflow_manager.create_workflow(workflow)
+        return {"workflow_id": workflow_id}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 @whatsapp_router.post("/assign-workflow")
 async def assign_workflow(phone_number: str, workflow_id: str):
     """
     Endpoint to assign a workflow to a specific phone number
     """
-    workflow_manager.assign_workflow_to_user(phone_number, workflow_id)
-    return {"status": "Workflow assigned successfully"}
+    try:
+        workflow_manager.assign_workflow_to_user(phone_number, workflow_id)
+        return {"status": "Workflow assigned successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+# New endpoint: List available workflows
+@whatsapp_router.get("/workflows")
+async def list_workflows():
+    """
+    Retrieve a list of all available workflows
+    """
+    try:
+        workflows = workflow_manager.list_workflows()
+        return workflows
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# New endpoint: Reset user workflow
+@whatsapp_router.post("/reset-workflow")
+async def reset_user_workflow(phone_number: str):
+    """
+    Reset a user's current workflow
+    """
+    try:
+        workflow_manager.reset_user_workflow(phone_number)
+        return {"status": "Workflow reset successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))

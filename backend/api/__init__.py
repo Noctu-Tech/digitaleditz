@@ -5,18 +5,20 @@ from fastapi_contrib.permissions import PermissionsDependency
 from .admin_router import router as admin_router 
 from .inventory_router import router as inventory_router
 from .user_router import router as user_router
-from .auth_router import router as auth_router
+from .auth_router import auth_router
 from .help_router import router as help_router
 from .payment_router import router as payment_router
 from .workflow_router import router as workflow_router
 from .chat_router import router as chat_router
 from .whatsapp import whatsapp_router
 
+from middleware.middleware import AuthorityMiddleware
+
 from fastapi.middleware.cors import CORSMiddleware
 
 
 app = FastAPI()
-
+# app.add_middleware(AuthorityMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Allows all origins
