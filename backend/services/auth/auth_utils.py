@@ -1,19 +1,21 @@
-
-
+import json
+from bson import ObjectId
 from fastapi import HTTPException, Header
-import jwt
 from typing import Optional
 from fastapi import HTTPException, Header, Response
 from datetime import datetime, timedelta
-
+from jose import jwt
 SECRET_KEY = "your-secret-key"  # Change this to your actual secret key
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
+ 
 
 def create_access_token(data: dict) -> str:
-    to_encode = data.copy()
+    print(data)
+    to_encode = {"id":str(data["id"])}
     expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    to_encode.update({"exp": expire})
+    to_encode["exp"] = expire
+    print(to_encode)
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 

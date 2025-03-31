@@ -1,9 +1,9 @@
 import { ArrowRight, Copy, Layout } from "lucide-react";
 interface TemplateInterface {
     color:string,
-    title:String,
-    description:String,
-    usage:String
+    title:string,
+    description:string,
+    usage:string
 }
 export const TemplateCard=({template}:{template:TemplateInterface})=>{
 

@@ -7,7 +7,7 @@ import {
   SheetClose,
 } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
-import { handleClearNotification } from "@/lib/username/notification"
+import { handleClearNotification } from "@/lib/functions/username/notification"
 
 interface NotificationDrawerProps {
   open: boolean

@@ -1,10 +1,9 @@
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@radix-ui/react-accordion'
-import React from 'react'
 interface FAQ {
     question: string;
     answer: string;
   }
-const Faqs = (search:string) => {
+const Faqs = ({search}:{search:string}) => {
     
 const faqs: FAQ[] = [
     {
@@ -23,7 +22,8 @@ const faqs: FAQ[] = [
   
   const filteredFaqs = faqs.filter(faq =>
     faq.question.toLowerCase().includes(search.toLowerCase()) ||
-    faq.answer.toLowerCase().includes(search.toLowerCase())
+    faq.answer.toLowerCase().includes(search.toLowerCase()
+  )
   );
   return ( <Accordion type="single" collapsible>
     {filteredFaqs.map((faq, index) => (

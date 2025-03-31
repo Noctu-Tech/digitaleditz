@@ -1,15 +1,44 @@
+"use client"
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
-import { handleTicketSubmit } from '@/lib/username/help'
-import { handleFileChange } from '@/lib/utils'
-import { Label } from '@radix-ui/react-dropdown-menu'
+import { handleTicketSubmit } from '@/lib/functions/username/help'
+import { Input } from "@/components/ui/input";
+import { Label } from '@/components/ui/label'
 import { AlertCircle } from 'lucide-react'
-import { Input } from 'postcss'
-import React from 'react'
-
+import { useState } from 'react'
+import { Ticket } from './TicketList'
 const TicketForm = () => {
+  
+  const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [attachments, setAttachments] = useState<File[]>([]);
+  const [fileError, setFileError] = useState<string>("");
+  
+const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const files = Array.from(e.target.files || []);
+  const maxSize = 5 * 1024 * 1024; // 5MB
+  const validTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+
+  const invalidFiles = files.filter(file => !validTypes.includes(file.type));
+  const oversizedFiles = files.filter(file => file.size > maxSize);
+  
+  if (invalidFiles.length > 0) {
+    setFileError("Only JPEG, PNG and PDF files are allowed");
+    return;
+  }
+  
+  if (oversizedFiles.length > 0) {
+    setFileError("Files must be less than 5MB");
+    return;
+  }
+  
+  setFileError("");
+  setAttachments(files);
+};
+
+const [showTicketForm, setShowTicketForm] = useState(false);
+const [newTicket, setNewTicket] = useState({ subject: '', description: '' });
   return (
     <Card className="mb-8">
     <CardContent className="pt-6">

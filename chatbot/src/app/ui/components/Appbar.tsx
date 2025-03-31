@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Search, Bell, Menu, User, X, Settings, LogOut, UserCircle } from 'lucide-react';
 import { NotificationDrawer } from './NotificationDrawer';
 import {
@@ -84,7 +84,7 @@ const  Appbar = ({data}:{data:any}) => {
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
-                <Link href="profile"><DropdownMenuItem className="cursor-pointer">
+                <Link href="/settings/profile"><DropdownMenuItem className="cursor-pointer">
                   <UserCircle className="mr-2 h-4 w-4" />
                   <span>Profile</span>
                 </DropdownMenuItem></Link>

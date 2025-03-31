@@ -1,8 +1,12 @@
 // app/[userId]/layout.tsx
-import React from 'react'
-import SideBar from '@/app/ui/components/SideBar';
-import Appbar from '@/app/ui/components/Appbar';
+
 import Footer from '@/app/ui/components/Footer';
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import {AppSidebar} from '@/app/ui/components/AppSideBar';
+import AppBar from '@/app/ui/components/home/AppBar';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import CrumbTitle from '@/app/ui/components/CrumbTitle';
 export default function UserLayout({
   children,
 }: {
@@ -10,22 +14,19 @@ export default function UserLayout({
 }) {
   const  userId ="John123"
   return (  
-    <div className="min-h-screen w-full overflow-hidden flex flex-col gap-3 relative">
-      <Appbar data={{name:"JohnDoe",uuid:"something here"}} />
-      <div className="flex flex-row gap-3 flex-1 relative">
-        <aside className="flex-shrink-0 relative  w-fit h-full">
-          <SideBar 
-            user={{ username: userId,pfp:"https://picsum.photos/200",subscription:"Premium" }}
-          />
-        </aside>
-        
-        <main className="w-full h-full flex-1 mt-2 p-6 relative ">
-          
+    <SidebarProvider>
+
+          <AppSidebar/>
+
+          <div className="min-h-screen w-full overflow-hidden flex flex-col gap-3 relative">
+        <main className="w-full h-full flex-1 p-2 mt-4 relative ">
+          <div className='w-full gap-3 flex'><SidebarTrigger/><CrumbTitle/></div>       
           {children}
         </main>
+        
+      <div><Footer /></div>
       </div>
       
-      <Footer />
-    </div>
+    </SidebarProvider>
   )
 }

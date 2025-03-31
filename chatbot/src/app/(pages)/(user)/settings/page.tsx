@@ -1,14 +1,57 @@
-import { Meteors } from "@/components/magicui/meteors"
+"use client"
 
-// app/[userId]/page.tsx
-export default function Page( ) {
-  const userId= "Something here"
+import React, { useState } from 'react';
+import SecurityTab from './_components/SecurityTab';
+import AccountTab from './_components/AccountTab';
+import PaymentTab from './_components/PaymentTab';
+
+export default function AccountPage() {
+  const [activeTab, setActiveTab] = useState<'account' | 'payment' | 'security'>('account');
+  
   return (
-    <div className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden rounded-lg border">
-    <Meteors number={30} />
-    <span className="pointer-events-none whitespace-pre-wrap bg-gradient-to-b from-black to-gray-300/80 bg-clip-text text-center text-8xl font-semibold leading-none text-transparent dark:from-white dark:to-slate-900/10">
-        Welcome {userId}
-    </span>
-  </div>
-  )
+    <div className="h-screen overflow-auto py-8 px-4">
+      <div className="max-w-6xl mx-auto">
+        <div className="mb-6">
+          <h1 className="text-2xl md:text-3xl font-bold mb-2">Account Settings</h1>
+          <p className="text-sm">Manage your account, subscription, and payment methods.</p>
+        </div>
+        
+        <div className="flex border-b mb-6">
+          <button
+            className={`px-4 py-2 font-medium text-sm ${activeTab === 'account' ? 'border-b-2' : ''}`}
+            onClick={() => setActiveTab('account')}
+          >
+            Account
+          </button>
+          <button
+            className={`px-4 py-2 font-medium text-sm ${activeTab === 'payment' ? 'border-b-2' : ''}`}
+            onClick={() => setActiveTab('payment')}
+          >
+            Payment
+          </button>
+          <button
+            className={`px-4 py-2 font-medium text-sm ${activeTab === 'security' ? 'border-b-2' : ''}`}
+            onClick={() => setActiveTab('security')}
+          >
+            Security
+          </button>
+        </div>
+        
+        {/* Account Tab Content */}
+        {activeTab === 'account' && (
+          <AccountTab/>
+        )}
+        
+        {/* Payment Tab Content */}
+        {activeTab === 'payment' && (
+          <PaymentTab/>
+        )}
+        
+        {/* Security Tab Content */}
+        {activeTab === 'security' && (
+         <SecurityTab/>
+        )}
+      </div>
+    </div>
+  );
 }

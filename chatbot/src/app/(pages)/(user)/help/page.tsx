@@ -12,17 +12,15 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import TicketForm from './TicketForm';
 import TicketList from './TicketList';
 import Faqs from './Faqs';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { GetTickets } from '@/lib/functions/username/help';
 
 
 
 export default function HelpPage() {
-  const [tickets, setTickets] = useState<Ticket[]>([]);
   const [showTicketForm, setShowTicketForm] = useState(false);
-  const [newTicket, setNewTicket] = useState({ subject: '', description: '' });
   const [searchQuery, setSearchQuery] = useState('');
-  const [attachments, setAttachments] = useState<File[]>([]);
-  const [fileError, setFileError] = useState<string>("");
-
+  const tickets=  [{}];
 
   return (
     <div className="min-h-screen p-8 max-w-4xl mx-auto">

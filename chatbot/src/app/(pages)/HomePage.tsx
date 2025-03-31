@@ -1,12 +1,12 @@
 "use client"
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { ModeToggle } from '@/components/mode-toggle'
 import { Dock } from '@/components/magicui/dock'
 import { Button } from '@/components/ui/button'
 import { Particles } from '@/components/magicui/particles'
 import Link from 'next/link'
 import { useDebounce } from '@/hooks/use-debounce'
-import { handleDemo } from '@/lib/public'
+import { handleDemo } from '@/lib/api/public'
 const HomePage = () => {
   const sections = [
     { id: 'home', label: 'Home' },

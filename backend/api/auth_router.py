@@ -1,19 +1,20 @@
-from fastapi import APIRouter, HTTPException, Depends, Request
+from services.auth.auth_utils import create_access_token
+from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel, EmailStr, constr
-from pymongo import MongoClient
-from bson import ObjectId
-import bcrypt
-import jwt
 from datetime import datetime, timedelta
+import sys
+print(sys.path)
+from jwt import encode as jwt_encode
+import bcrypt
+from bson import ObjectId
+from database.mongo import get_database
+from config import Settings
 
-# MongoDB Connection
-client = MongoClient('mongodb://localhost:27017/')
-db = client['user_authentication_db']
-users_collection = db['users']
-
+router=APIRouter()
+users_collection=get_database("client_collection")
 # Secret key for JWT
-SECRET_KEY = "your_secret_key"
-ALGORITHM = "HS256"
+SECRET_KEY = Settings().secret_key
+ALGORITHM = Settings().algorithm
 
 # Pydantic Models
 class UserSignup(BaseModel):
@@ -26,9 +27,7 @@ class UserLogin(BaseModel):
     password: str
 
 class UserResponse(BaseModel):
-    id: str
-    username: str
-    email: str
+    token:str
 
 # Authentication Router
 auth_router = APIRouter()
@@ -42,27 +41,22 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Verify a password against its hash"""
     return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
 
-def create_token(user_id: str, authority: str):
-    """Generate JWT token for authentication"""
-    payload = {
-        "sub": user_id,
-        "authority": authority,
-        "exp": datetime.utcnow() + timedelta(hours=1)
-    }
-    return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
-
+# def create_token(user_id: str, authority: str):
+#     """Generate JWT token for authentication"""
+#     payload = {
+#         "sub": user_id,
+#         "authority":authority,
+#         "exp": datetime.utcnow() + timedelta(hours=1)
+#     }
+#     token= pyjwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM,headers=None, json_encoder=None)
+#     return token
 # Signup Route
 @auth_router.post('/signup', response_model=UserResponse)
 def create_user(user: UserSignup):
-    existing_user = users_collection.find_one({
-        '$or': [
-            {'email': user.email},
-            {'username': user.username}
-        ]
-    })
+    existing_user = users_collection.find_one({'email': user.email})
     
     if existing_user:
-        raise HTTPException(status_code=400, detail="Email or username already registered")
+        raise HTTPException(status_code=400, detail="Email already registered")
     
     hashed_password = hash_password(user.password)
     user_document = {
@@ -74,11 +68,7 @@ def create_user(user: UserSignup):
     
     result = users_collection.insert_one(user_document)
     
-    return {
-        'id': str(result.inserted_id),
-        'username': user.username,
-        'email': user.email
-    }
+    return {"token":create_access_token({"id":result.inserted_id})}
 
 # Login Route
 @auth_router.post('/login')
@@ -106,7 +96,7 @@ def get_user_profile(user_id: str, request: Request):
     token = token.split(" ")[1]
     
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = pyjwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         
         if payload["sub"] != user_id:
             raise HTTPException(status_code=403, detail="Access denied")

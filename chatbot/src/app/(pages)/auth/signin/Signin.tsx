@@ -1,11 +1,40 @@
-'use client'
+"use client"
 import Link from 'next/link'
-import React from 'react'
+import { useCallback } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { useMutation } from '@tanstack/react-query'
+import { handleSignin } from '@/lib/functions/auth'
+import { userSigninSchema, UserSigninSchemaType } from '@/schema/auth'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { toast } from 'sonner'
 
 function Signin() {
+  const { 
+    register, 
+    handleSubmit,
+    formState: { errors }
+  } = useForm<UserSigninSchemaType>({
+    resolver: zodResolver(userSigninSchema)
+  })
+
+  const {mutate, isPending} = useMutation({
+    mutationFn: handleSignin,
+    onSuccess: () => {
+      toast.success("Signed in Successfully", {id: "user-signin"});
+    },
+    onError: () => {
+      toast.error("Failed to Signin", {id: "user-signin"})
+    }
+  })
+
+  const onSubmit = useCallback((values: UserSigninSchemaType) => {
+    toast.loading("Checking Credentials...", {id: "user-signin"});
+    mutate(values)
+  }, [mutate])
+
   return (
     <div className="h-full w-full flex items-center justify-center p-4">
       <Card className="w-full h-full overflow-y-auto">
@@ -19,25 +48,31 @@ function Signin() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="space-y-2">
               <Input
                 type="email"
                 placeholder="Email"
-                required
-                pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                {...register("email")}
+                className={errors.email ? 'border-red-500' : ''}
               />
+              {errors.email && (
+                <p className="text-sm text-red-500">{errors.email.message}</p>
+              )}
             </div>
             <div className="space-y-2">
               <Input
                 type="password"
                 placeholder="Password"
-                required
-                minLength={8}
-                pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$"
+                {...register("password")}
+                className={errors.password ? 'border-red-500' : ''}
               />
-            </div>            <Button type="submit" className="w-full">
-              Sign in
+              {errors.password && (
+                <p className="text-sm text-red-500">{errors.password.message}</p>
+              )}
+            </div>
+            <Button type="submit" className="w-full" disabled={isPending}>
+              {isPending ? 'Signing in...' : 'Sign in'}
             </Button>
           </form>
         </CardContent>

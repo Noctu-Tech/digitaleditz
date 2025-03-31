@@ -14,6 +14,7 @@ def getone():
 def getmany():
     return 0
 
-@router.post('/update')
+@router.put('/update')
 def updatestatus():
     return 0
+

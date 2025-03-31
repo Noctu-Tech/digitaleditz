@@ -1,8 +1,5 @@
-"use client";
-
 import { CalendarIcon, DockIcon, HomeIcon, MailIcon, PencilIcon } from "lucide-react";
 import Link from "next/link";
-import React from "react";
 
 import { ModeToggle } from "@/components/mode-toggle";
 import { buttonVariants } from "@/components/ui/button";

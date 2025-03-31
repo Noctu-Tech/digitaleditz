@@ -1,32 +1,90 @@
 'use client'
-import React, { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Send, Paperclip, Smile, User, Search, Mail, Phone, MessageCircle } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 
 const Page = () => {
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const [message, setMessage] = useState('');
   const [selectedContact, setSelectedContact] = useState({ id: 1, name: 'John Doe', status: 'online', unread: 3, lastMessage: 'Hey, how are you?', lastActive: '2m ago' });
   const [searchQuery, setSearchQuery] = useState('');
 
   // Mock contacts data
-  const contacts = [
+  const [contacts, setContacts] = useState([
     { id: 1, name: 'John Doe', status: 'online', unread: 3, lastMessage: 'Hey, how are you?', lastActive: '2m ago' },
     { id: 2, name: 'Alice Smith', status: 'offline', unread: 0, lastMessage: 'Thanks for your help!', lastActive: '1h ago' },
     { id: 3, name: 'Bob Johnson', status: 'online', unread: 1, lastMessage: 'Can we meet tomorrow?', lastActive: '5m ago' },
     { id: 4, name: 'Emma Wilson', status: 'busy', unread: 0, lastMessage: 'The project is ready', lastActive: '30m ago' },
-  ];
+  ]);
 
-  // Mock chat data
-  const messages = [
-    { id: 1, sender: 'John Doe', content: 'Hey, how are you?', timestamp: '10:30 AM', isSender: false },
-    { id: 2, sender: 'Me', content: 'I\'m good, thanks! How about you?', timestamp: '10:31 AM', isSender: true },
-    { id: 3, sender: 'John Doe', content: 'Doing great! Just working on the new project.', timestamp: '10:32 AM', isSender: false },
-    { id: 4, sender: 'Me', content: 'That sounds interesting! Need any help?', timestamp: '10:33 AM', isSender: true },
-  ];
+  interface ChatMessage {
+    id: number;
+    sender: string;
+    content: string;
+    timestamp: string;
+    isSender: boolean;
+  }
 
-  const handleSubmit = (e:any) => {
+  const [chatMessages, setChatMessages] = useState<Record<string, ChatMessage[]>>({
+    '1': [
+      { id: 1, sender: 'John Doe', content: 'Hey, how are you?', timestamp: '10:30 AM', isSender: false },
+      { id: 2, sender: 'Me', content: 'I\'m good, thanks! How about you?', timestamp: '10:31 AM', isSender: true },
+      { id: 3, sender: 'John Doe', content: 'Great! Just finished working on the new design.', timestamp: '10:32 AM', isSender: false },
+    ],
+    2: [
+      { id: 1, sender: 'Alice Smith', content: 'Thanks for your help!', timestamp: '9:30 AM', isSender: false },
+    ],
+    3: [
+      { id: 1, sender: 'Bob Johnson', content: 'Can we meet tomorrow?', timestamp: '11:30 AM', isSender: false },
+    ],
+    4: [
+      { id: 1, sender: 'Emma Wilson', content: 'The project is ready', timestamp: '12:30 PM', isSender: false },
+    ],
+  });
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [chatMessages]);
+
+  const handleContactSelect = (contact: any) => {
+    setSelectedContact(contact);
+    // Reset unread count when selecting contact
+    const updatedContacts = contacts.map(c => 
+      c.id === contact.id ? { ...c, unread: 0 } : c
+    );
+    setContacts(updatedContacts);
+  };
+
+  const handleSubmit = (e: any) => {
     e.preventDefault();
     if (message.trim()) {
+      const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const newMessage: ChatMessage = {
+        id: chatMessages[selectedContact.id].length + 1,
+        sender: 'Me',
+        content: message.trim(),
+        timestamp: currentTime,
+        isSender: true,
+      };
+      
+      // Update chat messages
+      setChatMessages(prev => ({
+        ...prev,
+        [selectedContact.id]: [...prev[selectedContact.id], newMessage]
+      }));
+
+      // Update contact's last message and time
+      const updatedContacts = contacts.map(c => 
+        c.id === selectedContact.id 
+          ? { ...c, lastMessage: message.trim(), lastActive: 'just now' }
+          : c
+      );
+      setContacts(updatedContacts);
+      
       setMessage('');
     }
   };
@@ -54,33 +112,39 @@ const Page = () => {
           {contacts.map((contact) => (
             <div
               key={contact.id}
-              onClick={() => setSelectedContact(contact)}
-              className={`p-4 border-b hover:bg-opacity-50 cursor-pointer ${
-                selectedContact?.id === contact.id ? 'bg-opacity-10' : ''
+              onClick={() => handleContactSelect(contact)}
+              className={`p-4 border-b hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors ${
+                selectedContact?.id === contact.id 
+                  ? 'bg-gray-100 dark:bg-gray-800 border-l-4 border-l-blue-500' 
+                  : ''
               }`}
             >
               <div className="flex items-center gap-3">
                 <div className="relative">
-                  <div className="h-12 w-12 rounded-full flex items-center justify-center">
-                    <User size={24} />
+                  <div className="h-12 w-12 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                    <User size={24} className="text-gray-500" />
                   </div>
-                  <div className={`absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 ${
+                  <div className={`absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white dark:border-gray-900 ${
                     contact.status === 'online' ? 'bg-green-500' :
-                    contact.status === 'busy' ? 'bg-red-500' : ''
+                    contact.status === 'busy' ? 'bg-red-500' : 'bg-gray-400'
                   }`} />
                 </div>
                 <div className="flex-1">
                   <div className="flex justify-between items-start">
-                    <h3 className="font-medium">{contact.name}</h3>
-                    <span className="text-xs">{contact.lastActive}</span>
+                    <h3 className={`font-medium ${contact.unread > 0 ? 'text-blue-600 dark:text-blue-400' : ''}`}>
+                      {contact.name}
+                    </h3>
+                    <span className="text-xs text-gray-500">{contact.lastActive}</span>
                   </div>
-                  <p className="text-sm truncate">{contact.lastMessage}</p>
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm text-gray-600 dark:text-gray-300 truncate">{contact.lastMessage}</p>
+                    {contact.unread > 0 && (
+                      <div className="ml-2 bg-blue-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                        {contact.unread}
+                      </div>
+                    )}
+                  </div>
                 </div>
-                {contact.unread > 0 && (
-                  <div className="text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                    {contact.unread}
-                  </div>
-                )}
               </div>
             </div>
           ))}
@@ -106,20 +170,31 @@ const Page = () => {
 
             {/* Messages Area */}
             <div className="flex-1 overflow-y-auto p-6 space-y-4">
-              {messages.map((msg) => (
+              {chatMessages[selectedContact.id]?.map((msg) => (
                 <div
                   key={msg.id}
                   className={`flex ${msg.isSender ? 'justify-end' : 'justify-start'}`}
                 >
-                  <div className={`max-w-[70%] rounded-2xl px-4 py-2 shadow-sm`}>
+                  <div
+                    className={`max-w-[70%] rounded-lg px-4 py-2 ${
+                      msg.isSender
+                        ? 'bg-blue-500 text-white rounded-br-none'
+                        : 'bg-gray-100 dark:bg-gray-800 rounded-bl-none'
+                    }`}
+                  >
                     {!msg.isSender && (
                       <p className="text-sm font-medium mb-1">{msg.sender}</p>
                     )}
-                    <p className="text-sm">{msg.content}</p>
-                    <p className="text-xs mt-1">{msg.timestamp}</p>
+                    <p className="text-sm break-words">{msg.content}</p>
+                    <p className={`text-xs mt-1 ${
+                      msg.isSender ? 'text-blue-100' : 'text-gray-500'
+                    }`}>
+                      {msg.timestamp}
+                    </p>
                   </div>
                 </div>
               ))}
+              <div ref={messagesEndRef} /> {/* Add this for auto-scroll */}
             </div>
 
             {/* Message Input */}

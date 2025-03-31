@@ -1,8 +1,7 @@
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import React from 'react'
 
-interface Ticket {
+export interface Ticket {
   id: string;
   subject: string;
   description: string;

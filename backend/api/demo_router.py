@@ -1,16 +1,11 @@
+from backend.database.mongo import get_database
 from fastapi import APIRouter, HTTPException
 from pymongo import MongoClient
 from pydantic import BaseModel
 
 # Initialize router
 router = APIRouter()
-
-# MongoDB connection
-client = MongoClient('mongodb://localhost:27017/')
-db = client['your_database_name']
-collection = db['your_collection_name']
-
-# Data model
+collection=get_database("demo_user")
 class Item(BaseModel):
     name: str
     description: str

@@ -1,4 +1,4 @@
-import React from "react"
+
 import { ModeToggle } from "@/components/mode-toggle"
 import Footer from "@/app/ui/components/Footer"
 

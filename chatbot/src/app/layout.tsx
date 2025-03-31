@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./ui/styles/globals.css";
 import { ReactScan } from "./ui/components/ReactScan";
-import { ThemeProvider } from "next-themes";
-
+import { Toaster } from "@/components/ui/sonner";
+import ProviderWrapper from "@/components/provider-wrapper";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -26,18 +26,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <ReactScan/>
+      {/* <ReactScan/> */}
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased w-full h-full`}
-      > <ThemeProvider
-      attribute="class"
-      defaultTheme="system"
-      enableSystem
-      disableTransitionOnChange
-    >
-      {children}
-    </ThemeProvider>
+      > 
+      <ProviderWrapper>
+        
+        {children}
+      </ProviderWrapper>
       </body>
+      <Toaster richColors/>
     </html>
   );
 }
