@@ -10,6 +10,7 @@ import { userSigninSchema, UserSigninSchemaType } from '@/schema/auth'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
 
 function Signin() {
   const { 
@@ -19,11 +20,14 @@ function Signin() {
   } = useForm<UserSigninSchemaType>({
     resolver: zodResolver(userSigninSchema)
   })
-
+  const router=useRouter()
   const {mutate, isPending} = useMutation({
+    mutationKey: ["user-signin"],
     mutationFn: handleSignin,
     onSuccess: () => {
       toast.success("Signed in Successfully", {id: "user-signin"});
+      
+      router.push("/onboarding");
     },
     onError: () => {
       toast.error("Failed to Signin", {id: "user-signin"})
@@ -31,8 +35,9 @@ function Signin() {
   })
 
   const onSubmit = useCallback((values: UserSigninSchemaType) => {
-    toast.loading("Checking Credentials...", {id: "user-signin"});
-    mutate(values)
+    toast.loading("Checking Credentials...", { id: "user-signin" });
+
+    mutate(values);
   }, [mutate])
 
   return (

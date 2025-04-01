@@ -12,7 +12,9 @@ class Settings(BaseSettings):
     twillio_account_token:str
     algorithm:str
     access_token_expire_minutes: int = 50
+    refresh_token_expire_hours:int=24
     secret_key:str
+    refresh_secret_key:str
     aws_access_key_id: str
     aws_secret_access_key: str
     aws_region: str

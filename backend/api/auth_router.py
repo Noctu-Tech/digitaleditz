@@ -1,5 +1,5 @@
-from services.auth.auth_utils import create_access_token
-from fastapi import APIRouter, HTTPException, Request
+from services.auth.auth_utils import create_access_token, create_refresh_token, set_auth_cookie
+from fastapi import APIRouter, HTTPException, Request, Response
 from pydantic import BaseModel, EmailStr, constr
 from datetime import datetime, timedelta
 import sys
@@ -10,13 +10,7 @@ from bson import ObjectId
 from database.mongo import get_database
 from config import Settings
 
-router=APIRouter()
 users_collection=get_database("client_collection")
-# Secret key for JWT
-SECRET_KEY = Settings().secret_key
-ALGORITHM = Settings().algorithm
-
-# Pydantic Models
 class UserSignup(BaseModel):
     username: constr(min_length=3, max_length=50)
     email: EmailStr
@@ -26,10 +20,7 @@ class UserLogin(BaseModel):
     email: EmailStr
     password: str
 
-class UserResponse(BaseModel):
-    token:str
 
-# Authentication Router
 auth_router = APIRouter()
 
 # Helper Functions
@@ -41,18 +32,8 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Verify a password against its hash"""
     return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
 
-# def create_token(user_id: str, authority: str):
-#     """Generate JWT token for authentication"""
-#     payload = {
-#         "sub": user_id,
-#         "authority":authority,
-#         "exp": datetime.utcnow() + timedelta(hours=1)
-#     }
-#     token= pyjwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM,headers=None, json_encoder=None)
-#     return token
-# Signup Route
-@auth_router.post('/signup', response_model=UserResponse)
-def create_user(user: UserSignup):
+@auth_router.post('/signup')
+def create_user(user: UserSignup,res:Response):
     existing_user = users_collection.find_one({'email': user.email})
     
     if existing_user:
@@ -67,52 +48,32 @@ def create_user(user: UserSignup):
     }
     
     result = users_collection.insert_one(user_document)
+    access_token=create_access_token({"userId":str(result.inserted_id)})
+    refresh_token=create_refresh_token({"userId":str(result.inserted_id) })
+    set_auth_cookie(res,access_token,"access-token")
+    set_auth_cookie(res,refresh_token,"refresh-token")
     
-    return {"token":create_access_token({"id":result.inserted_id})}
+    return {
+        "message": "Account Creation successful",
+    }
 
 # Login Route
 @auth_router.post('/login')
-def login(user: UserLogin):
+def login(user: UserLogin,res:Response):
     user_data = users_collection.find_one({'email': user.email})
     
     if not user_data or not verify_password(user.password, user_data['password']):
         raise HTTPException(status_code=401, detail="Invalid credentials")
+    if not (user_data.authority=="admin"):
+        access_token=create_access_token({"userId":str(user_data["_id"])})
+        refresh_token=create_refresh_token({"userId":str(user_data["_id"]) })
+    else :
+        access_token=create_access_token({"userId":str(user_data["_id"]),"authority":user_data.authority})
+        refresh_token=create_refresh_token({"userId":str(user_data["_id"]),"authority":user_data.authority })
     
-    token = create_token(str(user_data['_id']), user_data.get("authority", "user"))
+    set_auth_cookie(res,access_token,"access-token")
+    set_auth_cookie(res,refresh_token,"refresh-token")
     
     return {
         "message": "Login successful",
-        "token": token
     }
-
-# Profile Route
-@auth_router.get('/profile/{user_id}')
-def get_user_profile(user_id: str, request: Request):
-    token = request.headers.get("Authorization")
-    
-    if not token or not token.startswith("Bearer "):
-        raise HTTPException(status_code=401, detail="Missing or invalid token")
-    
-    token = token.split(" ")[1]
-    
-    try:
-        payload = pyjwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        
-        if payload["sub"] != user_id:
-            raise HTTPException(status_code=403, detail="Access denied")
-        
-        object_id = ObjectId(user_id)
-        user = users_collection.find_one({'_id': object_id})
-        
-        if not user:
-            raise HTTPException(status_code=404, detail="User not found")
-        
-        return {
-            'id': str(user['_id']),
-            'username': user['username'],
-            'email': user['email']
-        }
-    except jwt.ExpiredSignatureError:
-        raise HTTPException(status_code=401, detail="Token has expired")
-    except jwt.DecodeError:
-        raise HTTPException(status_code=401, detail="Invalid token")

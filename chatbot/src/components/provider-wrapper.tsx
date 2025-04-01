@@ -13,7 +13,7 @@ export default function ProviderWrapper({ children }:{ children: React.ReactNode
 
   if (!mounted) {
     return <QueryClientProvider client={queryclient}>{children}
-    <ReactQueryDevtools/>
+    <ReactQueryDevtools initialIsOpen={false}/>
     </QueryClientProvider>;
   }
 
@@ -27,7 +27,7 @@ export default function ProviderWrapper({ children }:{ children: React.ReactNode
     >
       {children}
     </ThemeProvider>
-    <ReactQueryDevtools/>
+    <ReactQueryDevtools initialIsOpen={false}/>
     </QueryClientProvider>
   );
 }

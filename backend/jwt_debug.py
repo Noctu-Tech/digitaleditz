@@ -1,20 +1,8 @@
-# jwt_debug.py
-import sys
-print("Python paths:")
-for path in sys.path:
-    print(f"  {path}")
+import asyncio
+from services.auth.auth_utils import verify_token
+from jose import jwt
+def main():
+	result = verify_token("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZWExZjEyMDQ5MGI2ZWIwNDhlZmI1NyIsImV4cCI6MTc0MzQ1ODc3OH0.H27yq5GkJL2_aAUWvwsgiAmcfBIAc9ZpjaPzK72zgzE")
+	print(result)
 
-try:
-    import jwt
-    print("\nJWT module location:", getattr(jwt, "__file__", "unknown"))
-    print("JWT module contents:", dir(jwt))
-except Exception as e:
-    print("\nError importing JWT:", e)
-
-# Try alternate import
-try:
-    import PyJWT
-    print("\nPyJWT module location:", getattr(PyJWT, "__file__", "unknown"))
-    print("PyJWT module contents:", dir(PyJWT))
-except Exception as e:
-    print("\nError importing PyJWT:", e)
+main()

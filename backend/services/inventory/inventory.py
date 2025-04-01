@@ -1,5 +1,6 @@
 from typing import List, Optional
 from fastapi import HTTPException, Depends
+from services.auth.auth_utils import verify_token
 from models.inventory.inventory import InventoryModel
 from database.mongo import get_database
 from bson import ObjectId
@@ -16,15 +17,13 @@ class InventoryService:
         result = await self.collection.insert_one(inventory_dict)
         return {"id": str(result.inserted_id), **inventory_dict}
 
-    async def get_inventory(self, inventory_id: str, user_id: str = Depends(verify_token)) -> Optional[dict]:
-        inventory = await self.collection.find_one({"_id": ObjectId(inventory_id)})
+    async def get_all_inventory(self,skip: int = 0, limit: int = 10,):
+        inventory = await self.collection.find().skip
         if not inventory:
             raise HTTPException(status_code=404, detail="Inventory not found")
-        if inventory.get('user_id') != user_id:
-            raise HTTPException(status_code=403, detail="Not authorized to access this inventory")
         return {**inventory, "id": str(inventory["_id"])}
 
-    async def get_all_inventories(self, skip: int = 0, limit: int = 10, user_id: str = Depends(verify_token)) -> List[dict]:
+    async def get_inventories(self, skip: int = 0, limit: int = 10, user_id: str = Depends(verify_token)) -> List[dict]:
         cursor = self.collection.find({"user_id": user_id}).skip(skip).limit(limit)
         inventories = await cursor.to_list(length=limit)
         return [{**inv, "id": str(inv["_id"])} for inv in inventories]

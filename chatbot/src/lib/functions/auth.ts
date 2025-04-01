@@ -12,10 +12,11 @@ if(!success){
 const result=await handleSigninApi(data);
 console.log(result);
 if(!result){
+    console.log("@inside")
     throw new Error("Failed to Signin")
 }
 localStorage.setItem("token",result.token);
-redirect(`/dashboard`)
+
 }
 
 export const handleSignup = async (form: UserSignupSchemaType) => {

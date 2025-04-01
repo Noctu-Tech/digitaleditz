@@ -11,7 +11,7 @@ import { toast } from 'sonner'
 import { handleOnboarding } from '@/lib/functions/onboarding'
 import { OnboardingFormData, onboardingSchema } from '@/schema/onboarding'
 import { Form } from '@/components/ui/form'
-import RenderStepContent from './_components/RenderStep'
+import RenderStepContent from './_components/RenderStepContent'
 
 function Onboarding() {
   const [activeStep, setActiveStep] = useState(0)
