@@ -14,13 +14,15 @@ import TicketList from './TicketList';
 import Faqs from './Faqs';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { GetTickets } from '@/lib/functions/username/help';
+import CreateFAQ from './CreateFAQ';
+import { cn } from '@/lib/utils';
 
 
 
 export default function HelpPage() {
   const [showTicketForm, setShowTicketForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const tickets=  [{}];
+  const tickets=  [];
 
   return (
     <div className="min-h-screen p-8 max-w-4xl mx-auto">
@@ -39,8 +41,11 @@ export default function HelpPage() {
 
       {/* FAQs Section */}
       <section className="mb-12">
-        <h2 className="text-2xl font-semibold mb-4">Frequently Asked Questions</h2>
-       <Faqs search={searchQuery}/>
+        <div className={cn('w-full flex items-center justify-between mb-6')}>
+          <h2 className="text-2xl font-semibold">Frequently Asked Questions</h2> 
+          <CreateFAQ/>
+        </div>
+        <Faqs search={searchQuery}/>
       </section>
 
       {/* Support Tickets Section */}
@@ -59,12 +64,16 @@ export default function HelpPage() {
 
         {/* Tickets List */}
         <div className="space-y-4">
-          {tickets.map((ticket) => (
+          {tickets.length === 0 && (
+            <div className="flex flex-col items-center justify-center py-8 text-gray-500">
+              <Ticket className="h-12 w-12 mb-4 opacity-50" />
+              <p className="text-lg font-medium">No Support Tickets</p>
+              <p className="text-sm">Create a new ticket to get help from our support team</p>
+            </div>
+          )}
+          {tickets.length!==0 && tickets.map((ticket) => (
             <TicketList ticket={ticket} key={ticket.id} />
           ))}
-          {tickets.length === 0 && (
-            <p className="text-gray-500 text-center py-4">No tickets yet</p>
-          )}
         </div>
       </section>
     </div>

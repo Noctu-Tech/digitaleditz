@@ -25,14 +25,31 @@ const faqs: FAQ[] = [
     faq.answer.toLowerCase().includes(search.toLowerCase()
   )
   );
-  return ( <Accordion type="single" collapsible>
-    {filteredFaqs.map((faq, index) => (
-      <AccordionItem key={index} value={`item-${index}`}>
-        <AccordionTrigger>{faq.question}</AccordionTrigger>
-        <AccordionContent>{faq.answer}</AccordionContent>
-      </AccordionItem>
-    ))}
-  </Accordion>
+  return (
+    <Accordion type="single" collapsible className="w-full max-w-3xl mx-auto space-y-4">
+      {filteredFaqs.map((faq, index) => (
+        <AccordionItem 
+          key={index} 
+          value={`item-${index}`}
+          className="border rounded-lg shadow-sm"
+        >
+          <AccordionTrigger className="flex justify-between w-full px-6 py-4 text-left">
+            <span className="text-lg font-medium">{faq.question}</span>
+            <svg 
+              className="w-5 h-5 transition-transform duration-200 transform group-data-[state=open]:rotate-180" 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </AccordionTrigger>
+          <AccordionContent className="px-6 py-4">
+            {faq.answer}
+          </AccordionContent>
+        </AccordionItem>
+      ))}
+    </Accordion>
   )
 }
 

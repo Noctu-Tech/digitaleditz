@@ -5,7 +5,7 @@ router=APIRouter()
 async def getworkflow():
     return "something here"
 
-@router.post("/{userid}/create")
+@router.post("/create")
 async def saveworkflow():
     return "something here"
 

@@ -8,7 +8,7 @@ from bson import ObjectId
 
 class InventoryService:
     def __init__(self):
-        self.db = get_database()
+        self.db = get_database("inventory_collection")
         self.collection = self.db.inventory
 
     async def create_inventory(self, inventory: InventoryModel, user_id: str = Depends(verify_token)) -> dict:

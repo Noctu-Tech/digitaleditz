@@ -1,9 +1,10 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 router = APIRouter()
 
 
 @router.post('/create-new')
-def createnew():
+def createnew(req:Request):
+
     return 0
 
 @router.get("/view")

@@ -7,8 +7,16 @@ export interface AuthData {
 export interface SignupData extends AuthData {
     username: string;
 }
+export type UserRole = 'admin' | 'manager' | 'user';
+
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  roles: UserRole[];
+}
 
 export interface AuthResponse {
-    token: string;
-    
+  message: string;
+  user: User;
 }

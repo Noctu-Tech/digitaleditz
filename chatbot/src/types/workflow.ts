@@ -1,3 +1,6 @@
+import { LucideProps } from "lucide-react";
+import { TaskParam, TaskType } from "./task";
+
 export enum WorkflowStatus {
     DRAFT="DRAFT",
     ACTIVE="ACTIVE",
@@ -14,4 +17,12 @@ export interface UserWorkFlow {
     description: string;
     status: string;
     lastEdited: string;
+}
+export type WorkflowTasks={
+    label:string;
+    icon:React.FC<LucideProps>;
+    type:TaskType;
+    isEntryPoint?:boolean;
+    inputs:TaskParam[];
+    outputs:TaskParam[];
 }

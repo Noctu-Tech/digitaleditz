@@ -13,7 +13,7 @@ async def Onboard(data: UserOnboardingSchema, id: str):
         # Create document
         profile_doc = {
             "user_id": id,
-            **data.dict()
+            **data
         }
         
         # Insert into database

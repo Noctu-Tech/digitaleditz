@@ -1,31 +1,31 @@
 import { OnboardResponse } from "@/types/onboard";
-import { ENV } from "../functions/config";
 import { OnboardingFormData } from "@/schema/onboarding";
-
-const url = ENV.BACKEND_URL + "/user"
-
+import apiClient from "./apiclient";
 
 export const handleOnboardApi = async (data: OnboardingFormData): Promise<OnboardResponse> => {
     try {
-        const token=localStorage.getItem("token");
-        const response = await fetch(`${url}/create`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization':`Bearer ${token}`
-            },
-            body: JSON.stringify(data)
-        });
-
-        if (!response.ok) {
-            throw new Error('Login failed');
-        }
-        const result = await response.json();
+        console.log("data",data)
+        const response = await apiClient.post('/user/create',data);
+        
+        // Log the successful response
+        console.log("User creation response:", response.data);
         
         return {
-            token: result.token,
+            "message": "successful" // Fixed typo from "mesage" to "message"
         };
-    } catch (error) {
-        throw error instanceof Error ? error : new Error('An error occurred during signin');
+    } catch (error: any) {
+        // More detailed error handling
+        console.error("User creation failed:", error.response?.data || error.message);
+        
+        // You can customize error messages based on status codes
+        if (error.response?.status === 409) {
+            throw new Error('User already exists');
+        } else if (error.response?.status === 400) {
+            throw new Error(error.response.data.detail || 'Invalid data provided');
+        }
+        
+        throw error.response?.data?.detail || 
+              error.message || 
+              'An error occurred during user creation';
     }
 }

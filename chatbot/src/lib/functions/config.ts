@@ -6,6 +6,7 @@ config();
 // Export environment variables with types
 export const ENV = {
     BACKEND_URL: process.env.BACKEND_URL || 'http://localhost:8000',
+    ISDEV:Boolean(process.env.IS_DEV)
 };
 
 // Type definition for the ENV object

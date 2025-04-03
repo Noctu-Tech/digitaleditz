@@ -1,6 +1,6 @@
 "use client"
 import { Button } from '@/components/ui/button'
-import { UpdateWorkflow } from '@/lib/functions/username/workflow';
+import { UpdateWorkflow } from '@/lib/functions/workflow/updateWorkflow';
 import { useMutation } from '@tanstack/react-query';
 import { useReactFlow } from '@xyflow/react';
 import { CheckIcon } from 'lucide-react'

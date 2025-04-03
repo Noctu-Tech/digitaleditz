@@ -26,12 +26,12 @@ async def getall():
 
 @router.get('/{productid}')
 async def getone():
-    result=inventory.get_inventory
+    result=inventory.get_inventory()
     return "got one item"
 
 @router.delete('/{productid}')
 async def deleteone():
-    result=inventory.create_inventory()
+    result=inventory.delete_inventory()
     return "deleted one"
 
 @router.delete('/')

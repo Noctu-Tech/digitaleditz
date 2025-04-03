@@ -11,12 +11,9 @@ export default function AccountPage() {
   return (
     <div className="h-screen overflow-auto py-8 px-4">
       <div className="max-w-6xl mx-auto">
-        <div className="mb-6">
-          <h1 className="text-2xl md:text-3xl font-bold mb-2">Account Settings</h1>
-          <p className="text-sm">Manage your account, subscription, and payment methods.</p>
-        </div>
+     
         
-        <div className="flex border-b mb-6">
+        <div className="flex border-b mb-6 pt-8">
           <button
             className={`px-4 py-2 font-medium text-sm ${activeTab === 'account' ? 'border-b-2' : ''}`}
             onClick={() => setActiveTab('account')}

@@ -3,9 +3,9 @@ from typing import List, Optional
 from enum import Enum
 
 class UserRole(str, Enum):
-    CHIEF = "Chief"
-    CLIENT = "Client"
-    CUSTOMER = "Customer"
+    ADMIN = "admin"
+    CLIENT = "client"
+    CUSTOMER = "customer"
 
 class Subscription(str, Enum):
     PREMIUM = "Premium"
@@ -25,22 +25,20 @@ class BusinessType(str, Enum):
     COMMERCIAL = "commercial"
     BOTH = "both"
 
-class Services(str, Enum):
-    RENTING = "RENTING"
-
 class OnboardSchema(BaseModel):
+    address: str
     businessName: str 
     businessType: BusinessType
-    description: str
-    address: str
-    phone: str
     city: str 
-    state: str
-    zip: str 
-    services: Services
-    whatsAppPhone: Optional[str]
+    description: str
     email: EmailStr 
+    phone: str
+    services: List[str]
+    state: str
+    whatsAppPhone: Optional[str]
+    zip: str 
 class UserOnboardingSchema(OnboardSchema):
+    u_id:str
     u_pfp: str
     u_subscription: Subscription
     u_verified: Verified

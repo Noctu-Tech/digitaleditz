@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Send, Paperclip, Smile, User, Search, Mail, Phone, MessageCircle } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import ProtectedRoute from '@/context/ProtectedRoute';
 
 const Page = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -90,6 +91,7 @@ const Page = () => {
   };
 
   return (
+    <ProtectedRoute>
     <div className="h-screen flex">
       {/* Contacts Sidebar */}
       <div className="w-80 border-r flex flex-col">
@@ -241,6 +243,7 @@ const Page = () => {
         )}
       </div>
     </div>
+    </ProtectedRoute>
   );
 };
 

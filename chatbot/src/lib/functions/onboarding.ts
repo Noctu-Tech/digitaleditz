@@ -12,7 +12,7 @@ const result=await handleOnboardApi(data);
 console.log(result);
 if(!result){
     console.log("@inside")
-    throw new Error("Failed to Signin")
+    throw new Error("Failed to OnBoard")
 }
 
 }

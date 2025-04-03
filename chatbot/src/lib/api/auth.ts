@@ -8,6 +8,7 @@ export const handleSigninApi = async (data: AuthData): Promise<AuthResponse> => 
     try {
         const response = await fetch(`${url}/login`, {
             method: 'POST',
+            credentials:"include",
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -17,11 +18,9 @@ export const handleSigninApi = async (data: AuthData): Promise<AuthResponse> => 
         if (!response.ok) {
             throw new Error('Login failed');
         }
-        const result = await response.json();
         
-        return {
-            token: result.token,
-        };
+    return await response.json();
+  
     } catch (error) {
         throw error instanceof Error ? error : new Error('An error occurred during signin');
     }
@@ -37,6 +36,7 @@ export const handleSignupApi = async (data: SignupData): Promise<AuthResponse> =
         
         const response = await fetch(`${url}/signup`, {
             method: 'POST',
+            credentials:"include",
             headers: {
                 'Content-Type': 'application/json',
             },

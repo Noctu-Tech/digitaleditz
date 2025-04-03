@@ -5,6 +5,7 @@ import SaveBtn from "./SaveBtn"
 import { ChevronLeftIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import ActivateBtn from "./ActivateBtn";
 interface Props{
   title:string;
   subtitle?:string;
@@ -22,6 +23,7 @@ function TopBar({title,subtitle,workflowId}:Props) {
       {subtitle && (<p className="text-xs text-muted-foreground truncate text-ellipsis">{subtitle}</p>)}
       </div>
       <div className="flex gap-1 justify-end flex-1 ">
+        <ActivateBtn workflowId={workflowId}/>
         <SaveBtn workflowId={workflowId}/>
       </div>
     </div>

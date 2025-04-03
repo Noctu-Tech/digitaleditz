@@ -12,6 +12,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from 'react';
+import ProtectedRoute from '@/context/ProtectedRoute';
 
 // Add type definition for analytics data
 type AnalyticItem = {
@@ -241,9 +242,9 @@ const analyticsData: AnalyticItem[] = [
 
 // Expanded mock data
 const usersList = [
-  { name: 'John Doe', email: 'john@example.com', status: 'Active', lastActive: '2h ago' },
-  { name: 'Jane Smith', email: 'jane@example.com', status: 'Offline', lastActive: '1d ago' },
-  { name: 'Mike Johnson', email: 'mike@example.com', status: 'Active', lastActive: '5m ago' },
+  { name: 'John Doe', email: 'john@example.com', role:'admin',status: 'Active', lastActive: '2h ago' },
+  { name: 'Jane Smith', email: 'jane@example.com',role:'client', status: 'Offline', lastActive: '1d ago' },
+  { name: 'Mike Johnson', email: 'mike@example.com',role:'admin', status: 'Active', lastActive: '5m ago' },
   // Add more mock users if needed
 ];
 
@@ -316,6 +317,7 @@ const Page = () => {
                     <TableCell>User</TableCell>
                     <TableCell>Date</TableCell>
                     <TableCell>Status</TableCell>
+                    <TableCell>Role</TableCell>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -326,6 +328,8 @@ const Page = () => {
                       <TableCell>{tx.amount}</TableCell>
                       <TableCell>{tx.user}</TableCell>
                       <TableCell>{tx.date}</TableCell>
+                      <TableCell>{tx.date}</TableCell>
+
                       <TableCell>
                         <span className={`px-2 py-1 rounded-full text-xs ${
                           tx.status === 'Completed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
@@ -377,6 +381,7 @@ const Page = () => {
   };
 
   return (
+    <ProtectedRoute>
     <div className="w-full min-h-screen">
       {/* Main Content */}
       <div className="">
@@ -611,6 +616,7 @@ const Page = () => {
         </div>
       </div>
     </div>
+    </ProtectedRoute>
   );
 };
 

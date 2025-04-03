@@ -1,4 +1,5 @@
 import { TaskParamType, TaskType } from "@/types/task";
+import { WorkflowTasks } from "@/types/workflow";
 import { LucideProps, MessageCircle } from "lucide-react";
 
 export const ActionMessageTask = {
@@ -20,4 +21,4 @@ export const ActionMessageTask = {
     ],
     icon: (props: LucideProps) => (<MessageCircle className="stroke-yellow-600" {...props} />),
     isEntryPoint: false,
-}
+}satisfies WorkflowTasks

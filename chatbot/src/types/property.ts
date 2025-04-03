@@ -1,7 +1,7 @@
 export interface PropertyProps {
-    id: number;
+    id: string;
     title: string;
-    image: string;
+    image: string | string[];
     length: number;
     width: number;
     front: number;
@@ -12,5 +12,4 @@ export interface PropertyProps {
     price: number;
     description: string;
     status: string;
-  }
-  
+}

@@ -22,7 +22,8 @@ class UserLogin(BaseModel):
 
 
 auth_router = APIRouter()
-
+minute1=Settings().access_token_expire_minutes
+minute2=Settings().refresh_token_expire_hours
 # Helper Functions
 def hash_password(password: str) -> str:
     """Hash a password using bcrypt"""
@@ -50,8 +51,8 @@ def create_user(user: UserSignup,res:Response):
     result = users_collection.insert_one(user_document)
     access_token=create_access_token({"userId":str(result.inserted_id)})
     refresh_token=create_refresh_token({"userId":str(result.inserted_id) })
-    set_auth_cookie(res,access_token,"access-token")
-    set_auth_cookie(res,refresh_token,"refresh-token")
+    set_auth_cookie(res,access_token,"access-token",minute1)
+    set_auth_cookie(res,refresh_token,"refresh-token",minute2)
     
     return {
         "message": "Account Creation successful",
@@ -61,18 +62,14 @@ def create_user(user: UserSignup,res:Response):
 @auth_router.post('/login')
 def login(user: UserLogin,res:Response):
     user_data = users_collection.find_one({'email': user.email})
-    
+    print(user_data)
     if not user_data or not verify_password(user.password, user_data['password']):
         raise HTTPException(status_code=401, detail="Invalid credentials")
-    if not (user_data.authority=="admin"):
-        access_token=create_access_token({"userId":str(user_data["_id"])})
-        refresh_token=create_refresh_token({"userId":str(user_data["_id"]) })
-    else :
-        access_token=create_access_token({"userId":str(user_data["_id"]),"authority":user_data.authority})
-        refresh_token=create_refresh_token({"userId":str(user_data["_id"]),"authority":user_data.authority })
+    access_token=create_access_token({"userId":str(user_data["_id"])})
+    refresh_token=create_refresh_token({"userId":str(user_data["_id"])})
     
-    set_auth_cookie(res,access_token,"access-token")
-    set_auth_cookie(res,refresh_token,"refresh-token")
+    set_auth_cookie(res,access_token,"access-token",minute1)
+    set_auth_cookie(res,refresh_token,"refresh-token",minute2)
     
     return {
         "message": "Login successful",

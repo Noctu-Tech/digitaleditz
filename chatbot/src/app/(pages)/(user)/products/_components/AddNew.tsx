@@ -21,7 +21,7 @@ interface FormData {
   description: string;
 }
 
-function AddNew() {
+function AddNew({triggerText}:{triggerText?:string}) {
   const [formData, setFormData] = useState<FormData>({
     title: '',
     status: '',
@@ -35,16 +35,26 @@ function AddNew() {
     description: ''
   });
   
-  const [selectedImage, setSelectedImage] = useState<File | null>(null)
-  const [previewUrl, setPreviewUrl] = useState<string>('')
+  const [selectedImages, setSelectedImages] = useState<File[]>([])
+  const [previewUrls, setPreviewUrls] = useState<string[]>([])
 
   const fileInputRef = useRef<HTMLInputElement>(null)
+
   const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (file) {
-      setSelectedImage(file)
-      setPreviewUrl(URL.createObjectURL(file))
+    const files = Array.from(event.target.files || [])
+    if (files.length) {
+      setSelectedImages(prev => [...prev, ...files])
+      const newPreviewUrls = files.map(file => URL.createObjectURL(file))
+      setPreviewUrls(prev => [...prev, ...newPreviewUrls])
     }
+  }
+
+  const removeImage = (index: number) => {
+    setSelectedImages(prev => prev.filter((_, i) => i !== index))
+    setPreviewUrls(prev => {
+      URL.revokeObjectURL(prev[index]) // Clean up the URL
+      return prev.filter((_, i) => i !== index)
+    })
   }
 
   const handleInputChange = (field: keyof FormData, value: string) => {
@@ -55,14 +65,14 @@ function AddNew() {
   };
 
   const handleSubmit = () => {
-    console.log(formData, selectedImage);
+    console.log(formData, selectedImages);
     // Handle your form submission here
   };
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button>Add Property</Button>
+        <Button>{triggerText|| 'Add New Property'}</Button>
       </DialogTrigger>
       <DialogContent className="p-4 max-h-[90vh] sm:max-w-[625px]">
         <DialogHeader>
@@ -181,7 +191,7 @@ function AddNew() {
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="image">Product Image</Label>
+              <Label htmlFor="image">Product Images</Label>
               <div className="flex flex-col items-center gap-4">
                 <input
                   type="file"
@@ -189,6 +199,7 @@ function AddNew() {
                   onChange={handleImageSelect}
                   className="hidden"
                   ref={fileInputRef}
+                  multiple
                 />
                 <Button 
                   type="button" 
@@ -196,18 +207,31 @@ function AddNew() {
                   onClick={() => fileInputRef.current?.click()}
                   className="w-11/12"
                 >
-                  Choose Image
+                  Choose Images
                 </Button>
-                {previewUrl && (
-                  <div className="relative w-full h-40">
-                    <Image
-                      src={previewUrl}
-                      alt="Preview"
-                      fill
-                      className="object-contain rounded-md"
-                    />
-                  </div>
-                )}
+                <div className="grid grid-cols-2 gap-4 w-full">
+                  {previewUrls.map((url, index) => (
+                    <div key={index} className="relative group">
+                      <div className="relative w-full h-40">
+                        <Image
+                          src={url}
+                          alt={`Preview ${index + 1}`}
+                          fill
+                          className="object-contain rounded-md"
+                        />
+                      </div>
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="icon"
+                        className="absolute top-2 right-2 w-8 h-8 opacity-0 group-hover:opacity-100 transition-opacity"
+                        onClick={() => removeImage(index)}
+                      >
+                        ✕
+                      </Button>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>

@@ -27,7 +27,7 @@ function Signin() {
     onSuccess: () => {
       toast.success("Signed in Successfully", {id: "user-signin"});
       
-      router.push("/onboarding");
+      router.push("/dashboard");
     },
     onError: () => {
       toast.error("Failed to Signin", {id: "user-signin"})

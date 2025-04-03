@@ -1,4 +1,5 @@
 import { TaskParamType, TaskType } from "@/types/task";
+import { WorkflowTasks } from "@/types/workflow";
 import { LucideProps, MessageCircle } from "lucide-react";
 
 export const StartChatTask = {
@@ -16,4 +17,4 @@ export const StartChatTask = {
     ],
     icon: (props: LucideProps) => (<MessageCircle className="stroke-green-600" {...props} />),
     isEntryPoint: true,
-}
+} satisfies WorkflowTasks

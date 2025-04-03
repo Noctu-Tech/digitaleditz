@@ -9,7 +9,7 @@ import { useCallback } from "react";
 import { ProductMessageTask } from "../task/ProductMessage";
 import ProductParam from "../param/ProductParam";
 
-function NodeParamField({ param,nodeId }: { param: TaskParam,nodeId:string }) {
+function NodeParamField({ param,nodeId,disabled }: { param: TaskParam,nodeId:string,disabled:boolean} ) {
    const {updateNodeData,getNode}=useReactFlow();
    const node=getNode(nodeId) as AppNode;
    const value =node?.data.inputs?.[param.name];
@@ -20,7 +20,7 @@ function NodeParamField({ param,nodeId }: { param: TaskParam,nodeId:string }) {
     case TaskParamType.PRODUCT:
         return <ProductParam param={param} value={""} updateNodeParamValue={updateNodeParamValue}/>
     case TaskParamType.STRING:
-        return <StringParam param={param} value={value} updateNodeParamValue={updateNodeParamValue}/>
+        return <StringParam param={param} value={value} disabled={disabled} updateNodeParamValue={updateNodeParamValue}/>
     default:
         return <div className="w-full">
             <p className="text-xs text-muted-foreground">not implemented</p>

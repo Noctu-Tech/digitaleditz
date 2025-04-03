@@ -1,3 +1,4 @@
+'use client'
 import { Home, Workflow, MessageCircle, Box, HelpCircle, Settings, X, ChevronRight, ArrowLeftSquare, ArrowRightSquare, NewspaperIcon, ChevronUp, User2 } from 'lucide-react';
 import { ModeToggle } from '@/components/mode-toggle';
 import {
@@ -14,15 +15,15 @@ import {
 } from "@/components/ui/sidebar"
 import Link from 'next/link';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import SidebarMenuWrapper from './SideBarMenuWrapper';
+import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
+import SignoutAlert from './SignoutAlert';
 
-const items = [
-      { icon: Home, title: 'Home', url: "/dashboard" },
-      { icon: Workflow, title: 'Workflow', url: "/workflows" },
-      { icon: MessageCircle, title: 'Chat', url: "/messages" },
-      { icon: Box, title: 'Product', url: "/products" },
-      { icon: HelpCircle, title: 'Help', url: "/help" },
-    ];
+
 export function AppSidebar() {
+const router=useRouter();
+const profile={name:"John Doe"};
   return (
     <Sidebar variant='inset'collapsible='icon'>
       <SidebarHeader>
@@ -36,18 +37,7 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupLabel>Application</SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <Link href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
+            <SidebarMenuWrapper/>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent> 
@@ -56,31 +46,33 @@ export function AppSidebar() {
             <SidebarMenuItem>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <SidebarMenuButton>
+                  <SidebarMenuButton className='p-2'>
+                    <Button variant={'ghost'} className='w-full h-full flex justify-center items-center'>
                     <User2 className="h-4 w-4 mr-2" />
-                    <span>John Doe</span>
+                    <span>{profile.name}</span></Button>
                     <ChevronUp className="ml-auto h-4 w-4" />
                   </SidebarMenuButton>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
-                  side="top"
+                  side="right"
                   className="w-[--radix-popper-anchor-width]"
                 >
-                  <DropdownMenuItem>
-                    <User2 className="h-4 w-4 mr-2" />
-                    <span>Profile</span>
+                  <DropdownMenuItem className='flex justify-center items-center'>
+                    <Button variant={"ghost"} className='w-full flex justify-start h-full' onClick={()=>{router.push('/profile')}}><User2 className="h-4 w-4 mr-2" />
+                    <span>Profile</span></Button>
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Settings className="h-4 w-4 mr-2" />
-                    <span>Settings</span>
+                  <DropdownMenuItem className='flex justify-center items-center'>
+                    <Button variant={"ghost"} className='w-full flex justify-start h-full' onClick={()=>{router.push('/settings')}}><Settings className="h-4 w-4 mr-2" />
+                    <span>Settings</span></Button>
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="text-red-600">
-                    <ArrowRightSquare className="h-4 w-4 mr-2" />
-                    <span>Sign out</span>
+                  <DropdownMenuItem className="text-destructive">
+                    <SignoutAlert/>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-              <ModeToggle/>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <ModeToggle />
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarFooter>
