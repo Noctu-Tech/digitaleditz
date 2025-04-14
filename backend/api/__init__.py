@@ -12,8 +12,7 @@ from .payment_router import router as payment_router
 from .workflow_router import router as workflow_router
 from .notification_router import router as notification_router
 from .upload_router import router as file_router
-
-
+from .whatsapp import whatsapp_router
 def create_app():
     app = FastAPI()
 
@@ -35,7 +34,8 @@ def create_app():
     app.include_router(payment_router, prefix="/payment", tags=["Payment"], dependencies=[Depends(verify_and_refresh_tokens)])
     app.include_router(workflow_router, prefix="/workflow", tags=["Workflow"], dependencies=[Depends(verify_and_refresh_tokens)])
     app.include_router(notification_router, prefix="/notification", tags=["Notification"], dependencies=[Depends(verify_and_refresh_tokens)])
-    # Routers without Authentication
+    app.include_router(whatsapp_router,prefix='/whatsapp',tags=['Whatsapp'])
+# Routers without Authentication
     app.include_router(auth_router, prefix="/auth", tags=["Auth"])
     app.include_router(file_router, prefix="/file", tags=["file"])
 

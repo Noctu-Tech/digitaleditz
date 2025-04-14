@@ -19,7 +19,7 @@ class executionsStep(BaseModel):
     sub_steps: Optional[List['executionsStep']] = None
     next_stage: Optional[executionsStage] = executionsStage.IN_PROGRESS
 
-class executions(BaseModel):
+class execution(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid4()))
     name: str
     description: Optional[str] = None
@@ -56,7 +56,7 @@ class MongoexecutionsManager:
             raise
 
 
-    def assign_executions_to_user(self, phone_number: str, executions_id: str):
+    def assign_execution_to_user(self, phone_number: str, execution_id: str):
         """
         Assign a executions to a specific phone number
         
@@ -69,12 +69,12 @@ class MongoexecutionsManager:
         # Upsert: update if exists, insert if not
         self.user_executionss_collection.update_one(
             {'phone_number': phone_number},
-            {'$set': {'executions_id': executions_id}},
+            {'$set': {'executions_id': execution_id}},
             upsert=True
         )
         
         # Also update user context for executions tracking
-        self.update_user_context(phone_number, executions_id)
+        self.update_user_context(phone_number, execution_id)
     def create_executions_from_dict(self, executions_dict: Dict) -> str:
         """
         Create a executions from a dictionary representation
@@ -99,7 +99,7 @@ class MongoexecutionsManager:
             return parsed_steps
 
         # Create executions object
-        executions = executions(
+        executions = execution(
             name=executions_dict['name'],
             description=executions_dict.get('description'),
             root_steps=create_steps(executions_dict['root_steps'])
@@ -113,7 +113,7 @@ class MongoexecutionsManager:
         
         return executions.id
 
-    def get_user_executions(self, phone_number: str) -> Optional[str]:
+    def get_user_execution(self, phone_number: str) -> Optional[str]:
         """
         Get the executions ID assigned to a phone number
         
@@ -138,7 +138,7 @@ class MongoexecutionsManager:
         executions_dict = json.loads(json_str)
         return self.create_executions_from_dict(executions_dict)
 
-    def get_executions(self, executions_id: str) -> Optional[executions]:
+    def get_executions(self, executions_id: str) -> Optional[execution]:
         """
         Retrieve a executions by its ID
         
@@ -149,7 +149,7 @@ class MongoexecutionsManager:
         
         if executions_data:
             executions_data.pop('_id', None)
-            return executions(**executions_data)
+            return execution(**executions_data)
         
         return None
 
@@ -327,4 +327,4 @@ def example_executions_creation():
 
 # Global executions manager instance
 executions_manager = MongoexecutionsManager()
-# example_executions_creation()
+example_executions_creation()

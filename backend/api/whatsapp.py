@@ -73,13 +73,16 @@
 #     # Return a simple acknowledgment
 #     return Response(status_code=200)
 
+from bson import ObjectId
 from fastapi import APIRouter, Request, Form, HTTPException
 from fastapi.responses import PlainTextResponse
 from typing import Optional, Dict, Union
-
+from services.execution.execution import execution_manager,execution
 # Import the execution and message managers
-from services.execution.execution import execution_manager, execution
+from database.mongo import get_database
+from services.execution.execution import MongoexecutionsManager, execution
 from services.message.message import message_manager, MessageDirection
+from services.workflow.main import convert_graph_to_workflow_schema
 
 whatsapp_router = APIRouter()
 
@@ -96,12 +99,12 @@ async def webhook(
     sender_number = From  # The WhatsApp user's number
     receiver_number = To  # Your Twilio WhatsApp number
     message_body = Body or ""
-    execution_id = None  # Initialize execution_id to None
+    execution_id = 'de2d470a-ce72-4892-9480-178b3e1054d3' # Initialize execution_id to None
    
     # Log incoming message
     try:
         # Find the execution ID for this phone number (if any)
-        execution_id = execution_manager.get_user_execution(receiver_number)
+        execution_id = MongoexecutionsManager.get_user_execution(receiver_number)
         
         # Log the incoming message
         message_manager.log_message(
@@ -116,7 +119,7 @@ async def webhook(
     # Process message through execution
     try:
         # Enhanced error handling for execution processing
-        execution_response = execution_manager.process_message(receiver_number, message_body)
+        execution_response = MongoexecutionsManager.process_message(receiver_number, message_body)
         print(f"execution response: {execution_response}")
         # Handle both string and dictionary responses
         if isinstance(execution_response, dict):
@@ -190,7 +193,7 @@ async def create_execution(execution: execution):
     Endpoint to create a new execution
     """
     try:
-        execution_id = execution_manager.create_execution(execution)
+        execution_id = MongoexecutionsManager.create_execution(execution)
         return {"execution_id": execution_id}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -213,7 +216,7 @@ async def list_executions():
     Retrieve a list of all available executions
     """
     try:
-        executions = execution_manager.list_executions()
+        executions = MongoexecutionsManager.list_executions()
         return executions
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -225,7 +228,7 @@ async def reset_user_execution(phone_number: str):
     Reset a user's current execution
     """
     try:
-        execution_manager.reset_user_execution(phone_number)
+        MongoexecutionsManager.reset_user_execution(phone_number)
         return {"status": "execution reset successfully"}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

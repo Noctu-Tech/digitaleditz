@@ -34,6 +34,6 @@ async def deleteworkflow(data:str):
     return JSONResponse(content=result)
 
 @router.post("/activate/{workflowId}")
-async def activateworkflow(workflowId:str):
+async def activateworkflow(workflowId:str,):
     result=executeWorkflow(workflowId)
     return JSONResponse(content=result)
