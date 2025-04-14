@@ -72,19 +72,20 @@
     
 #     # Return a simple acknowledgment
 #     return Response(status_code=200)
-
 from bson import ObjectId
 from fastapi import APIRouter, Request, Form, HTTPException
 from fastapi.responses import PlainTextResponse
 from typing import Optional, Dict, Union
-from services.execution.execution import execution_manager,execution
-# Import the execution and message managers
+from uuid import uuid4
+# Import the execution manager and message manager
 from database.mongo import get_database
-from services.execution.execution import MongoexecutionsManager, execution
+from services.execution.execution import MongoexecutionsManager, execution, executionsStep
 from services.message.message import message_manager, MessageDirection
-from services.workflow.main import convert_graph_to_workflow_schema
 
 whatsapp_router = APIRouter()
+
+# Initialize global execution manager
+execution_manager = MongoexecutionsManager()
 
 @whatsapp_router.post("/webhook")
 async def webhook(
@@ -99,12 +100,12 @@ async def webhook(
     sender_number = From  # The WhatsApp user's number
     receiver_number = To  # Your Twilio WhatsApp number
     message_body = Body or ""
-    execution_id = 'de2d470a-ce72-4892-9480-178b3e1054d3' # Initialize execution_id to None
+    execution_id = None  # Initialize execution_id to None
    
     # Log incoming message
     try:
         # Find the execution ID for this phone number (if any)
-        execution_id = MongoexecutionsManager.get_user_execution(receiver_number)
+        execution_id = execution_manager.get_user_execution(receiver_number)
         
         # Log the incoming message
         message_manager.log_message(
@@ -119,7 +120,7 @@ async def webhook(
     # Process message through execution
     try:
         # Enhanced error handling for execution processing
-        execution_response = MongoexecutionsManager.process_message(receiver_number, message_body)
+        execution_response = execution_manager.process_message(receiver_number, message_body)
         print(f"execution response: {execution_response}")
         # Handle both string and dictionary responses
         if isinstance(execution_response, dict):
@@ -156,6 +157,7 @@ async def webhook(
     """
    
     return PlainTextResponse(content=twiml_response, media_type="application/xml")
+
 @whatsapp_router.get("/messages/{phone_number}")
 async def get_messages_by_phone(phone_number: str):
     """
@@ -188,12 +190,23 @@ async def get_messages_by_execution(execution_id: str):
     ]
 
 @whatsapp_router.post("/create-execution")
-async def create_execution(execution: execution):
+async def create_execution(execution_data: execution):
     """
     Endpoint to create a new execution
     """
     try:
-        execution_id = MongoexecutionsManager.create_execution(execution)
+        execution_id = execution_manager.create_executions_from_dict(execution_data.model_dump())
+        return {"execution_id": execution_id}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@whatsapp_router.post("/create-execution-from-json")
+async def create_execution_from_json(json_str: str):
+    """
+    Endpoint to create a new execution from JSON
+    """
+    try:
+        execution_id = execution_manager.create_executions_from_json(json_str)
         return {"execution_id": execution_id}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -216,8 +229,12 @@ async def list_executions():
     Retrieve a list of all available executions
     """
     try:
-        executions = MongoexecutionsManager.list_executions()
-        return executions
+        # Since the original method doesn't exist, use a basic query to list executions
+        executions_data = list(execution_manager.user_executionss_collection.find(
+            {"name": {"$exists": True}},  # Filter for documents that are executions (have a name field)
+            {"_id": 0}  # Exclude MongoDB _id field
+        ))
+        return executions_data
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -228,7 +245,24 @@ async def reset_user_execution(phone_number: str):
     Reset a user's current execution
     """
     try:
-        MongoexecutionsManager.reset_user_execution(phone_number)
+        # Since the original method doesn't exist, implement reset functionality
+        execution_manager.update_user_context(phone_number, "", [])
         return {"status": "execution reset successfully"}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+# New endpoint: Get execution by ID
+@whatsapp_router.get("/execution/{execution_id}")
+async def get_execution_by_id(execution_id: str):
+    """
+    Get execution details by ID
+    """
+    try:
+        execution_data = execution_manager.get_executions(execution_id)
+        if not execution_data:
+            raise HTTPException(status_code=404, detail="Execution not found")
+        return execution_data
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
