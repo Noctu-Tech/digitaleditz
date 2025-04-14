@@ -28,6 +28,7 @@ const WorkflowBuilder = ({workflow}:{workflow:WorkFlow}) => {
   useEffect(()=>{
     try{
       const flow=JSON.parse(workflow.definition);
+      console.log("flow",flow);
       if(!flow) return;
       setNodes(flow.nodes || []);
       setEdges(flow.edges || []);

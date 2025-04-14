@@ -1,3 +1,4 @@
+
 from config import Settings
 import boto3
 from PIL import Image, ImageDraw, ImageFont
@@ -7,9 +8,14 @@ import base64
 from botocore.exceptions import ClientError
 import os
 
-s3_client = boto3.client('s3')
+s3_client = boto3.client(
+            's3',
+            aws_access_key_id=Settings().aws_access_key_id,
+            aws_secret_access_key=Settings().aws_secret_access_key,
+            region_name=Settings().aws_region
+        )
 BUCKET_NAME = Settings().s3_bucket
-PROFILE_PIC_PREFIX = 'profile-pictures/'
+PROFILE_PIC_PREFIX = 'images/'
 
 def get_color_from_id(user_id: str) -> tuple:
     # Generate consistent color from user_id
@@ -29,14 +35,14 @@ def save_to_local_storage(image_bytes: bytes, user_id: str) -> str:
     
     return f"file://{file_path}"
 
-def get_sample_pfp(user_id: str = None, size: int = 200) -> str:
-    if not user_id:
+def get_sample_pfp(user: str = None, size: int = 200) -> str:
+    if not user:
         # Default color for anonymous users
         bg_color = (200, 200, 200)
         initials = "?"
     else:
-        bg_color = get_color_from_id(user_id)
-        initials = user_id[:2].upper()
+        bg_color = get_color_from_id(user)
+        initials = user[:2].upper()
 
     # Create image with solid background
     image = Image.new('RGB', (size, size), bg_color)
@@ -67,7 +73,7 @@ def get_sample_pfp(user_id: str = None, size: int = 200) -> str:
     
     # Try S3 upload first
     try:
-        key = f"{PROFILE_PIC_PREFIX}{user_id if user_id else 'anonymous'}.png"
+        key = f"{PROFILE_PIC_PREFIX}{user if user else 'anonymous'}.png"
         # Check if S3 client is available
         s3_client.head_bucket(Bucket=BUCKET_NAME)
         

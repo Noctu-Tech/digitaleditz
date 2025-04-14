@@ -1,5 +1,6 @@
+from datetime import datetime
 from typing import Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 class HelpModel(BaseModel):
     u_id:str
@@ -7,5 +8,9 @@ class HelpModel(BaseModel):
     q_description:str
     q_media:Optional[str]
     q_duration:str
-    # q_status:str  come back to this to make it for  admin side
-    timestamp:str
+    q_status:Optional[str]
+    timestamp:datetime = Field(default_factory=datetime.now)
+
+class FAQModel(BaseModel):
+    question:str
+    answer:str

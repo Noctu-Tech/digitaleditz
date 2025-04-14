@@ -2,6 +2,7 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/comp
 import { OnboardingFormData } from "@/schema/onboarding";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { UseFormReturn } from "react-hook-form";
+import { X } from "lucide-react"; // Add this import
 
 interface ServicesInfoProps {
   form: UseFormReturn<OnboardingFormData>;
@@ -39,6 +40,31 @@ const ServicesInfo: React.FC<ServicesInfoProps> = ({ form }) => {
                 <SelectItem value="all">All of the Above</SelectItem>
               </SelectContent>
             </Select>
+            {/* Add this section to display selected services */}
+            <div className="mt-2">
+              <div className="flex flex-wrap gap-2">
+                {(field.value || []).map((service) => (
+                  <div
+                    key={service}
+                    className="flex items-center gap-1 bg-primary/10 text-primary rounded-full px-3 py-1"
+                  >
+                    <span className="capitalize">
+                      {service.replace(/-/g, ' ')}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const updatedServices = field.value?.filter(s => s !== service) || [];
+                        field.onChange(updatedServices);
+                      }}
+                      className="text-primary hover:text-primary/80"
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
             <FormMessage />
           </FormItem>
         )}
@@ -47,4 +73,4 @@ const ServicesInfo: React.FC<ServicesInfoProps> = ({ form }) => {
   );
 };
 
-export { ServicesInfo};
+export { ServicesInfo };

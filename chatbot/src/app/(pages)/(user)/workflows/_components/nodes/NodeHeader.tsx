@@ -22,32 +22,43 @@ function NodeHeader({ taskType, nodeId }: { taskType: TaskType, nodeId: string }
                 <p className="text-xs font-bold uppercase text-muted-foreground">{task.label}</p>
                 <div className="flex gap-1 items-center">
                     {task.isEntryPoint && <Badge>Entry Point</Badge>}
-                    {!task.isEntryPoint && (
+                    {task.isAuthPoint && <Badge variant="secondary">Auth Point</Badge>}
+                    {task.isEndPoint && <Badge variant="secondary">End Point</Badge>}
+                    {!task.isEntryPoint  && (
                     <>
-                    <Button 
-                     variant={"ghost"} 
-                     onClick={() => { 
-                        deleteElements({ nodes: [{ id: nodeId }] }) 
+                    <TooltipWrapper content="Delete node">
+                        <Button 
+                        variant={"ghost"} 
+                        onClick={() => {
+                            const node = getNode(nodeId) as AppNode;
+                            if (!node.data.isSpecial) {
+                                deleteElements({ nodes: [{ id: nodeId }] });
+                            }
                         }}
-                         size={"icon"}>
+                        size={"icon"}
+                        disabled={task.isEntryPoint || task.isAuthPoint || task.isEndPoint}>
                             <Trash2Icon size={12} />
-                    </Button>
-                    <Button
-                     variant={"ghost"}
-                      onClick={()=>{
-                        const node=getNode(nodeId) as AppNode;
-                        const newX =node.position.x;
-                        const newY =node.position.y + node.measured?.height!+20;
-                        const newNode=CreateFlowNode(node.data.type,{
-                            x:newX,
-                            y:newY,
-                        }) 
-                        addNodes([newNode])
-                    }}
-                       size={"icon"}>
-                        <CopyIcon size={12} />
-                    </Button>
-                    </>)}
+                        </Button>
+                    </TooltipWrapper>
+                    {(!task.isAuthPoint && !task.isEndPoint)&&<TooltipWrapper content="Duplicate node">
+                        <Button
+                        variant={"ghost"}
+                        onClick={()=>{
+                            const node = getNode(nodeId) as AppNode;
+                            const newX = node.position.x;
+                            const newY = node.position.y + node.measured?.height! + 20;
+                            const newNode = CreateFlowNode(node.data.type, {
+                                x: newX,
+                                y: newY,
+                            });
+                            addNodes([newNode]);
+                        }}
+                        size={"icon"}>
+                            <CopyIcon size={12} />
+                        </Button>
+                    </TooltipWrapper>}
+                    </>
+                    )}
                    
                     <TooltipWrapper content="drag">
                         <Button variant={"ghost"} size={"icon"} className="drag-handle cursor-grab">

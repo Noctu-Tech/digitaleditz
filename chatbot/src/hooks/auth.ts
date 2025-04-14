@@ -2,8 +2,9 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { User, UserRole, AuthResponse } from '../types/auth';
-import apiClient from '@/lib/api/apiclient';
+import apiClient from '@/lib/functionapis/apiclient';
 import { useRouter } from 'next/navigation';
+import { GetMe } from '@/lib/functions/username/profile';
 
 // Add this constant at the top level
 const isDev = process.env.NODE_ENV === 'development';
@@ -16,21 +17,21 @@ export const authKeys = {
 
 // Auth hook for login, logout, and current user
 export const useAuth = () => {
-  const queryClient = useQueryClient();
   const router = useRouter();
 
   // Get current user query
-  const { data: user, isLoading } = useQuery<User | null>({
+  const { data: user } = useQuery({
     queryKey: authKeys.user,
-    queryFn: async () => {
-      try {
-        const { data } = await apiClient.get('/user/me');
-        return data;
-      } catch (error) {
-        return null;
+    queryFn: async()=>{
+      try{
+        const response=await apiClient.get('/user/me')
+        return response.data
+      }
+      catch(e){
+        console.error("error get profile::",e)
       }
     },
-    retry: false,
+    retry: true,
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
@@ -42,11 +43,22 @@ export const useAuth = () => {
     if (user.roles.includes('admin')) return true; // Admin has all permissions
     return requiredRoles.some(role => user.roles.includes(role));
   };
+  const isActivated = () => {
+    if (isDev) return true; // In development mode, grant all permissions
+    if (!user) return false;
+    if(user?.status==='active') return true;
+  }
+  const isVerified = () => {
+    if (isDev) return true; // In development mode, grant all permissions
+    if (!user) return false;
+    if(user?.verified==='verified') return true;
+  }
 
   return {
     user,
     isAuthenticated: isDev ? true : !!user,
-    isLoading,
     hasPermission,
+    isActivated,
+    isVerified,
   };
 };

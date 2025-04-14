@@ -1,5 +1,5 @@
 import { CreateFlowNode } from "@/app/(pages)/(user)/workflows/_components/CreateFlowNode";
-import { createnewworkflow } from "@/lib/api/workflow/workflow";
+import { createnewworkflow } from "@/lib/functionapis/workflow/workflow";
 import { CreateWorkflowSchemaType, createWorkFlowSchema } from "@/schema/workflow";
 import { AppNode } from "@/types/appNode";
 import { TaskType } from "@/types/task";
@@ -16,7 +16,7 @@ export const CreateWorkflow=async(form:CreateWorkflowSchemaType )=>{
     initialFlow.nodes.push(CreateFlowNode(TaskType.START_CHAT));
     console.log(data);
     const newdata={...data,status:WorkflowStatus.DRAFT,definition:JSON.stringify(initialFlow)}
-    const result=await createnewworkflow({data: newdata})
+    const result=await createnewworkflow({Data: newdata})
     console.log(result);
     if(!result){
         throw new Error("Failed to create new workflow")

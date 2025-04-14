@@ -1,5 +1,6 @@
 
 from fastapi import APIRouter, Request
+from fastapi.responses import JSONResponse
 
 from models.inventory.inventory import InventoryModel
 from services.inventory.inventory import InventoryService
@@ -12,7 +13,7 @@ async def createbulk(data:list[InventoryModel]):
 @router.post('/new-item')
 async def createitem(data:InventoryModel):
     result=await inventory.create_inventory(data)
-    return "new item created"
+    return result.inserted_id
 
 @router.put('/update-item')
 async def updateitem(inventoryId:str,data:InventoryModel):
@@ -21,14 +22,14 @@ async def updateitem(inventoryId:str,data:InventoryModel):
 
 @router.get('/')
 async def getall():
-    result=await inventory.get_all_inventories
-    return "got all items"
+    result=inventory.get_inventories()
+    return JSONResponse(result)
 
-@router.get('/{productid}')
-async def getone():
-    result=inventory.get_inventory()
-    return "got one item"
-
+@router.get('/{productId}')
+async def getone(productId:str):
+    result=inventory.get_inventory(productId)
+    return JSONResponse(result)
+ 
 @router.delete('/{productid}')
 async def deleteone():
     result=inventory.delete_inventory()

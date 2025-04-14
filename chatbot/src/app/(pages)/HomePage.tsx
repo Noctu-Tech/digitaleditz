@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Particles } from '@/components/magicui/particles'
 import Link from 'next/link'
 import { useDebounce } from '@/hooks/use-debounce'
-import { handleDemo } from '@/lib/api/public'
+import { handleDemo } from '@/lib/functionapis/public'
 const HomePage = () => {
   const sections = [
     { id: 'home', label: 'Home' },
@@ -35,11 +35,11 @@ const HomePage = () => {
         <div className="flex justify-between items-center py-4">
           <ModeToggle />
           <div className="flex gap-2">
-          <Link href="/auth/signin">
+          <Link href="/signin">
             <Button variant="ghost" asChild>Sign In
             </Button></Link>
            
-            <Link href="/auth/signup"> <Button asChild>Sign Up
+            <Link href="/signup"> <Button asChild>Sign Up
             </Button></Link>
           </div>
         </div>
@@ -78,7 +78,7 @@ const HomePage = () => {
             All-in-one platform for CRM, analytics, and marketing automation to help you grow your business smarter.
           </p>
           <div className="flex gap-4">
-            <Link href="/auth/signin"><Button size="lg">Get Started Free</Button></Link>
+            <Link href="/signin"><Button size="lg">Get Started Free</Button></Link>
             <Button variant="outline" size="lg">Book a Demo</Button>
           </div>
         </div>

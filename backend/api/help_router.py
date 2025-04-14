@@ -1,9 +1,11 @@
 from fastapi import APIRouter, Request
+
+from models.help.query import HelpModel
 router = APIRouter()
 
 
 @router.post('/create-new')
-def createnew(req:Request):
+def createnew(data:HelpModel):
 
     return 0
 
@@ -16,6 +18,6 @@ def getmany():
     return 0
 
 @router.put('/update')
-def updatestatus():
+def update():
     return 0
 

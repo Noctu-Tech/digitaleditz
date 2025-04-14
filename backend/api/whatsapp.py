@@ -77,8 +77,8 @@ from fastapi import APIRouter, Request, Form, HTTPException
 from fastapi.responses import PlainTextResponse
 from typing import Optional, Dict, Union
 
-# Import the workflow and message managers
-from services.workflow.workflow import workflow_manager, Workflow
+# Import the execution and message managers
+from services.execution.execution import execution_manager, execution
 from services.message.message import message_manager, MessageDirection
 
 whatsapp_router = APIRouter()
@@ -91,45 +91,45 @@ async def webhook(
     To: Optional[str] = Form(None)
 ):
     """
-    Webhook to receive incoming WhatsApp messages and process through workflows
+    Webhook to receive incoming WhatsApp messages and process through executions
     """
     sender_number = From  # The WhatsApp user's number
     receiver_number = To  # Your Twilio WhatsApp number
     message_body = Body or ""
-    workflow_id = None  # Initialize workflow_id to None
+    execution_id = None  # Initialize execution_id to None
    
     # Log incoming message
     try:
-        # Find the workflow ID for this phone number (if any)
-        workflow_id = workflow_manager.get_user_workflow(receiver_number)
+        # Find the execution ID for this phone number (if any)
+        execution_id = execution_manager.get_user_execution(receiver_number)
         
         # Log the incoming message
         message_manager.log_message(
             phone_number=sender_number,
             message_body=message_body,
             direction=MessageDirection.INCOMING,
-            workflow_id=workflow_id
+            execution_id=execution_id
         )
     except Exception as log_error:
         print(f"Error logging message: {log_error}")
    
-    # Process message through workflow
+    # Process message through execution
     try:
-        # Enhanced error handling for workflow processing
-        workflow_response = workflow_manager.process_message(receiver_number, message_body)
-        print(f"Workflow response: {workflow_response}")
+        # Enhanced error handling for execution processing
+        execution_response = execution_manager.process_message(receiver_number, message_body)
+        print(f"execution response: {execution_response}")
         # Handle both string and dictionary responses
-        if isinstance(workflow_response, dict):
+        if isinstance(execution_response, dict):
             # Construct a more detailed reply message
-            reply_message = workflow_response.get('message', 'No response')
+            reply_message = execution_response.get('message', 'No response')
             
             # If steps are available, format them into the reply
-            if 'steps' in workflow_response:
-                steps_list = workflow_response['steps']
+            if 'steps' in execution_response:
+                steps_list = execution_response['steps']
                 steps_text = "\n".join([f"{idx+1}. {step['display']}" for idx, step in enumerate(steps_list)])
                 reply_message += f"\n\n{steps_text}"
         else:
-            reply_message = workflow_response
+            reply_message = execution_response
     except Exception as process_error:
         print(f"Error processing message: {process_error}")
         reply_message = "Sorry, there was an error processing your message."
@@ -140,7 +140,7 @@ async def webhook(
             phone_number=sender_number,
             message_body=reply_message,
             direction=MessageDirection.OUTGOING,
-            workflow_id=workflow_id
+            execution_id=execution_id
         )
     except Exception as log_error:
         print(f"Error logging reply message: {log_error}")
@@ -168,12 +168,12 @@ async def get_messages_by_phone(phone_number: str):
         } for msg in messages
     ]
 
-@whatsapp_router.get("/messages/workflow/{workflow_id}")
-async def get_messages_by_workflow(workflow_id: str):
+@whatsapp_router.get("/messages/execution/{execution_id}")
+async def get_messages_by_execution(execution_id: str):
     """
-    Retrieve message logs for a specific workflow
+    Retrieve message logs for a specific execution
     """
-    messages = message_manager.get_messages_by_workflow(workflow_id)
+    messages = message_manager.get_messages_by_execution(execution_id)
     return [
         {
             "id": msg.id,
@@ -184,48 +184,48 @@ async def get_messages_by_workflow(workflow_id: str):
         } for msg in messages
     ]
 
-@whatsapp_router.post("/create-workflow")
-async def create_workflow(workflow: Workflow):
+@whatsapp_router.post("/create-execution")
+async def create_execution(execution: execution):
     """
-    Endpoint to create a new workflow
+    Endpoint to create a new execution
     """
     try:
-        workflow_id = workflow_manager.create_workflow(workflow)
-        return {"workflow_id": workflow_id}
+        execution_id = execution_manager.create_execution(execution)
+        return {"execution_id": execution_id}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-@whatsapp_router.post("/assign-workflow")
-async def assign_workflow(phone_number: str, workflow_id: str):
+@whatsapp_router.post("/assign-execution")
+async def assign_execution(phone_number: str, execution_id: str):
     """
-    Endpoint to assign a workflow to a specific phone number
+    Endpoint to assign a execution to a specific phone number
     """
     try:
-        workflow_manager.assign_workflow_to_user(phone_number, workflow_id)
-        return {"status": "Workflow assigned successfully"}
+        execution_manager.assign_execution_to_user(phone_number, execution_id)
+        return {"status": "execution assigned successfully"}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-# New endpoint: List available workflows
-@whatsapp_router.get("/workflows")
-async def list_workflows():
+# New endpoint: List available executions
+@whatsapp_router.get("/executions")
+async def list_executions():
     """
-    Retrieve a list of all available workflows
+    Retrieve a list of all available executions
     """
     try:
-        workflows = workflow_manager.list_workflows()
-        return workflows
+        executions = execution_manager.list_executions()
+        return executions
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-# New endpoint: Reset user workflow
-@whatsapp_router.post("/reset-workflow")
-async def reset_user_workflow(phone_number: str):
+# New endpoint: Reset user execution
+@whatsapp_router.post("/reset-execution")
+async def reset_user_execution(phone_number: str):
     """
-    Reset a user's current workflow
+    Reset a user's current execution
     """
     try:
-        workflow_manager.reset_user_workflow(phone_number)
-        return {"status": "Workflow reset successfully"}
+        execution_manager.reset_user_execution(phone_number)
+        return {"status": "execution reset successfully"}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

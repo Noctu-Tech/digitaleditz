@@ -4,7 +4,12 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { useState } from "react"
+import { CreateFaq } from "@/lib/functions/ticket"
+import { FaqFormValues, faqSchema } from "@/schema/ticket"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation } from "@tanstack/react-query"
+import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 
 interface FAQData {
   question: string;
@@ -12,21 +17,27 @@ interface FAQData {
 }
 
 function CreateFAQ({triggerText}:{triggerText?:string}) {
-  const [formData, setFormData] = useState<FAQData>({
-    question: '',
-    answer: ''
+  const form = useForm<FaqFormValues>({
+     resolver: zodResolver(faqSchema),
+    defaultValues: {
+      question: '',
+      answer: ''
+    }
   });
 
-  const handleInputChange = (field: keyof FAQData, value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  };
+  const {mutate, isPending} = useMutation({
+    mutationFn: CreateFaq,
+    onSuccess: () => {
+      toast.success("FAQ created", { id: "create-faq" })
+      form.reset()
+    },
+    onError: () => {
+      toast.error("Failed to create FAQ", { id: "create-faq" })
+    }
+  });
 
-  const handleSubmit = () => {
-    console.log(formData);
-    // Handle your form submission here
+  function onSubmit(values: FaqFormValues) {
+    mutate(values)
   };
 
   return (
@@ -38,32 +49,34 @@ function CreateFAQ({triggerText}:{triggerText?:string}) {
         <DialogHeader>
           <DialogTitle>Add New FAQ</DialogTitle>
         </DialogHeader>
-        <ScrollArea className="h-[70vh]">
-          <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <Label htmlFor="question">Question</Label>
-              <Input 
-                id="question" 
-                placeholder="Enter the question"
-                value={formData.question}
-                onChange={(e) => handleInputChange('question', e.target.value)}
-              />
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <ScrollArea className="h-[70vh]">
+            <div className="grid gap-4 py-4">
+              <div className="grid gap-2">
+                <Label htmlFor="question">Question</Label>
+                <Input 
+                  id="question" 
+                  placeholder="Enter the question"
+                  {...form.register("question", { required: true })}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="answer">Answer</Label>
+                <textarea
+                  id="answer"
+                  className="min-h-[150px] rounded-md border p-3"
+                  placeholder="Enter the answer..."
+                  {...form.register("answer", { required: true })}
+                />
+              </div>
             </div>
-            <div className="grid gap-2">
-              <Label htmlFor="answer">Answer</Label>
-              <textarea
-                id="answer"
-                className="min-h-[150px] rounded-md border p-3"
-                placeholder="Enter the answer..."
-                value={formData.answer}
-                onChange={(e) => handleInputChange('answer', e.target.value)}
-              />
-            </div>
+          </ScrollArea>
+          <div className="flex justify-end">
+            <Button type="submit" disabled={isPending} className="w-full">
+              {isPending ? "Creating..." : "Create FAQ"}
+            </Button>
           </div>
-        </ScrollArea>
-        <div className="flex justify-end">
-          <Button onClick={handleSubmit} className="w-full">Create FAQ</Button>
-        </div>
+        </form>
       </DialogContent>
     </Dialog>
   )

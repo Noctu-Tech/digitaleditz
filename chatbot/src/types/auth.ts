@@ -13,7 +13,7 @@ export interface User {
   id: string;
   email: string;
   name: string;
-  roles: UserRole[];
+  role: UserRole;
 }
 
 export interface AuthResponse {

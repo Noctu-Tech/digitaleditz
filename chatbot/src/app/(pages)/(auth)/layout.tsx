@@ -1,6 +1,6 @@
 
 import { ModeToggle } from "@/components/mode-toggle"
-import Footer from "@/app/ui/components/Footer"
+import Footer from "@/components/Footer"
 
 export default function AuthLayout({
   children,

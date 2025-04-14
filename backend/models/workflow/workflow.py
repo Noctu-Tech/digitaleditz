@@ -1,6 +1,6 @@
+from typing import Optional
 from pydantic import BaseModel
 from enum import Enum
-from events import EventsModel
 from datetime import datetime
 
 class WorkflowType(str,Enum):
@@ -10,20 +10,25 @@ class WorkflowType(str,Enum):
     Service="Service"
 
 class WorkflowStatus(str,Enum):
-    DRAFT="Draft"
-    ACTIVE="Active"
+    DRAFT="DRAFT"
+    ACTIVE="ACTIVE"
+    INACTIVE="INACTIVE"
 
-class WorkflowModel(EventsModel):
-    user_id:str
-    w_title:str
-    w_description:str
-    w_definition:str   #contains all the nodes and connections
-    w_type:WorkflowType
-    w_cron:str
-    w_status:WorkflowStatus
-    lastRunAt:datetime | None = None
-    lastRunId:str
-    lastRunStatus:str
-    nextRunAt:datetime | None = None
-    createdAt:datetime | None = None
-    updatedAt:datetime | None = None
+class WorkflowModel(BaseModel):
+    
+    color:Optional[str]
+    definition:str
+    description:Optional[str]
+    isTemplate:Optional[bool]
+    name:str
+    status:WorkflowStatus
+    # user_id:str
+    # execution_id:Optional[str]
+    
+   
+    # lastRunAt:datetime | None = None
+    # lastRunId:str
+    # lastRunStatus:str
+    # nextRunAt:datetime | None = None
+    # createdAt:datetime | None = None
+    # updatedAt:datetime | None = None

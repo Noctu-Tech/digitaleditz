@@ -16,6 +16,7 @@ function EventBar() {
             Action
           </AccordionTrigger>
           <AccordionContent className="flex flex-col gap-1">
+          <EventBtn taskType={TaskType.AUTHENTICATION_TASK}/>
           <EventBtn taskType={TaskType.ACTION_MESSAGE}/>
           <EventBtn taskType={TaskType.PRODUCT_MESSAGE}/>
           <EventBtn taskType={TaskType.END_CHAT}/>

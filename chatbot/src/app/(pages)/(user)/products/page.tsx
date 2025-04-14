@@ -8,45 +8,25 @@ import AddNew from './_components/AddNew'
 import ProtectedRoute from '@/context/ProtectedRoute'
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Building2 } from 'lucide-react'
-const mockProducts = [
-  // ...Array(30).fill(0).map((_, i) => ({
-  //   id: String(i + 1),
-  //   title: `Property ${i + 1}`,
-  //   image: `https://picsum.photos/seed/${i + 1}/400/300`,
-  //   length: Math.floor(Math.random() * 100) + 20,
-  //   width: Math.floor(Math.random() * 50) + 15,
-  //   front: Math.floor(Math.random() * 40) + 10,
-  //   direction: ['North', 'South', 'East', 'West'][Math.floor(Math.random() * 4)],
-  //   facing: ['Main Road', 'Park', 'Street', 'Corner'][Math.floor(Math.random() * 4)],
-  //   unit: ['ft', 'm', 'yard'][Math.floor(Math.random() * 3)],
-  //   area: function() { return this.length * this.width },
-  //   price: Math.floor(Math.random() * 1000000) + 100000,
-  //   description: `Beautiful property with ${Math.floor(Math.random() * 5) + 2} bedrooms...`,
-  //   status: ['For Sale', 'Sold', 'For Rent', 'Rented'][Math.floor(Math.random() * 4)]
-  // }))
-]
-
-const getStatusColor = (status: string) => {
-  switch(status) {
-    case 'For Sale': return 'bg-green-100 text-green-800'
-    case 'Sold': return 'bg-red-100 text-red-800'
-    case 'For Rent': return 'bg-blue-100 text-blue-800'
-    case 'Rented': return 'bg-orange-100 text-orange-800'
-    default: return 'bg-gray-100 text-gray-800'
-  }
-}
+import { useQuery } from '@tanstack/react-query'
+import { GetProperties } from '@/lib/functions/property/getProperty'
+import { PropertyProps } from '@/types/property'
 
 const ProductPage = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 9
+  const {data:mockProducts = [],isLoading} = useQuery({
+    queryKey: ['mockProducts'],
+    queryFn:()=>GetProperties()
+    })     
   const totalPages = Math.ceil(mockProducts.length / itemsPerPage)
 
-  
+  console.log("mockProducts",mockProducts);
   const getCurrentItems = () => {
     const startIndex = (currentPage - 1) * itemsPerPage
     return mockProducts.slice(startIndex, startIndex + itemsPerPage)
   }
-
+ 
   return (
     <ProtectedRoute>
     <div className="container mx-auto p-6">
@@ -66,8 +46,8 @@ const ProductPage = () => {
         <><div className="h-[calc(100vh-200px)]">
           <ScrollArea className="h-full w-full">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-1">
-              {getCurrentItems().map((property) => (
-                <div key={property.id} className="relative">
+              {getCurrentItems().map((property:PropertyProps) => (
+                <div key={property._id} className="relative">
                   <PropertyItem property={property}/>
                   
                 </div>

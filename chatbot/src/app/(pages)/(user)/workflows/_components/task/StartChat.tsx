@@ -13,8 +13,10 @@ export const StartChatTask = {
         hideHandle: true,
     },],
     outputs:[
-        {name:"Start Chat",type:TaskParamType.STRING}
+        {name:"Start Chat",type:TaskParamType.AUTHENTICATION}
     ],
     icon: (props: LucideProps) => (<MessageCircle className="stroke-green-600" {...props} />),
     isEntryPoint: true,
+    isAuthPoint: false,
+    isEndPoint:false
 } satisfies WorkflowTasks

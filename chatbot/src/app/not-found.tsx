@@ -4,8 +4,7 @@ import { motion } from "motion/react"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
 import { ModeToggle } from "@/components/mode-toggle"
-import Footer from './ui/components/Footer'
-
+import Footer from '@/components/Footer'
 export default function NotFound() {
   return (
     <div className="h-screen w-full flex flex-col items-center justify-center bg-background relative">

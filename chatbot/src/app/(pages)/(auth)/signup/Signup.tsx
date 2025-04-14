@@ -26,7 +26,7 @@ function Signup() {
   const router = useRouter();
   const {mutate, isPending, isError, error} = useMutation({
     mutationFn: handleSignup,
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast.success("Signed up Successfully", {id: "user-signup"});
       router.push("/onboarding");
     },
@@ -123,7 +123,7 @@ function Signup() {
         <p className="text-sm text-center text-muted-foreground">
           Already have an account?{' '}
           <Link
-            href="../auth/signin"
+            href="/signin"
             className="underline underline-offset-4 hover:text-primary"
           >
             Sign in

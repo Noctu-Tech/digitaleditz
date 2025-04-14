@@ -19,12 +19,12 @@ function SecurityTab() {
           </div>
           
           <p className="text-sm opacity-70">
-            Last updated 3 months ago. We recommend updating your password regularly.
+            We recommend updating your password regularly.
           </p>
         </CardContent>
       </Card>
       
-      <Card>
+      {/* <Card>
         <CardContent className="p-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
@@ -86,7 +86,7 @@ function SecurityTab() {
             </div>
           </div>
         </CardContent>
-      </Card>
+      </Card> */}
     </div>
   )
 }

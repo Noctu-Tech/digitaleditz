@@ -23,7 +23,7 @@ async def upload_multiple_images(files: List[UploadFile] = File(...)):
         urls.append(url)
     return {"urls": urls}
 
-@router.delete("/{file_key}")
+@router.delete("/delete/{file_key}")
 async def delete_image(file_key: str):
     success = await s3_client.delete_file(file_key)
     return {"success": success}

@@ -28,7 +28,8 @@ class S3Client:
 
     async def delete_file(self, file_key: str):
         try:
-            self.s3.delete_object(Bucket=self.bucket, Key=file_key)
+            res=self.s3.delete_object(Bucket=self.bucket, Key=file_key)
+            logging.info(f"Delete response: {res}")
             return True
         except ClientError as e:
             logging.error(e)

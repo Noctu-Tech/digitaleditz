@@ -1,77 +1,31 @@
+"use client"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import UserWorkflow from "./_components/UserWorkflow";
 import NewFlowButton from "./_components/NewFlow";
-
-interface WorkflowData {
-  title: string;
-  description: string;
-  lastEdited: string;
-  status: string;
-}
 import Template from "./_components/Template";
 import { InboxIcon } from "lucide-react";
 import CreateWorkFlowDialog from "./_components/CreateWorkFlowDialog";
 import ProtectedRoute from "@/context/ProtectedRoute";
+import { useQuery } from "@tanstack/react-query";
+import { getAllWorkflows, getWorkflow } from "@/lib/functions/workflow/getWorkflow";
+import { WorkFlow } from "@/types/workflow";
 
 
 const WorkflowPage = () => {
-  const userWorkflows = [
-    {
-      id: 1,
-      data:{
-      title: "Client Onboarding 2024",
-      description: "Updated onboarding process for enterprise clients",
-      lastEdited: "2 hours ago",
-      status: "Active"}
-    },
-    {
-      id: 2,
-      data:{
-      title: "Marketing Campaign Flow",
-      description: "Q1 2024 social media campaign workflow",
-      lastEdited: "1 day ago",
-      status: "Draft",
-    }},
-    {
-      id: 3,
-       data:{ 
-      title: "HR Interview Process",
-      description: "Technical interview workflow for engineering",
-      lastEdited: "3 days ago",
-      status: "Draft",
-    }}
-  ];
 
-  const templates = [
-    {
-      id: 1,
-      data:{title: "Basic Newsletter",
-      description: "A simple newsletter workflow with subscriber management",
-      usage: "2.5k uses",
-      color: "bg-blue-500",
-    }},
-    {
-      id: 2,
-    data:{  title: "Sales Pipeline",
-      description: "Track leads from initial contact to close",
-      usage: "1.8k uses",
-      color: "bg-green-500",
-    }},
-    {
-      id: 3,
-      data:{title: "Task Manager",
-      description: "Organize and track team tasks efficiently",
-      usage: "3.2k uses",
-      color: "bg-purple-500",
-    }},
-    {
-      id: 4,
-      data:{title: "Customer Onboarding",
-      description: "Streamline your customer onboarding process",
-      usage: "1.5k uses",
-      color: "bg-orange-500",
-    }},
-  ];
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["workflows"],
+    queryFn: () => getAllWorkflows()
+  });
+  // console.log("@DATA",data);
+  // console.error("@error",error);
+
+  // if (isLoading) return <p>Loading...</p>;
+  // if (error) return <p>Error: {error.message}</p>;
+
+  const userWorkflows = data?.filter((workflow: { isTemplate: boolean; }) => workflow.isTemplate === false) || [];
+  
+  const templates = data?.filter((workflow: { isTemplate: boolean; }) => workflow.isTemplate === true) || [];
 
   return (<ProtectedRoute requiredRoles={["admin","manager"]}>
     <div className="max-w-6xl mx-auto pt-6">
@@ -101,8 +55,8 @@ const WorkflowPage = () => {
               <div className="w-full flex justify-end items-center">
                 <CreateWorkFlowDialog triggerText="Create new"/>
               </div>
-              {userWorkflows.map((workflow: { id: React.Key | null | undefined; data: WorkflowData; }) => (
-                <UserWorkflow key={workflow.id} workflow={workflow.data} />
+              {userWorkflows.map((workflow:WorkFlow) => (
+                <UserWorkflow key={workflow._id} workflow={workflow} />
               ))}
             </>
           )}
@@ -113,8 +67,8 @@ const WorkflowPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <NewFlowButton/>
 
-            {templates.length!==0 && templates.map((template) => (
-              <Template key={template.id} template={template.data} />
+            {templates.length!==0 && templates.map((template:WorkFlow) => (
+              <Template key={template._id} template={template} />
             ))}
           </div>
         </TabsContent>

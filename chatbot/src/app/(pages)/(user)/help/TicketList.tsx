@@ -9,20 +9,21 @@ export interface Ticket {
   createdAt: string;
   attachments?: File[];
 }
-
-const TicketList = (ticket:Ticket) => {
+export interface TicketListProps {
+  ticket: Ticket;}
+const TicketList = (props:TicketListProps) => {
   return (
     <Card>
     <CardContent className="pt-6">
       <div className="flex justify-between items-start mb-2">
-        <h3 className="font-medium">{ticket.subject}</h3>
-        <Badge variant={ticket.status === 'open' ? 'default' : 'secondary'}>
-          {ticket.status}
+        <h3 className="font-medium">{props.ticket.subject}</h3>
+        <Badge variant={props.ticket.status === 'open' ? 'default' : 'secondary'}>
+          {props.ticket.status}
         </Badge>
       </div>
-      <p className="text-gray-600 mb-2">{ticket.description}</p>
+      <p className="text-gray-600 mb-2">{props.ticket.description}</p>
       <p className="text-sm text-gray-500">
-        Created: {new Date(ticket.createdAt).toLocaleDateString()}
+        Created: {new Date(props.ticket.createdAt).toLocaleDateString()}
       </p>
     </CardContent>
   </Card>

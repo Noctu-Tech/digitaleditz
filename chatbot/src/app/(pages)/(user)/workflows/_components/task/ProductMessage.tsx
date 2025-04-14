@@ -13,4 +13,6 @@ export const ProductMessageTask = {
     outputs:[{name:"Product",type:TaskParamType.STRING}],
     icon: (props: LucideProps) => (<BoxIcon className="stroke-pink-600" {...props} />),
     isEntryPoint: false,
+    isAuthPoint:false,
+    isEndPoint:false
 }satisfies WorkflowTasks

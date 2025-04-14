@@ -2,10 +2,10 @@
 
 import TooltipWrapper from "@/components/tooltip-wrapper";
 import SaveBtn from "./SaveBtn"
-import { ChevronLeftIcon } from "lucide-react";
+import { ChevronLeftIcon, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import ActivateBtn from "./ActivateBtn";
+import ActivateDialog from "../ActivateDialog";
 interface Props{
   title:string;
   subtitle?:string;
@@ -23,8 +23,12 @@ function TopBar({title,subtitle,workflowId}:Props) {
       {subtitle && (<p className="text-xs text-muted-foreground truncate text-ellipsis">{subtitle}</p>)}
       </div>
       <div className="flex gap-1 justify-end flex-1 ">
-        <ActivateBtn workflowId={workflowId}/>
-        <SaveBtn workflowId={workflowId}/>
+        <ActivateDialog triggerEl={
+    <Button variant={"ghost"} className="flex items-center gap-2">
+        <Play size={16} className="stroke-orange-400"/>
+        Activate
+    </Button>} workflowId={workflowId}/>
+      <SaveBtn workflowId={workflowId}/>
       </div>
     </div>
 

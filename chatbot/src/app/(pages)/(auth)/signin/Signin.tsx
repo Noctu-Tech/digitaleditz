@@ -26,7 +26,6 @@ function Signin() {
     mutationFn: handleSignin,
     onSuccess: () => {
       toast.success("Signed in Successfully", {id: "user-signin"});
-      
       router.push("/dashboard");
     },
     onError: () => {
@@ -47,7 +46,7 @@ function Signin() {
           <CardTitle className="text-2xl">Sign in</CardTitle>
           <CardDescription>
             Don't have an account?{" "}
-            <Link href="../auth/signup" className="underline underline-offset-4 hover:text-primary">
+            <Link href="../signup" className="underline underline-offset-4 hover:text-primary">
               Join us
             </Link>
           </CardDescription>

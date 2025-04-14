@@ -21,4 +21,6 @@ export const ActionMessageTask = {
     ],
     icon: (props: LucideProps) => (<MessageCircle className="stroke-yellow-600" {...props} />),
     isEntryPoint: false,
+    isAuthPoint: false,
+    isEndPoint:false
 }satisfies WorkflowTasks

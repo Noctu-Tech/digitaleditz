@@ -1,9 +1,11 @@
+// app/layout.tsx (Server Component by default)
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./ui/styles/globals.css";
-import { ReactScan } from "./ui/components/ReactScan";
-import { Toaster } from "@/components/ui/sonner";
+import "@/styles/globals.css";
+import { cookies } from "next/headers";
 import ProviderWrapper from "@/components/provider-wrapper";
+import { Toaster } from "sonner";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -24,18 +26,17 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
   return (
     <html lang="en">
-      {/* <ReactScan/> */}
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased w-full h-full`}
-      > 
-      <ProviderWrapper>
-        
-        {children}
-      </ProviderWrapper>
+      >
+        <ProviderWrapper>
+          {children}
+       </ProviderWrapper>
+       <Toaster richColors />
       </body>
-      <Toaster richColors/>
     </html>
   );
 }

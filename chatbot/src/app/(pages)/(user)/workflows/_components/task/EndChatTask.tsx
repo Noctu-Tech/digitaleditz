@@ -16,4 +16,6 @@ export const EndChatTask = {
         type:TaskParamType.STRING,}],
     icon: (props: LucideProps) => (<MessageCircle className="stroke-blue-600" {...props} />),
     isEntryPoint: false,
+    isAuthPoint: false,
+    isEndPoint:true
 }satisfies WorkflowTasks

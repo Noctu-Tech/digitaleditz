@@ -23,6 +23,17 @@ export type WorkflowTasks={
     icon:React.FC<LucideProps>;
     type:TaskType;
     isEntryPoint?:boolean;
+    isAuthPoint?:boolean;
+    isEndPoint?:boolean;
     inputs:TaskParam[];
     outputs:TaskParam[];
+}
+
+export type WorkflowData={
+    status: WorkflowStatus;
+    definition: string;
+    name: string;
+    color?: "none" | "blue" | "green" | "orange" | "purple" | "red";
+    description?: string;
+    isTemplate?: boolean;
 }

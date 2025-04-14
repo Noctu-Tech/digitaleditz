@@ -8,11 +8,12 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { MoreVertical, Edit, Trash, ChevronLeft, ChevronRight } from "lucide-react"
 import Image from "next/image"
 import { useState } from "react"
+import PropertyActions from "./PropertyActions"
+import { useRouter } from "next/navigation"
 
-function ViewDetailsDialog({property, onEdit, onDelete}:{
-  property: PropertyProps & { images: string[] }; // Modified type
-  onEdit?: () => void;
-  onDelete?: () => void;
+function ViewDetailsDialog({property}:{
+  property: PropertyProps; // Modified type
+
 }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const images = property?.images ? (Array.isArray(property.images) ? property.images : [property.images]) : []
@@ -30,36 +31,20 @@ function ViewDetailsDialog({property, onEdit, onDelete}:{
   }
 
   if (!property) return null
-
+  const router=useRouter();
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" className="w-full">View Details</Button>
+        <Button variant="outline" className="w-full">Preview</Button>
       </DialogTrigger>
       <DialogContent className="max-w-[625px]">
         <DialogHeader className="flex flex-row items-center justify-between">
           <DialogTitle>{property.title}</DialogTitle>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <MoreVertical className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={onEdit}>
-                <Edit className="mr-2 h-4 w-4" />
-                Edit
-              </DropdownMenuItem>
-              <DropdownMenuItem className="text-red-600" onClick={onDelete}>
-                <Trash className="mr-2 h-4 w-4" />
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+         <PropertyActions propertyId={property._id} propertyName={property.title}/>
         </DialogHeader>
         <ScrollArea className="max-h-[500px]">
           <div className="grid gap-6 py-4">
-            <div className="space-y-4">
+            {/* <div className="space-y-4">
               <div className="relative w-full h-[300px] overflow-hidden">
                 {images.length > 0 && (
                   <Image
@@ -109,7 +94,7 @@ function ViewDetailsDialog({property, onEdit, onDelete}:{
                   </button>
                 ))}
               </div>
-            </div>
+            </div> */}
             
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
@@ -117,7 +102,7 @@ function ViewDetailsDialog({property, onEdit, onDelete}:{
                 <p>Length: {property.length} {property.unit}</p>
                 <p>Width: {property.width} {property.unit}</p>
                 <p>Front: {property.front} {property.unit}</p>
-                <p>Total Area: {property.area()} {property.unit}²</p>
+                <p>Total Area: {property.area} {property.unit}²</p>
               </div>
               <div className="space-y-2">
                 <h3 className="font-semibold">Location Details</h3>
@@ -138,6 +123,7 @@ function ViewDetailsDialog({property, onEdit, onDelete}:{
           </div>
         </ScrollArea>
       </DialogContent>
+     
     </Dialog>
   )
 }

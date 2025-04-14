@@ -1,7 +1,6 @@
 'use client'
 import { useCallback, useState } from 'react'
 import { useForm, UseFormReturn } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { Building2, MapPin, Settings, FileCheck, ArrowLeft, ArrowRight, Send } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -16,11 +15,12 @@ import RenderStepContent from './_components/RenderStepContent'
 function Onboarding() {
   const [activeStep, setActiveStep] = useState(0)
   const form = useForm<OnboardingFormData>({
-    resolver: zodResolver(onboardingSchema),
     defaultValues: {
       businessType: 'residential',
-      services: []
+      services: [],
+      employees: '1-10' as const,
     }
+    
   })
 
   const steps = ['Business Info', 'Location', 'Services',  'Confirmation']
@@ -59,7 +59,7 @@ function Onboarding() {
     
     switch (step) {
       case 0:
-        fieldsToValidate = ['businessName', 'businessType', 'description'];
+        fieldsToValidate = ['businessName', 'businessType', 'description','employees', 'website', 'socialMedia'];
         break;
       case 1:
         fieldsToValidate = ['address', 'city', 'state', 'zip'];
@@ -142,8 +142,8 @@ function Onboarding() {
                 </Button>
                 {activeStep === steps.length - 1 ? (
                   <Button type="submit">
-                    Submit
-                    <Send className="ml-2 h-4 w-4" />
+                    {isPending?"Storing Credentials...":<>Submit
+                      <Send className="ml-2 h-4 w-4" /></>}
                   </Button>
                 ) : (
                   <Button

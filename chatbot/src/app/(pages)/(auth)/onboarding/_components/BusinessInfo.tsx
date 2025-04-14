@@ -39,7 +39,8 @@ function BusinessInfo({form}:{form:UseFormReturn<OnboardingFormData>}){
             <SelectContent>
               <SelectItem value="residential">Residential</SelectItem>
               <SelectItem value="commercial">Commercial</SelectItem>
-              <SelectItem value="both">Both</SelectItem>
+              <SelectItem value="agricultural">Agricultural</SelectItem>
+              <SelectItem value="all">All</SelectItem>
             </SelectContent>
           </Select>
           <FormMessage />
@@ -59,6 +60,84 @@ function BusinessInfo({form}:{form:UseFormReturn<OnboardingFormData>}){
               className="min-h-[100px]"
               {...field}
             />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+    <FormField
+      control={form.control}
+      name="foundedYear"
+      rules={{ required: "Founded year is required" }}
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>Founded Year</FormLabel>
+          <FormControl>
+            <Input type="number" {...field} />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+    <FormField
+      control={form.control}
+      name="employees"
+      rules={{ required: "Number of employees is required" }}
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>Number of Employees</FormLabel>
+          <Select onValueChange={field.onChange} defaultValue={field.value}>
+            <FormControl>
+              <SelectTrigger>
+                <SelectValue placeholder="Select employee range" />
+              </SelectTrigger>
+            </FormControl>
+            <SelectContent>
+              <SelectItem value="1-10">1-10</SelectItem>
+              <SelectItem value="10-50">10-50</SelectItem>
+              <SelectItem value="50-200">50-200</SelectItem>
+              <SelectItem value="200+">200+</SelectItem>
+            </SelectContent>
+          </Select>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+    <FormField
+      control={form.control}
+      name="website"
+      rules={{ required: "Website is required" }}
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>Website</FormLabel>
+          <FormControl>
+            <Input placeholder="www.example.com" {...field} />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+    <FormField
+      control={form.control}
+      name="socialMedia.linkedin"
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>LinkedIn Profile</FormLabel>
+          <FormControl>
+            <Input placeholder="www.example.com/company-name" {...field} />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+    <FormField
+      control={form.control}
+      name="socialMedia.instagram"
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>Instagram Handle</FormLabel>
+          <FormControl>
+            <Input placeholder="www.example.com/handle" {...field} />
           </FormControl>
           <FormMessage />
         </FormItem>

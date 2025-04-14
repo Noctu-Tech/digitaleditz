@@ -16,29 +16,14 @@ function AccountTab() {
               <div className="rounded-full p-2">
                 <User className="h-5 w-5" />
               </div>
-              <h2 className="text-lg font-medium">Profile Information</h2>
+              <h2 className="text-lg font-medium">Account Share Policy</h2>
             </div>
-            <Button variant="outline">Edit</Button>
+            <Button variant="outline">Set Public</Button>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <p className="text-sm mb-1">Full Name</p>
-              <p>Alex Johnson</p>
-            </div>
-            <div>
-              <p className="text-sm mb-1">Email Address</p>
-              <p>alex.johnson@example.com</p>
-            </div>
-            <div>
-              <p className="text-sm mb-1">Company</p>
-              <p>Johnson Industries Ltd.</p>
-            </div>
-            <div>
-              <p className="text-sm mb-1">Role</p>
-              <p>Administrator</p>
-            </div>
-          </div>
+          <p className="text-sm opacity-70">
+            Set account to public to allow others to view your profile. You can also share specific profile with others.
+          </p>
         </CardContent>
       </Card>
       

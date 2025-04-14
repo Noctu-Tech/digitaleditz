@@ -1,3 +1,5 @@
+from fastapi import Depends
+from services.auth.auth_utils import extract_user_data_from_token
 from database.mongo import get_database
 from bson import ObjectId
 from models.help.query import HelpModel
@@ -6,12 +8,6 @@ from datetime import datetime
 # Get the help collection
 help_collection = get_database("help_collection")
 
-def verify_user_auth(user_id: str, help_id: str) -> bool:
-    """
-    Verify if user is authorized to access/modify the help document
-    """
-    doc = help_collection.find_one({"_id": ObjectId(help_id)})
-    return doc and str(doc.get("user_id")) == user_id
 
 def insert_help(help_data: HelpModel) -> str:
     """
@@ -22,14 +18,14 @@ def insert_help(help_data: HelpModel) -> str:
     result = help_collection.insert_one(help_dict)
     return str(result.inserted_id)
 
-def delete_help(help_id: str, user_id: str) -> bool:
+def delete_help(help_id: str, user_data:tuple=Depends(extract_user_data_from_token)) -> bool:
     """
     Delete a help document by its ID if user is authorized
     Returns True if successful, False otherwise
     """
-    if not verify_user_auth(user_id, help_id):
-        return False
-    result = help_collection.delete_one({"_id": ObjectId(help_id)})
+    userId,role=user_data
+    
+    result = help_collection.delete_one({"_id": ObjectId(help_id),})
     return result.deleted_count > 0
 
 def update_help(help_id: str, update_data: HelpModel, user_id: str) -> bool:

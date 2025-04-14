@@ -1,5 +1,7 @@
+'use server'
 import { OnboardingFormData, onboardingSchema } from "@/schema/onboarding";
-import { handleOnboardApi } from "../api/onboard";
+import { handleOnboardApi } from "../functionapis/onboard";
+import { cookies } from "next/headers";
 
 
 export const handleOnboarding=async(form:OnboardingFormData )=>{
@@ -9,9 +11,7 @@ if(!success){
 }
 
 const result=await handleOnboardApi(data);
-console.log(result);
-if(!result){
-    console.log("@inside")
+if(!(result.data.status=="success")){
     throw new Error("Failed to OnBoard")
 }
 
