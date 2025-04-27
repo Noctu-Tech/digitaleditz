@@ -85,7 +85,7 @@ const HomePage = () => {
       </section>
 
       {/* Features section */}
-      <section id="features" className="container mx-auto px-4 py-20">
+      {/* <section id="features" className="container mx-auto px-4 py-20">
         <h2 className="text-4xl font-bold text-center mb-12">Features</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <div className="p-6 border rounded-xl hover:shadow-lg transition-shadow">
@@ -124,9 +124,10 @@ const HomePage = () => {
               Generate detailed insights with customizable reports and real-time analytics dashboard.
             </p>
           </div>
-        </div>
+        </div> */}
+        {/* </section> */}
       {/* Pricing section */}
-      <section id="pricing" className="container mx-auto px-4 py-20"></section>
+      <section id="pricing" className="container mx-auto px-4 py-20">
         <h2 className="text-4xl font-bold text-center mb-12">Pricing Plans</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[

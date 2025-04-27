@@ -87,7 +87,7 @@ def workflowUpdate(data:UpdateWorkflow,workflowId:str): # type: ignore
     
     try: 
         print("INSERTUPDATE",data)
-        workflow=workflow_collection.update_one({"_id":ObjectId(workflowId)},{"$set":{'definition':str(data)}})
+        workflow=workflow_collection.update_one({"_id":ObjectId(workflowId)},{"$set":{'definition':data.definition}})
         print(workflow)
         # Fetch the full inserted document
         inserted_workflow = workflow_collection.find_one({"_id": ObjectId(workflowId)})
@@ -111,7 +111,8 @@ def workflowDelete(data:str
                          ):
     # user_id,role=userData
     try: 
-        workflow=workflow_collection.delete_one({"_id":data})
+        workflow=workflow_collection.delete_one({"_id":ObjectId(data)})
+        print("@Delete Workflow",workflow)
         workflow=workflow.deleted_count
         if workflow!=0:
              return workflow

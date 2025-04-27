@@ -3,7 +3,8 @@
 import { AlertDialog, AlertDialogTitle,AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogAction } from "@/components/ui/alert-dialog"
 import { Input } from "@/components/ui/input";
 import { deleteProperty } from "@/lib/functions/property/deleteproperty";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { revalidatePath } from "next/cache";
 import { useState } from "react";
 import { toast } from "sonner";
 interface Props{
@@ -14,11 +15,16 @@ interface Props{
 }
 function DeletepropertyDialog({open,setOpen,propertyId,propertyName}:Props) {
   const [confirmText,setConfirmtext]=useState("");
+  
+const queryClient=useQueryClient();
   const deleteMutation=useMutation({
 mutationFn:deleteProperty,
 onSuccess:()=>{
-  toast.success("property Deleted Successfully",{id:propertyId});
+  toast.success("Property Deleted Successfully",{id:propertyId});
   setConfirmtext("");
+  queryClient.invalidateQueries({
+    queryKey: ['Properties'],
+  });
 },
 onError:()=>{
   toast.error("Something went Wrong",{id:propertyId});

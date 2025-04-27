@@ -6,7 +6,7 @@ import { useState } from "react";
 
 function AccountTab() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  
+  const [profilepublic,setProfilepublic]=useState(false);
   return (
     <div className="space-y-6">
       <Card>
@@ -18,7 +18,7 @@ function AccountTab() {
               </div>
               <h2 className="text-lg font-medium">Account Share Policy</h2>
             </div>
-            <Button variant="outline">Set Public</Button>
+            <Button variant="outline" onClick={()=>setProfilepublic((prev)=>!prev)}>{profilepublic?<>Set Public</>:<>Set Private</>}</Button>
           </div>
           
           <p className="text-sm opacity-70">
@@ -82,7 +82,7 @@ function AccountTab() {
             
             {!showDeleteConfirm ? (
               <Button 
-                variant="outline" 
+                variant={"destructive"} 
                 onClick={() => setShowDeleteConfirm(true)}
               >
                 Delete Account
@@ -96,7 +96,9 @@ function AccountTab() {
                 <div className="flex gap-2">
                   <Button 
                     className="bg-red-600 hover:bg-red-700 text-white text-sm"
-                    onClick={() => setShowDeleteConfirm(false)}
+                    onClick={() => {
+                    
+                      setShowDeleteConfirm(false)}}
                   >
                     Yes, Delete My Account
                   </Button>

@@ -6,14 +6,14 @@ export const StartChatTask = {
     type: TaskType.START_CHAT,
     label: "Start Chat",
     inputs: [{
-        name: "Message Request",
+        name: "Message Trigger",
         type:TaskParamType.STRING,
         helperText: "Text user might send to start a chat session could be a greeting or a question like 'Hi' or 'Hello'",
         required: true,
         hideHandle: true,
     },],
+    body:{name:"Message Body",type:TaskParamType.STRING,helperText:"Message Body",required:true,hidehandle:true},
     outputs:[
-        {name:"Start Chat",type:TaskParamType.AUTHENTICATION}
     ],
     icon: (props: LucideProps) => (<MessageCircle className="stroke-green-600" {...props} />),
     isEntryPoint: true,

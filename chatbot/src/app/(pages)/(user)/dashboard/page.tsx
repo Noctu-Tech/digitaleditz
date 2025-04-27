@@ -12,11 +12,12 @@ import { User } from '@/types/profile';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import UpdateStatusRoleDialog from './_components/UpdateStatusRoleDialog';
+import AdminSpec from './_components/AdminSpec';
 
 const Page = () => {
 
 
-  const {data:usersList,isLoading} =useQuery<User[]>({
+  const {data:users,isLoading} =useQuery({
     queryKey:['users'],
       queryFn:GetUsers
     }) || [];
@@ -25,13 +26,15 @@ const Page = () => {
     const [statusFilter, setStatusFilter] = useState('all');
     const [pageSize, setPageSize] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
-      const filteredUsers = usersList?.filter(user => {
-        const matchesSearch = 
-          user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          user.email.toLowerCase().includes(searchQuery.toLowerCase());
-        const matchesStatus = statusFilter === 'all' || user.status.toLowerCase() === statusFilter.toLowerCase();
-        return matchesSearch && matchesStatus;
-      });
+    console.log(users)
+    const usersList=users;
+    const filteredUsers = usersList?.filter(user => {
+          const matchesSearch = 
+            user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            user.email.toLowerCase().includes(searchQuery.toLowerCase());
+          const matchesStatus = statusFilter === 'all' || user.status.toLowerCase() === statusFilter.toLowerCase();
+          return matchesSearch && matchesStatus;
+        });
     
       const totalPages = Math.ceil((filteredUsers ?? []).length / pageSize);
       const paginatedUsers = (filteredUsers ?? []).slice(
@@ -40,13 +43,16 @@ const Page = () => {
       );
       const {hasPermission}=useAuth();
       const [statusopen,setStatusOpen]=useState(false);
-      const [user,setUser]=useState<User>();
-  return (
+      const [user,setUser]=useState();
+  if (isLoading){
+    return <>Loading....</>
+  }
+ return (
     <ProtectedRoute>
       <UpdateStatusRoleDialog open={statusopen} onOpenChange={setStatusOpen} user={user}/>
     <div className="w-full min-h-screen">
       <div className="">
-    
+    {hasPermission(["admin"]) && <AdminSpec/>}
         <div className="grid grid-cols-1 gap-6">
  <div className="lg:col-span-2">
    <div className=" p-6 rounded-xl shadow-sm">
@@ -93,9 +99,9 @@ const Page = () => {
          <TableBody>
            {paginatedUsers.map((user, index) => (
              <TableRow key={index}>
-               <TableCell>{user.name}</TableCell>
+               <TableCell>{user.username}</TableCell>
                <TableCell>{user.email}</TableCell>
-               <TableCell className='gap-4 flex'>{user.status}
+               <TableCell className='gap-4 flex'>{user.u_status}
                 {/* {hasPermission(['admin'])&&<DropdownMenu modal={false}>
                   <DropdownMenuTrigger>
                     <Button variant={'outline'} size={'sm'}>
@@ -106,7 +112,7 @@ const Page = () => {
                   <DropdownMenuContent side={'right'}><DropdownMenuItem>Edit</DropdownMenuItem>
                   </DropdownMenuContent></DropdownMenuGroup></DropdownMenu>} */}
                   </TableCell>
-               <TableCell>{user.lastActive}</TableCell>
+               <TableCell>{user.u_role}</TableCell>
                {hasPermission(['admin'])&&<TableCell className='gap-4 flex'>{user.role}
                <DropdownMenu modal={false}>
                   <DropdownMenuTrigger>

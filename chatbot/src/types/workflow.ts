@@ -26,7 +26,8 @@ export type WorkflowTasks={
     isAuthPoint?:boolean;
     isEndPoint?:boolean;
     inputs:TaskParam[];
-    outputs:TaskParam[];
+    body?:TaskParam;
+    outputs?:TaskParam[];
 }
 
 export type WorkflowData={
@@ -36,4 +37,9 @@ export type WorkflowData={
     color?: "none" | "blue" | "green" | "orange" | "purple" | "red";
     description?: string;
     isTemplate?: boolean;
+}
+
+export type ActivateFlowData={
+    phone_number:string;
+    workflow_id:string;
 }

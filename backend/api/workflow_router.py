@@ -23,17 +23,14 @@ async def saveworkflow(data:WorkflowModel):
     print(workflowId)
     return workflowId
 
-@router.post("/update/{workflowId}")
+@router.post("/update")
 async def updateworkflow(data:UpdateWorkflow): #type: ignore
-    result=workflowUpdate(data.definition,data.id)
+    result=workflowUpdate(data,data.id)
     return JSONResponse(content=result)
 
-@router.delete("/delete")
+@router.delete("/delete/{data}")
 async def deleteworkflow(data:str):
     result=workflowDelete(data)
     return JSONResponse(content=result)
 
-@router.post("/activate/{workflowId}")
-async def activateworkflow(workflowId:str,):
-    result=executeWorkflow(workflowId)
-    return JSONResponse(content=result)
+

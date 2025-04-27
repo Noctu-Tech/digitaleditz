@@ -29,7 +29,7 @@ function PropertyActions({propertyId,propertyName}:Props) {
       </Button>
     </DropdownMenuTrigger>
     <DropdownMenuContent className="z-50" align="end">
-      <DropdownMenuItem className="cursor-pointer text-yellow-600 flex justify-start"><Button variant={"ghost"} onClick={()=>{router.push(`products/${propertyId}`)}}><PenBoxIcon size={12}/>Edit</Button></DropdownMenuItem>
+      <DropdownMenuItem className="cursor-pointer text-yellow-600 flex justify-start"><Button variant={"ghost"} onClick={()=>{router.push(`products/view-product/${propertyId}`)}}><PenBoxIcon size={12}/>Edit</Button></DropdownMenuItem>
       <DropdownMenuItem className="cursor-pointer text-destructive flex justify-start"><Button variant={"ghost"} onClick={()=>setShowdeletedialog((prev)=>!prev)}><Trash2Icon size={12}/>Delete</Button></DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu></>

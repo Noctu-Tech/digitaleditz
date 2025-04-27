@@ -1,0 +1,30 @@
+services:
+  frontend:
+    build: ./chatbot
+    ports:
+      - "3000:3000"
+    environment:
+      - IS_DEV=true
+    env_file:
+      - ./chatbot/src/.env  # or false depending on what you want
+    depends_on:
+      - backend
+
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mongodb
+    env_file:
+      - ./backend/.env 
+  
+  mongodb:
+    image: mongo:6
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:

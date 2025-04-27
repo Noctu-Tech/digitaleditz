@@ -14,6 +14,7 @@ from models.user.user import OnboardSchema
 router = APIRouter()
 user_collection = get_database("users")
 customer_collection=get_database("customer")
+profile_collection=get_database("profile")
 UpdateUser = create_model(
     'UpdateUser',
     **{field: (Optional[type_], None) for field, type_ in UserData.__annotations__.items()}
@@ -38,28 +39,39 @@ async def check_admin_role(user_data: dict):
     user = user_collection.find_one({"_id": ObjectId(user_id)})
     if not (user and user["u_role"] == authority and authority == UserRole.ADMIN):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized")
-
+    return True
 @router.get('/all')
 async def get_many(user_data: dict = Depends(extract_user_data_from_token)):
     try:
-        isAdmin=await check_admin_role(user_data)
-        if isAdmin is True:
-            data = list(user_collection.aggregate([
-            {"$addFields": {"_id": {"$toString": "$_id"}}},
-            {"$project": {"password": 0}}
-             ]))
+        isAdmin = await check_admin_role(user_data)
+        print("@admin", isAdmin)
+        
+        if isAdmin:
+            # Get admin users with properly converted ObjectIds
+            admin = list(user_collection.aggregate([
+                {"$addFields": {"_id": {"$toString": "$_id"}}},
+                {"$project": {"password": 0}}
+            ]))
+            
+            # Get customers with properly converted ObjectIds
             customers = list(customer_collection.aggregate([
-    {"$addFields": {"_id": {"$toString": "$_id"}}}
-]))
-            return JSONResponse(content={"users": data+customers})
+                {"$addFields": {"_id": {"$toString": "$_id"}}}
+            ]))
+            
+            data = admin + customers
         else:
-            user_id,_=user_data['user_id'],user_data['authority']
-            data=list(customer_collection.find({"user_id":user_id}))
+            user_id = user_data['user_id']
+            # Also convert ObjectIds for customer data
+            data = list(customer_collection.aggregate([
+                {"$match": {"user_id": user_id}},
+                {"$addFields": {"_id": {"$toString": "$_id"}}}
+            ]))
+            
+        return JSONResponse(content=data)
     except HTTPException as he:
         raise he
     except Exception as e:
         await handle_exception(e, "Error fetching users")
-
 @router.get('/me')
 async def get_my_profile(user_data: dict = Depends(extract_user_data_from_token)):
     try:
@@ -156,3 +168,29 @@ async def delete_one(user_id: str, user_data: tuple = Depends(extract_user_data_
         raise he
     except Exception as e:
         await handle_exception(e, "Error deleting user")
+
+@router.get('/me/profile')
+async def get_business_profile(
+    user_data: tuple = Depends(extract_user_data_from_token)
+    ):
+    try:
+        user_id, tok = user_data['user_id'], user_data['authority']
+        user=user_collection.find_one({"_id":ObjectId(user_id)})
+        profile = profile_collection.find_one({'user_id':ObjectId(user_id)})
+        if not user:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+        
+        del profile["user_id"]
+        del user['_id']
+        del user['password']
+        profile['_id']=str(profile['_id'])
+        print(user)
+        print(profile)
+        combined_data={**user,**profile}
+        return JSONResponse(content=combined_data)
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        await handle_exception(e, "Error fetching user")
+    
+    

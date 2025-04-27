@@ -15,18 +15,19 @@ import { PropertyProps } from '@/types/property'
 const ProductPage = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 9
-  const {data:mockProducts = [],isLoading} = useQuery({
-    queryKey: ['mockProducts'],
-    queryFn:()=>GetProperties()
+  const {data:Properties = [],isLoading} = useQuery({
+    queryKey: ['Properties'],
+    queryFn:GetProperties,
+    staleTime:1000*60*2
     })     
-  const totalPages = Math.ceil(mockProducts.length / itemsPerPage)
-
-  console.log("mockProducts",mockProducts);
+  const totalPages = Math.ceil(Properties.length / itemsPerPage)
   const getCurrentItems = () => {
     const startIndex = (currentPage - 1) * itemsPerPage
-    return mockProducts.slice(startIndex, startIndex + itemsPerPage)
+    return Properties.slice(startIndex, startIndex + itemsPerPage)
   }
- 
+ if (isLoading){
+  return <>Loading Products Data....</>
+ }
   return (
     <ProtectedRoute>
     <div className="container mx-auto p-6">

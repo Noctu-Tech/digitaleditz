@@ -6,6 +6,7 @@ import { getStatusColor } from "@/lib/helper/statusColor"
 import { useState } from "react"
 import PropertyActions from "./PropertyActions"
 import {useRouter} from "next/navigation"
+import { Button } from "@/components/ui/button"
 function PropertyItem({property}:{property:PropertyProps}) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const images = Array.isArray(property.image) ? property.image : [property.image];
@@ -74,9 +75,9 @@ const router=useRouter()
         </div>
         <p className="text-gray-600 text-sm line-clamp-2">{property.description}</p>
       </CardContent>
-      <CardFooter className="pt-4 flex gap-4">
+      <CardFooter className="pt-4 flex gap-4 justify-center justify-content-center place-items-center">
         {property && <ViewDetailsDialog property={{ ...property }} />} 
-        <Button variant="outline" className="w-full mt-4" onClick={()=>router.push(`/properties/${property._id}`)}>
+        <Button variant="default" className="w-full" onClick={()=>router.push(`/products/view-product/${property._id}`)}>
                 View More
               </Button>
       </CardFooter>

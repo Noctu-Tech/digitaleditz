@@ -36,7 +36,7 @@ function NodeHeader({ taskType, nodeId }: { taskType: TaskType, nodeId: string }
                             }
                         }}
                         size={"icon"}
-                        disabled={task.isEntryPoint || task.isAuthPoint || task.isEndPoint}>
+                        disabled={task.isEntryPoint}>
                             <Trash2Icon size={12} />
                         </Button>
                     </TooltipWrapper>

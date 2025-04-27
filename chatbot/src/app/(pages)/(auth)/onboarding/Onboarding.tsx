@@ -1,14 +1,14 @@
 'use client'
 import { useCallback, useState } from 'react'
-import { useForm, UseFormReturn } from 'react-hook-form'
-import { Building2, MapPin, Settings, FileCheck, ArrowLeft, ArrowRight, Send } from 'lucide-react'
+import { useForm} from 'react-hook-form'
+import { Building2, MapPin, Settings, ArrowLeft, ArrowRight, Send } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { handleOnboarding } from '@/lib/functions/onboarding'
-import { OnboardingFormData, onboardingSchema } from '@/schema/onboarding'
+import { OnboardingFormData} from '@/schema/onboarding'
 import { Form } from '@/components/ui/form'
 import RenderStepContent from './_components/RenderStepContent'
 
@@ -25,14 +25,14 @@ function Onboarding() {
 
   const steps = ['Business Info', 'Location', 'Services',  'Confirmation']
   const stepIcons = [
-    <Building2 size={24} />,
-    <MapPin size={24} />,
-    <Settings size={24} />,
-    <Send size={24} />
+    Building2 ,
+    MapPin ,
+    Settings ,
+    Send
   ]
 
   const router = useRouter();
-  const {mutate, isPending, isError, error} = useMutation({
+  const {mutate, isPending} = useMutation({
     mutationFn: handleOnboarding,
     onSuccess: () => {
       const formData = form.getValues();
@@ -46,7 +46,7 @@ function Onboarding() {
     },
     onError: () => {
       toast.error("Failed to OnBoard", {id: "user-onboard"})
-    }
+        }
   })
 
   const onSubmit = useCallback((values: OnboardingFormData) => {
@@ -101,7 +101,9 @@ function Onboarding() {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <div className="flex justify-center mb-8">
-                {steps.map((label, index) => (
+                {steps.map((label, index) => {
+                 const Icon=stepIcons[index]
+                  return (
                   <div
                     key={label}
                     className={`flex items-center ${
@@ -115,7 +117,8 @@ function Onboarding() {
                           : 'bg-muted text-muted-foreground'
                       }`}
                     >
-                      {stepIcons[index]}
+                  
+          <Icon size={24} />
                     </div>
                     {index < steps.length - 1 && (
                       <div
@@ -125,7 +128,7 @@ function Onboarding() {
                       />
                     )}
                   </div>
-                ))}
+                )})}
               </div>
 
               <RenderStepContent step={activeStep} form={form}/>

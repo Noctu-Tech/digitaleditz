@@ -21,6 +21,6 @@ export const UpdateWorkflow=async({workflowId,definition}:{workflowId:string,def
  }
  catch(e){
     console.error("Something went Wrong",e)
-    throw new Error("Failed to create new workflow")
+    throw new Error("Failed to update new workflow")
  }
 }

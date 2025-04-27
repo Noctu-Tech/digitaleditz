@@ -12,10 +12,11 @@ function SaveBtn({workflowId}:{workflowId:string}) {
     const {toObject}=useReactFlow();
     console.log("toObject",toObject())
     const saveMutation=useMutation({
+      mutationKey:["Save Workflow"],
       mutationFn:UpdateWorkflow,
       onSuccess: ()=>{
         toast.success("Flow saved Succeessfully",{id:"save-workflow"});
-        
+        revalidatePath(`/workflows/studio/${workflowId}`);
       },
       onError:()=>{toast.error(
         "Something went wrong",{id:"save-workflow"}

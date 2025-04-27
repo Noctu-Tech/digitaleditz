@@ -1,10 +1,8 @@
 "use client"
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
-import { User, UserRole, AuthResponse } from '../types/auth';
-import apiClient from '@/lib/functionapis/apiclient';
-import { useRouter } from 'next/navigation';
-import { GetMe } from '@/lib/functions/username/profile';
+import { UserRole } from '../types/auth';
+import apiClientNew from '@/lib/functionapis/apiclientnew';
 
 // Add this constant at the top level
 const isDev = process.env.NODE_ENV === 'development';
@@ -17,14 +15,13 @@ export const authKeys = {
 
 // Auth hook for login, logout, and current user
 export const useAuth = () => {
-  const router = useRouter();
 
   // Get current user query
   const { data: user } = useQuery({
     queryKey: authKeys.user,
     queryFn: async()=>{
       try{
-        const response=await apiClient.get('/user/me')
+        const response=await apiClientNew.get('/user/me')
         return response.data
       }
       catch(e){
@@ -40,6 +37,7 @@ export const useAuth = () => {
   const hasPermission = (requiredRoles: UserRole[]) => {
     if (isDev) return true; // In development mode, grant all permissions
     if (!user) return false;
+    console.log(user)
     if (user.roles.includes('admin')) return true; // Admin has all permissions
     return requiredRoles.some(role => user.roles.includes(role));
   };

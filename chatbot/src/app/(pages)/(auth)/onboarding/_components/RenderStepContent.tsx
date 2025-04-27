@@ -5,7 +5,6 @@ import BusinessInfo from "./BusinessInfo";
 import AddressInfo from "./AddressInfo";
 import {ServicesInfo} from "./ServicesInfo";
 import ContactInfo from "./ContactInfo";
-import SubmitTab from "../../verification/SubmitTab";
 interface RenderStepContentProps {
   step: number;
   form: UseFormReturn<OnboardingFormData>;

@@ -18,13 +18,10 @@ import SidebarMenuWrapper from './SideBarMenuWrapper';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import SignoutAlert from './SignoutAlert';
-import { useQuery } from '@tanstack/react-query';
-import { GetMe } from '@/lib/functions/username/profile';
 import Logo from './Logo';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { useState } from 'react';
 import { useAuth } from '@/hooks/auth';
-import apiClient from '@/lib/functionapis/apiclient';
 
 
 export function AppSidebar({collapsed}: { collapsed: boolean }) {

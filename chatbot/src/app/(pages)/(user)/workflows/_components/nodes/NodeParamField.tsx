@@ -9,13 +9,13 @@ import { useCallback } from "react";
 import { ProductMessageTask } from "../task/ProductMessage";
 import ProductParam from "../param/ProductParam";
 
-function NodeParamField({ param,nodeId,disabled }: { param: TaskParam,nodeId:string,disabled:boolean} ) {
+function NodeParamField({ param,nodeId,disabled,dataType }: {param: TaskParam,nodeId:string,disabled?:boolean,dataType:string} ) {
    const {updateNodeData,getNode}=useReactFlow();
    const node=getNode(nodeId) as AppNode;
-   const value =node?.data.inputs?.[param.name];
+   const value =node?.data.dataType?.[param.name];
    console.log("@Value",nodeId);
    const updateNodeParamValue = useCallback((newvalue:string)=>{
-       updateNodeData(nodeId,{inputs:{...node.data.inputs,[param.name]:newvalue}})},[updateNodeData,nodeId,param.name,node?.data.inputs]);
+       updateNodeData(nodeId,{dataType:{...node.data.dataType,[param.name]:newvalue}})},[updateNodeData,nodeId,param.name,node?.data.inputs]);
    switch(param.type){
     case TaskParamType.PRODUCT:
         return <ProductParam param={param} value={""} updateNodeParamValue={updateNodeParamValue}/>

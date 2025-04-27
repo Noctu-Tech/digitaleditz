@@ -2,36 +2,33 @@
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { getStatusColor } from "@/lib/helper/statusColor"
 import { PropertyProps } from "@/types/property"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { MoreVertical, Edit, Trash, ChevronLeft, ChevronRight } from "lucide-react"
-import Image from "next/image"
-import { useState } from "react"
+
+
 import PropertyActions from "./PropertyActions"
-import { useRouter } from "next/navigation"
+import { useAuth } from "@/hooks/auth"
 
 function ViewDetailsDialog({property}:{
   property: PropertyProps; // Modified type
 
 }) {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const images = property?.images ? (Array.isArray(property.images) ? property.images : [property.images]) : []
+  // const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  // const images = property?.images ? (Array.isArray(property.images) ? property.images : [property.images]) : []
 
-  const nextImage = () => {
-    if (images.length > 1) {
-      setCurrentImageIndex((prev) => (prev + 1) % images.length)
-    }
-  }
+  // const nextImage = () => {
+  //   if (images.length > 1) {
+  //     setCurrentImageIndex((prev) => (prev + 1) % images.length)
+  //   }
+  // }
 
-  const prevImage = () => {
-    if (images.length > 1) {
-      setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length)
-    }
-  }
+  // const prevImage = () => {
+  //   if (images.length > 1) {
+  //     setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length)
+  //   }
+  // }
 
   if (!property) return null
-  const router=useRouter();
+const {hasPermission}=useAuth();
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -120,6 +117,10 @@ function ViewDetailsDialog({property}:{
               <h3 className="font-semibold mb-2">Description</h3>
               <p className="text-gray-600">{property.description}</p>
             </div>
+            {hasPermission(['admin'])&&<div>
+              <h3 className="font-semibold mb-2">User Id:</h3>
+              <p className="text-gray-600">{property.user_id}</p>
+            </div>}
           </div>
         </ScrollArea>
       </DialogContent>

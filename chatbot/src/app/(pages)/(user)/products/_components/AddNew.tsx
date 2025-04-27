@@ -18,7 +18,6 @@ import { PropertyFormValues, propertySchema } from "@/schema/property"
 import { ImageIcon } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { handleImageUpload } from "@/lib/functionapis/uploadMedia"
-import { debounce } from "lodash" // Add this import
 
 function AddNew({triggerText}:{triggerText?:string}) {
   const [selectedImages, setSelectedImages] = useState<File[]>([]);

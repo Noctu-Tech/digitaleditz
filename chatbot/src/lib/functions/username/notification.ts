@@ -2,5 +2,7 @@ const handleClearNotification = (id:any) => {
     };
 const handleClearAll = () => {        
 }; 
-
-export {handleClearNotification, handleClearAll};
+const fetchNotifications=async () => {
+    return [{title:"Notification Title",description:"Notification Description",timestamp:"sometimestamp"}]
+}
+export {handleClearNotification, fetchNotifications,handleClearAll};

@@ -1,25 +1,25 @@
 'use client'
 import { useState, useRef, useEffect } from 'react';
-import { Send, Paperclip, Smile, User, Search, Mail, Phone, MessageCircle, Contact } from 'lucide-react';
-import { Button } from "@/components/ui/button";
 import ProtectedRoute from '@/context/ProtectedRoute';
 import ChatMessage from './_components/ChatMessage';
 import ChatInput from './_components/ChatInput';
-import ContactItem from './_components/ContactItem';
 import ChatHeader from './_components/ChatHeader';
+import ContactSidebar from './_components/ContactSidebar';
 
 const Page = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [message, setMessage] = useState('');
-  const [selectedContact, setSelectedContact] = useState({ id: 1, name: 'John Doe', status: 'online', unread: 3, lastMessage: 'Hey, how are you?', lastActive: '2m ago' });
+  const [selectedContact, setSelectedContact] = useState(
+    // { id: 1, name: 'John Doe', status: 'online', unread: 3, lastMessage: 'Hey, how are you?', lastActive: '2m ago' }
+  );
  
 
   // Mock contacts data
   const [contacts, setContacts] = useState([
-    { id: 1, name: 'John Doe', status: 'online', unread: 3, lastMessage: 'Hey, how are you?', lastActive: '2m ago' },
-    { id: 2, name: 'Alice Smith', status: 'offline', unread: 0, lastMessage: 'Thanks for your help!', lastActive: '1h ago' },
-    { id: 3, name: 'Bob Johnson', status: 'online', unread: 1, lastMessage: 'Can we meet tomorrow?', lastActive: '5m ago' },
-    { id: 4, name: 'Emma Wilson', status: 'busy', unread: 0, lastMessage: 'The project is ready', lastActive: '30m ago' },
+    // { id: 1, name: 'John Doe', status: 'online', unread: 3, lastMessage: 'Hey, how are you?', lastActive: '2m ago' },
+    // { id: 2, name: 'Alice Smith', status: 'offline', unread: 0, lastMessage: 'Thanks for your help!', lastActive: '1h ago' },
+    // { id: 3, name: 'Bob Johnson', status: 'online', unread: 1, lastMessage: 'Can we meet tomorrow?', lastActive: '5m ago' },
+    // { id: 4, name: 'Emma Wilson', status: 'busy', unread: 0, lastMessage: 'The project is ready', lastActive: '30m ago' },
   ]);
 
   interface ChatMessage {
@@ -31,20 +31,20 @@ const Page = () => {
   }
 
   const [chatMessages, setChatMessages] = useState<Record<string, ChatMessage[]>>({
-    '1': [
-      { id: 1, sender: 'John Doe', content: 'Hey, how are you?', timestamp: '10:30 AM', isSender: false },
-      { id: 2, sender: 'Me', content: 'I\'m good, thanks! How about you?', timestamp: '10:31 AM', isSender: true },
-      { id: 3, sender: 'John Doe', content: 'Great! Just finished working on the new design.', timestamp: '10:32 AM', isSender: false },
-    ],
-    2: [
-      { id: 1, sender: 'Alice Smith', content: 'Thanks for your help!', timestamp: '9:30 AM', isSender: false },
-    ],
-    3: [
-      { id: 1, sender: 'Bob Johnson', content: 'Can we meet tomorrow?', timestamp: '11:30 AM', isSender: false },
-    ],
-    4: [
-      { id: 1, sender: 'Emma Wilson', content: 'The project is ready', timestamp: '12:30 PM', isSender: false },
-    ],
+    // '1': [
+    //   { id: 1, sender: 'John Doe', content: 'Hey, how are you?', timestamp: '10:30 AM', isSender: false },
+    //   { id: 2, sender: 'Me', content: 'I\'m good, thanks! How about you?', timestamp: '10:31 AM', isSender: true },
+    //   { id: 3, sender: 'John Doe', content: 'Great! Just finished working on the new design.', timestamp: '10:32 AM', isSender: false },
+    // ],
+    // 2: [
+    //   { id: 1, sender: 'Alice Smith', content: 'Thanks for your help!', timestamp: '9:30 AM', isSender: false },
+    // ],
+    // 3: [
+    //   { id: 1, sender: 'Bob Johnson', content: 'Can we meet tomorrow?', timestamp: '11:30 AM', isSender: false },
+    // ],
+    // 4: [
+    //   { id: 1, sender: 'Emma Wilson', content: 'The project is ready', timestamp: '12:30 PM', isSender: false },
+    // ],
   });
 
   const scrollToBottom = () => {
@@ -99,7 +99,7 @@ const Page = () => {
     <div className="h-screen flex">
       {/* Contacts Sidebar */}
       
-
+<ContactSidebar contacts={contacts} handleContactSelect={handleContactSelect}/>
       {/* Chat Area */}
       <div className="flex-1 flex flex-col">
         {selectedContact ? (

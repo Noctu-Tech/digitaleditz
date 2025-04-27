@@ -1,35 +1,40 @@
-import { GetMyProfile } from "@/lib/functionapis/profile";
-import { User } from "@/types/profile";
-
+import { GetMyProfile,GetMy } from "@/lib/functionapis/profile";
+import { GetAllUsers } from "@/lib/functionapis/user";
 
 export async function GetMe() {
-  console.log("GetMe function called"); // Debugging line
-  try {; // Debugging line
-      const data  = await GetMyProfile();
+  console.log("GetMe function called"); 
+  try {
+      const data  = await GetMy();
       return data;
   } catch (error) {
       console.error('Error fetching user:', error);
-      throw error; // Important: rethrow the error
+      throw error; 
   }
 }
-export const GetUsers = async (): Promise<User[]> => {
+export const GetUsers = async () => {
+try{
+  const response=await GetAllUsers();
+  console.log("@RESPONSE",response)
+  return response;
 
-   return [
-    { name: 'John Doe', email: 'john@example.com', role: 'admin', status: 'Active', lastActive: '2h ago' },
-    { name: 'Jane Smith', email: 'jane@example.com', role: 'client', status: 'Offline', lastActive: '1d ago' },
-    { name: 'Mike Johnson', email: 'mike@example.com', role: 'admin', status: 'Active', lastActive: '5m ago' },
-    { name: 'John Doe', email: 'john@example.com', role: 'admin', status: 'Active', lastActive: '2h ago' },
-    { name: 'Jane Smith', email: 'jane@example.com', role: 'client', status: 'Offline', lastActive: '1d ago' },
-    { name: 'Mike Johnson', email: 'mike@example.com', role: 'admin', status: 'Active', lastActive: '5m ago' },
-    { name: 'John Doe', email: 'john@example.com', role: 'admin', status: 'Active', lastActive: '2h ago' },
-    { name: 'Jane Smith', email: 'jane@example.com', role: 'client', status: 'Offline', lastActive: '1d ago' },
-    { name: 'Mike Johnson', email: 'mike@example.com', role: 'admin', status: 'Active', lastActive: '5m ago' },
-    { name: 'John Doe', email: 'john@example.com', role: 'admin', status: 'Active', lastActive: '2h ago' },
-    { name: 'Jane Smith', email: 'jane@example.com', role: 'client', status: 'Offline', lastActive: '1d ago' },
-    { name: 'Mike Johnson', email: 'mike@example.com', role: 'admin', status: 'Active', lastActive: '5m ago' },
-   ];
+}catch(e){
+  console.error("Error fetching users:",e)
+  throw e
+}
  }
 
-const getProfile = async (userId: string) => {
-  
+export const GetProfile = async()=>{
+  try {
+    console.log("SOMETHING HERE !")
+    const data= await GetMyProfile()
+    console.log("Something here",data)
+    return data
+  } catch (error) {
+    console.error("Get Profile",error)
+    throw error
+  }
+}
+
+export const EditProfile=async(values:any)=>{
+
 }

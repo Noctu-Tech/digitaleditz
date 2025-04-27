@@ -14,20 +14,18 @@ interface ProtectedRouteProps {
 }
 const ProtectedRoute = ({ children, requiredRoles = [],isdev=ENV.ISDEV }: ProtectedRouteProps) => {
 
-  const { isAuthenticated,isActivated, isLoading, hasPermission } = useAuth();
+  const { isAuthenticated,isActivated, hasPermission } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
   const isDashboard = pathname === '/dashboard' || pathname === '/dashboard/';
+  const isPublic= pathname==='/settings/'||pathname==='/help/'
   if (isdev) {
     console.log(isdev)
     return <>{children}</>
   }
 
  
-  
-  else if (isLoading) {
-    return <div>Loading...</div>;
-  }
+ 
 
   else if (!isAuthenticated) {
     router.push('/signin');
@@ -41,7 +39,7 @@ const ProtectedRoute = ({ children, requiredRoles = [],isdev=ENV.ISDEV }: Protec
   else if (!isActivated){
     if(isDashboard){
     return<><VerificationTimeline/></>}
-    if(!isDashboard){
+    if(!isDashboard && !isPublic){
      
       return <><VerificationPending/></>;
     }

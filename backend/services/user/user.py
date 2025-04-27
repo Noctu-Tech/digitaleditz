@@ -12,7 +12,7 @@ async def Onboard(data: UserOnboardingSchema, id: str):
             return {"status": "error", "message": "Profile already exists"}
             
         # Create document
-        profile_doc = {**data.model_dump(), "user_id": id}
+        profile_doc = {**data.model_dump(), "user_id": ObjectId(id)}
         # Insert into database
         result = profile_collection.insert_one(profile_doc)
         

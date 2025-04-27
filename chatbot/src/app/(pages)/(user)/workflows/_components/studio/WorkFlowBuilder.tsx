@@ -58,48 +58,79 @@ const WorkflowBuilder = ({workflow}:{workflow:WorkFlow}) => {
   );
    setNodes((nds)=>nds.concat(newNode))
    },[screenToFlowPosition,setNodes])
-   const onConnect=useCallback((conection:Connection)=>{
-    setEdges(eds=>addEdge({...conection,animated:true},eds))
-    if(!conection.targetHandle) return;
-    const node =nodes.find((nd)=>nd.id===conection.target);
-    if(!node)return;
+   const onConnect = useCallback((connection: Connection) => {
+    setEdges((eds) => addEdge({ ...connection, animated: true }, eds));
+    
+    if (!connection.targetHandle) return;
+  
+    const node = nodes.find((nd) => nd.id === connection.target);
+    if (!node) return;
+  
     const nodeInputs = node.data.inputs;
-    delete nodeInputs[conection.targetHandle];
-    updateNodeData(node.id,{
-      inputs:nodeInputs
-    })
-  },[setEdges,updateNodeData,nodes])
-  const isValidConnection= useCallback((connection:Edge|Connection)=>{
-    //no self conection
-    if (connection.source===connection.target){
+    delete nodeInputs[connection.targetHandle];
+  
+    updateNodeData(node.id, {
+      inputs: nodeInputs,
+    });
+  
+  }, [setEdges, updateNodeData, nodes]);
+  
+  const isValidConnection = useCallback((connection: Edge | Connection) => {
+    // No self-connection
+    if (connection.source === connection.target) {
       return false;
     }
-    const source =nodes.find((node)=>node.id ===connection.source);
-    const target =nodes.find((node)=>node.id ===connection.target);
-    if(!source||!target){
-      console.error("invalid connection: source or target not found");
+  
+    const source = nodes.find((node) => node.id === connection.source);
+    const target = nodes.find((node) => node.id === connection.target);
+  
+    if (!source || !target) {
+      console.error("Invalid connection: source or target not found");
       return false;
     }
-    const sourceTask=TaskRegistry[source.data.type];
-    const targetTask=TaskRegistry[target.data.type];
-    const output =sourceTask.outputs.find((o)=>o.name===connection.sourceHandle);
-    const input =targetTask.inputs.find((i)=>i.name===connection.targetHandle);
-    if(input?.type!==output?.type){
-      console.error("invalid connection: type mismatch");
-      return false
+  
+    const sourceTask = TaskRegistry[source.data.type];
+    const targetTask = TaskRegistry[target.data.type];
+  
+    // Get dynamic outputs from source node
+    const dynamicOutputs = Array.isArray(source.data.outputs) ? source.data.outputs : [];
+    const dynamicOutput = dynamicOutputs.find((o: any) => o.name === connection.sourceHandle);
+  
+    // Fallback to static TaskRegistry output if dynamic not found
+    const staticOutput = sourceTask.outputs?.find((o) => o.name === connection.sourceHandle);
+  
+    const output = dynamicOutput || staticOutput;
+  
+    const input = targetTask.inputs.find((i) => i.name === connection.targetHandle);
+  
+    if (!output || !input) {
+      console.error("Invalid connection: missing input or output definition");
+      return false;
     }
-    const hasCycle=(node:AppNode,visited=new Set())=>{
-      if (visited.has(node.id))return false;
-      visited.add( node.id);
-      for (const outgoer of getOutgoers(node,nodes,edges)){
-        if(outgoer.id ===connection.source)return true;
-        if(hasCycle(outgoer ,visited))return true;
+  
+    if (input.type !== output.type) {
+      console.error("Invalid connection: type mismatch");
+      return false;
+    }
+  
+    // Cycle detection
+    const hasCycle = (node: AppNode, visited = new Set<string>()): boolean => {
+      if (visited.has(node.id)) return false;
+      visited.add(node.id);
+  
+      for (const outgoer of getOutgoers(node, nodes, edges)) {
+        if (outgoer.id === connection.source) return true;
+        if (hasCycle(outgoer, visited)) return true;
       }
-
-    }
-    const detectedCycle=hasCycle(target);
-    return !detectedCycle
-  },[nodes,edges])
+  
+      return false;
+    };
+  
+    const detectedCycle = hasCycle(target);
+    return !detectedCycle;
+  
+  }, [nodes, edges]);
+  
   return (
     <main className='w-full h-full'>
       <ReactFlow 
