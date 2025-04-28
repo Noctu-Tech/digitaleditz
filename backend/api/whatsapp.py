@@ -212,12 +212,12 @@ async def create_execution_from_json(json_str: str):
         raise HTTPException(status_code=400, detail=str(e))
 
 @whatsapp_router.post("/assign-execution")
-async def assign_execution(phone_number: str, execution_id: str):
+async def assign_execution(phone_number: str, workflow_id: str):
     """
     Endpoint to assign a execution to a specific phone number
     """
     try:
-        execution_manager.assign_execution_to_user(phone_number, execution_id)
+        execution_manager.assign_execution_to_user(phone_number,workflow_id)
         return {"status": "execution assigned successfully"}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

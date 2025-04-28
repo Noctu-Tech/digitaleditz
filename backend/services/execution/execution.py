@@ -1,3 +1,4 @@
+from bson import ObjectId
 from pymongo import MongoClient
 from pydantic import BaseModel, Field
 from typing import List, Optional, Dict, Union
@@ -5,6 +6,8 @@ from enum import Enum
 from uuid import uuid4
 import os
 import json
+
+from database.mongo import get_database
 
 class executionsStage(str, Enum):
     INITIAL = "initial"
@@ -32,20 +35,15 @@ class executionsContext(BaseModel):
 
 
 class MongoexecutionsManager:
-    def __init__(self, 
-                 mongo_uri: str = os.getenv('MONGO_URI', 'mongodb://localhost:27017/'),
-                 database_name: str = 'dynamic_executionss'):
+    def __init__(self):
         """
         Initialize MongoDB connection for dynamic executions management
         
-        :param mongo_uri: MongoDB connection string
-        :param database_name: Name of the database to use
         """
         try:
             # Connect to MongoDB
-            self.client = MongoClient(mongo_uri)
-            self.db = self.client[database_name]
-            self.user_executionss_collection = self.db['user_executionss']
+            self.user_executionss_collection = get_database('user_executions')
+            self.workflow_collection=get_database("Workflow_collection")
             # Collections
             # self.executionss_collection = self.db['executionss']
             # self.user_executionss_collection = self.db['user_contexts']
@@ -56,25 +54,43 @@ class MongoexecutionsManager:
             raise
 
 
-    def assign_execution_to_user(self, phone_number: str, execution_id: str):
+    def assign_execution_to_user(self, phone_number: str, workflow_id: str):
         """
-        Assign a executions to a specific phone number
-        
-        :param phone_number: Phone number to assign executions to
-        :param executions_id: ID of the executions to assign
-        """
-        # Normalize phone number
+    Assign an execution to a specific phone number using a workflow ID.
+    After assignment, set workflow status as 'active'.
+    
+    :param phone_number: Phone number to assign execution to
+    :param workflow_id: ID of the workflow to fetch and create execution from
+    """
+    # Normalize phone number
         phone_number = phone_number.split(":")[-1].strip()
+
+    # Fetch the workflow definition from workflow_collection
+        workflow_data = self.workflow_collection.find_one({'_id': ObjectId(workflow_id)})
+        if not workflow_data:
+            raise ValueError(f"Workflow with ID {workflow_id} not found.")
+        print("workflowdata")
         
-        # Upsert: update if exists, insert if not
+        workflow_data.pop('_id', None)  # Remove MongoDB internal ID if presen t
+        print("execution",workflow_data["definition"])
+    # Create a new execution based on workflow
+        new_execution_id = self.create_executions_from_dict(workflow_data["definition"])
+        print("id",new_execution_id)
+    # Upsert: update if exists, insert if not
         self.user_executionss_collection.update_one(
-            {'phone_number': phone_number},
-            {'$set': {'executions_id': execution_id}},
-            upsert=True
-        )
-        
-        # Also update user context for executions tracking
-        self.update_user_context(phone_number, execution_id)
+        {'phone_number': phone_number},
+        {'$set': {'executions_id': new_execution_id}},
+        upsert=True
+    )
+    
+    # # Also update user context for execution tracking
+    #     self.update_user_context(phone_number, new_execution_id)
+    #     print("Here")
+    # After successful assignment, update workflow status to 'active'
+        self.workflow_collection.update_one(
+        {'id': workflow_id},
+        {'$set': {'status': 'ACTIVE'}}
+    )
     def create_executions_from_dict(self, executions_dict: Dict) -> str:
         """
         Create a executions from a dictionary representation
@@ -273,58 +289,58 @@ class MongoexecutionsManager:
         if self.client:
             self.client.close()
 
-# Example of creating a executions dynamically
-def example_executions_creation():
-    executions_manager = MongoexecutionsManager()
+# # Example of creating a executions dynamically
+# def example_executions_creation():
+#     executions_manager = MongoexecutionsManager()
     
-    # Example executions as a dictionary
-    car_services_executions = {
-        "name": "Car Services",
-        "description": "executions for car-related services",
-        "root_steps": [
-            {
-                "keyword": "repair",
-                "display_text": "Car Repair",
-                "response_template": "Our car repair service will diagnose and fix your vehicle.",
-                "sub_steps": [
-                    {
-                        "keyword": "engine",
-                        "display_text": "Engine Repair",
-                        "response_template": "We specialize in comprehensive engine repairs."
-                    },
-                    {
-                        "keyword": "bodywork",
-                        "display_text": "Bodywork Repair",
-                        "response_template": "Our experts will restore your car's body to pristine condition."
-                    }
-                ]
-            },
-            {
-                "keyword": "service",
-                "display_text": "Car Service",
-                "response_template": "Schedule your regular car maintenance with us.",
-                "sub_steps": [
-                    {
-                        "keyword": "oil",
-                        "display_text": "Oil Change",
-                        "response_template": "We'll change your oil and perform a quick vehicle check."
-                    },
-                    {
-                        "keyword": "tire",
-                        "display_text": "Tire Service",
-                        "response_template": "Tire rotation, balancing, and replacement services available."
-                    }
-                ]
-            }
-        ]
-    }
+#     # Example executions as a dictionary
+#     car_services_executions = {
+#         "name": "Car Services",
+#         "description": "executions for car-related services",
+#         "root_steps": [
+#             {
+#                 "keyword": "repair",
+#                 "display_text": "Car Repair",
+#                 "response_template": "Our car repair service will diagnose and fix your vehicle.",
+#                 "sub_steps": [
+#                     {
+#                         "keyword": "engine",
+#                         "display_text": "Engine Repair",
+#                         "response_template": "We specialize in comprehensive engine repairs."
+#                     },
+#                     {
+#                         "keyword": "bodywork",
+#                         "display_text": "Bodywork Repair",
+#                         "response_template": "Our experts will restore your car's body to pristine condition."
+#                     }
+#                 ]
+#             },
+#             {
+#                 "keyword": "service",
+#                 "display_text": "Car Service",
+#                 "response_template": "Schedule your regular car maintenance with us.",
+#                 "sub_steps": [
+#                     {
+#                         "keyword": "oil",
+#                         "display_text": "Oil Change",
+#                         "response_template": "We'll change your oil and perform a quick vehicle check."
+#                     },
+#                     {
+#                         "keyword": "tire",
+#                         "display_text": "Tire Service",
+#                         "response_template": "Tire rotation, balancing, and replacement services available."
+#                     }
+#                 ]
+#             }
+#         ]
+#     }
     
-    # Create executions from dictionary
-    executions_id = executions_manager.create_executions_from_dict(car_services_executions)
-    print(f"Created executions with ID: {executions_id}")
+#     # Create executions from dictionary
+#     executions_id = executions_manager.create_executions_from_dict(car_services_executions)
+#     print(f"Created executions with ID: {executions_id}")
     
-    return executions_manager
+#     return executions_manager
 
-# Global executions manager instance
-executions_manager = MongoexecutionsManager()
-example_executions_creation()
+# # Global executions manager instance
+# executions_manager = MongoexecutionsManager()
+# example_executions_creation()
