@@ -15,7 +15,15 @@ export const ActionMessageTask = {
     body:{name:"Message Body",variant:'textarea',type:TaskParamType.STRING,helperText:"Message you want to send to user",required:true,hideHandle:true},
     outputs:[
         {
-            name:"action",
+            name:"Action-1",
+            type:TaskParamType.STRING,
+        }
+        , {
+            name:"Action-2",
+            type:TaskParamType.STRING,
+        },
+        {
+            name:"Action-3",
             type:TaskParamType.STRING,
         }
 

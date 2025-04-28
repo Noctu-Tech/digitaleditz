@@ -17,7 +17,7 @@ export function NodeInput({input,nodeId}:{input:TaskParam,nodeId:string}) {
   const isConnected=edges.some((edge)=>edge.target===nodeId&&edge.targetHandle===input.name)
     return (
       <div className="flex justify-start relative p-3 bg-secondary w-full ">
-        <NodeParamField param={input} nodeId={nodeId} disabled={isConnected}/>
+        <NodeParamField param={input} nodeId={nodeId} disabled={isConnected} dataType={"input"}/>
         {!input.hideHandle && <Handle id={input.name} type="target" isConnectable={!isConnected} position={Position.Left}
         
         className={cn(

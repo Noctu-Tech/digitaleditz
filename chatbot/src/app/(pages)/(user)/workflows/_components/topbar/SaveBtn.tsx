@@ -16,7 +16,7 @@ function SaveBtn({workflowId}:{workflowId:string}) {
       mutationFn:UpdateWorkflow,
       onSuccess: ()=>{
         toast.success("Flow saved Succeessfully",{id:"save-workflow"});
-        revalidatePath(`/workflows/studio/${workflowId}`);
+        // revalidatePath(`/workflows/studio/${workflowId}`);
       },
       onError:()=>{toast.error(
         "Something went wrong",{id:"save-workflow"}

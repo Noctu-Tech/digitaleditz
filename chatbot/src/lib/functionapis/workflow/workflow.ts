@@ -37,7 +37,7 @@ console.error("Something went Wrong",e)
 }
 export async function activateworkflowapi(phone_number:string,workflow_id:string){
   try{
-  const response=await apiClient.post('/whatsapp/assign-execution',null,{params: {
+  const response=await apiClientNew.post('/whatsapp/assign-execution',null,{params: {
     phone_number,
     workflow_id
 }})
@@ -47,4 +47,4 @@ export async function activateworkflowapi(phone_number:string,workflow_id:string
   catch(e){
   console.error("Something went Wrong",e)
   }
-  }
+  } 

@@ -9,9 +9,9 @@ export async function middleware(request: NextRequest) {
   const cookieStore=await cookies()
   const accessToken = cookieStore.get('access-token')?.value;
   const refreshToken = cookieStore.get('refresh-token')?.value;
-  if (isDev){
-    return NextResponse.next();
-  }
+  // if (isDev){
+  //   return NextResponse.next();
+  // }
   if (path.startsWith('/dashboard') || 
       path.startsWith('/products') || 
       path.startsWith('/workflows') || 

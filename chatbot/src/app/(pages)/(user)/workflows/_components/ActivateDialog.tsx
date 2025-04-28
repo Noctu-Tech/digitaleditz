@@ -36,6 +36,7 @@ function ActivateDialog({
             setIsPending(true);
             const data = { phone_number: phoneNumber, workflow_id: workflowId };
             const result = await handleActivateWorkflow(phoneNumber,workflowId);
+            console.log("Result",result)
             if (!result){
                 toast.error("something went wrong",{id:'activate-workflow'})
             }
@@ -82,14 +83,14 @@ function ActivateDialog({
                         title="Activate Workflow"
                         subtitle="Activate your workflow and start using it"
                     />
-                    <DialogDescription className="text-sm text-muted-foreground mb-4">
+                    <DialogDescription className="p-6 text-sm text-muted-foreground mb-4">
                         Are you sure you want to activate this workflow? Once activated, it will be live and accessible to users.
                         If any other workflow is already active, it will be deactivated automatically.
                         <br />
                         Please ensure that all configurations are correct before proceeding.
                     </DialogDescription>
                     
-                    <div className="space-y-4 p-1">
+                    <div className="space-y-4 p-6">
                         <label htmlFor="phone-number" className="text-sm font-medium">
                             Phone Number
                         </label>

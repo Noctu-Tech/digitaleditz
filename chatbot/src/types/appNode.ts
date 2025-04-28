@@ -5,7 +5,6 @@ export interface AppNodeData{
     inputs:Record<string,string>;
     body?:string;
     outputs?:Record<string,string>;
-    dynamicOutputs?:Record<string,string>;
     [key:string]:any;
 }
 export interface AppNode extends Node{

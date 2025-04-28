@@ -62,17 +62,33 @@ const WorkflowBuilder = ({workflow}:{workflow:WorkFlow}) => {
     setEdges((eds) => addEdge({ ...connection, animated: true }, eds));
     
     if (!connection.targetHandle) return;
+    
+    // Find both source and target nodes
+    const sourceNode = nodes.find((nd) => nd.id === connection.source);
+    const targetNode = nodes.find((nd) => nd.id === connection.target);
+    
+    if (!sourceNode || !targetNode) return;
+    
+  // Get the specific output value from the source node
+  if (!connection.sourceHandle) return;
+  const sourceOutputValue = sourceNode.data.outputs?.[connection.sourceHandle];
   
-    const node = nodes.find((nd) => nd.id === connection.target);
-    if (!node) return;
+  if (sourceOutputValue === undefined) return;
   
-    const nodeInputs = node.data.inputs;
-    delete nodeInputs[connection.targetHandle];
+  // Get the current data from target node
+  const targetInputs = {...targetNode.data.inputs};
+  const targetOutputs = targetNode.data.outputs;
+  const targetBody = targetNode.data.body;
   
-    updateNodeData(node.id, {
-      inputs: nodeInputs,
+  // Update the target input with the source output value
+  targetInputs[connection.targetHandle] = sourceOutputValue;
+  
+    // Update the target node with modified inputs
+    updateNodeData(targetNode.id, {
+      inputs: targetInputs,
+      body: targetBody,
+      outputs: targetOutputs
     });
-  
   }, [setEdges, updateNodeData, nodes]);
   
   const isValidConnection = useCallback((connection: Edge | Connection) => {
@@ -92,14 +108,8 @@ const WorkflowBuilder = ({workflow}:{workflow:WorkFlow}) => {
     const sourceTask = TaskRegistry[source.data.type];
     const targetTask = TaskRegistry[target.data.type];
   
-    // Get dynamic outputs from source node
-    const dynamicOutputs = Array.isArray(source.data.outputs) ? source.data.outputs : [];
-    const dynamicOutput = dynamicOutputs.find((o: any) => o.name === connection.sourceHandle);
+      const output = sourceTask.outputs?.find((o) => o.name === connection.sourceHandle);
   
-    // Fallback to static TaskRegistry output if dynamic not found
-    const staticOutput = sourceTask.outputs?.find((o) => o.name === connection.sourceHandle);
-  
-    const output = dynamicOutput || staticOutput;
   
     const input = targetTask.inputs.find((i) => i.name === connection.targetHandle);
   

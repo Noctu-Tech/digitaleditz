@@ -13,8 +13,19 @@ export const StartChatTask = {
         hideHandle: true,
     },],
     body:{name:"Message Body",type:TaskParamType.STRING,helperText:"Message Body",required:true,hidehandle:true},
-    outputs:[
-    ],
+    outputs:[ {
+                name:"Action-1",
+                type:TaskParamType.STRING,
+            }
+            , {
+                name:"Action-2",
+                type:TaskParamType.STRING,
+            },
+            {
+                name:"Action-3",
+                type:TaskParamType.STRING,
+            }
+        ],
     icon: (props: LucideProps) => (<MessageCircle className="stroke-green-600" {...props} />),
     isEntryPoint: true,
     isAuthPoint: false,
