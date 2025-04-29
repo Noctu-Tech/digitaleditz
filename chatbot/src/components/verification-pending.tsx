@@ -9,13 +9,13 @@ function VerificationPending() {
           <CheckCircle className="h-16 w-16 mx-auto animate-pulse" />
         </div>
         <h2 className="text-2xl font-semibold mb-2">
-          Verification Pending
+          Activation Pending
         </h2>
         <p className="mb-4">
-          Please wait while we verify your account. This may take a few moments.
+          Please wait while we activate your account. This may take a few moments.
         </p>
         <p className="text-sm">
-          You will be automatically redirected once verification is complete.
+          You will be automatically redirected once activation is complete.
         </p>
       </div>
     </div>

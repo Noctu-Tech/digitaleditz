@@ -10,7 +10,7 @@ const apiClientNew = axios.create({
 apiClientNew.interceptors.request.use((config) => {
   const accessToken = Cookies.get('access-token');
   const refreshToken = Cookies.get('refresh-token');
-
+  console.log("@TOKEN1::",accessToken,"\n@TOKEN2::",refreshToken)
   if (accessToken || refreshToken) {
     const cookieHeader = [];
     if (accessToken) cookieHeader.push(`access-token=${accessToken}`);

@@ -9,18 +9,21 @@ const apiClient = axios.create({
 });
 
 apiClient.interceptors.request.use(async (config) => {
+  console.log("@CONFIG",config)
   if (typeof window === 'undefined') {
     try {
       const cookieStore = await cookies();
       const accessToken = cookieStore.get('access-token')?.value;
       const refreshToken = cookieStore.get('refresh-token')?.value;
-      
+      console.log("@store",cookieStore)
+  console.log("@TOKEN1::",accessToken,"\n@TOKEN2::",refreshToken)
       if (accessToken || refreshToken) {
         const cookieHeader = [];
         if (accessToken) cookieHeader.push(`access-token=${accessToken}`);
         if (refreshToken) cookieHeader.push(`refresh-token=${refreshToken}`);
         
         config.headers['Cookie'] = cookieHeader.join('; ');
+        console.log("@CONFIG2",config)
       }
     } catch (error) {
       console.error('Error setting cookies in request:', error);

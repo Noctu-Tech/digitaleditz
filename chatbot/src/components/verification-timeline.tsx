@@ -5,8 +5,8 @@ export const VerificationTimeline = () => {
   return (
     <div className="max-w-3xl mx-auto p-6">
       <div className="mb-8 text-center">
-        <h2 className="text-2xl font-bold mb-2">Account Verification Status</h2>
-        <p className="text-muted-foreground">Your account is pending verification</p>
+        <h2 className="text-2xl font-bold mb-2">Account Activation Status</h2>
+        <p className="text-muted-foreground">Your account is pending activation</p>
       </div>
 
       <div className="space-y-8">
@@ -33,7 +33,7 @@ export const VerificationTimeline = () => {
             <div className="flex-1 w-0.5 my-2"></div>
           </div>
           <div className="flex-1 pt-1">
-            <h3 className="font-medium">Verification In Progress</h3>
+            <h3 className="font-medium">Activation In Progress</h3>
             <p className="text-sm text-muted-foreground">Our team is reviewing your account details</p>
             <p className="text-xs text-muted-foreground mt-1">In Progress</p>
           </div>
@@ -46,8 +46,8 @@ export const VerificationTimeline = () => {
             </div>
           </div>
           <div className="flex-1 pt-1">
-            <h3 className="font-medium">Awaiting Verification Call</h3>
-            <p className="text-sm text-muted-foreground">You will receive a verification call from our team</p>
+            <h3 className="font-medium">Awaiting Activation Call</h3>
+            <p className="text-sm text-muted-foreground">You will receive a activation call from our team</p>
             <p className="text-xs text-muted-foreground mt-1">Pending</p>
           </div>
         </div>

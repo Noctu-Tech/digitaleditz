@@ -17,6 +17,7 @@ const ProtectedRoute = ({ children, requiredRoles = [],isdev=ENV.ISDEV }: Protec
   const { isAuthenticated,isActivated, hasPermission } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+  console.log(isActivated(),hasPermission)
   const isDashboard = pathname === '/dashboard' || pathname === '/dashboard/';
   const isPublic= pathname==='/settings/'||pathname==='/help/'
   if (isdev) {
@@ -32,11 +33,11 @@ const ProtectedRoute = ({ children, requiredRoles = [],isdev=ENV.ISDEV }: Protec
     return null;
   }
 
-  else if (requiredRoles.length > 0 && !hasPermission(requiredRoles)) {
-    router.push('/unauthorized');
-    return null;
-  }
-  else if (!isActivated){
+  // else if (requiredRoles.length > 0 && !hasPermission(requiredRoles)) {
+  //   router.push('/unauthorized');
+  //   return null;
+  // }
+  else if (!isActivated()){
     if(isDashboard){
     return<><VerificationTimeline/></>}
     if(!isDashboard && !isPublic){

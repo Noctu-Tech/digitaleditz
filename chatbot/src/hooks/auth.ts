@@ -5,7 +5,7 @@ import { UserRole } from '../types/auth';
 import apiClientNew from '@/lib/functionapis/apiclientnew';
 
 // Add this constant at the top level
-const isDev = process.env.NODE_ENV === 'development';
+const isDev = false
 
 // React Query keys
 export const authKeys = {
@@ -38,18 +38,18 @@ export const useAuth = () => {
     if (isDev) return true; // In development mode, grant all permissions
     if (!user) return false;
     console.log(user)
-    if (user.roles.includes('admin')) return true; // Admin has all permissions
-    return requiredRoles.some(role => user.roles.includes(role));
+    if (user.u_role.includes('admin')) return true; // Admin has all permissions
+    return requiredRoles.some(role => user.u_role.includes(role));
   };
   const isActivated = () => {
     if (isDev) return true; // In development mode, grant all permissions
-    if (!user) return false;
-    if(user?.status==='active') return true;
+    if (!user && !(user?.u_status==='DEACTIVATED')) return false;
+    if(user?.u_status==='ACTIVATED') return true;
   }
   const isVerified = () => {
     if (isDev) return true; // In development mode, grant all permissions
-    if (!user) return false;
-    if(user?.verified==='verified') return true;
+    if (!user && !(user?.u_verified==='UNVERIFIED')) return false;
+    if(user?.u_verified==='VERIFIED') return true;
   }
 
   return {
