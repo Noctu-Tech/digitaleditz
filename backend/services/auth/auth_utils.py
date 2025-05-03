@@ -38,7 +38,7 @@ def set_auth_cookie(response: Response, token: str, token_key: str, max_age_minu
         secure=False,  # Use True in production with HTTPS
         key=token_key,
         value=token,
-        samesite="none",
+        samesite="lax",
         max_age=max_age_minutes * 60,  # Convert minutes to seconds
         path="/",
     )
@@ -48,6 +48,8 @@ def get_tokens(request: Request) -> Tuple[str, str]:
     """Extracts access and refresh tokens from cookies."""
     access_token = request.cookies.get("access-token")
     refresh_token = request.cookies.get("refresh-token")
+    print("@access_token",access_token)
+    print("@refresh_token",refresh_token)
     if not access_token or not refresh_token:
         raise HTTPException(status_code=401, detail="Missing tokens")
 
@@ -103,3 +105,5 @@ def extract_user_data_from_token(response: Response, tokens: Tuple[str, str] = D
 
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid token")
+    
+

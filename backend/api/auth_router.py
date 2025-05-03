@@ -118,3 +118,8 @@ def logout(res: Response) -> Dict[str, str]:
     res.delete_cookie(key="access-token")
     res.delete_cookie(key="refresh-token")
     return {"message": "Logged out successfully"}
+
+    
+@auth_router.post("/send-verification")
+def send_verification():
+    pass

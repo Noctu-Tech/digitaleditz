@@ -9,6 +9,7 @@ from api.auth_router import UserData
 from permission import UserRole
 from database.mongo import get_database
 from services.auth.auth_utils import extract_user_data_from_token
+from services.auth.verify_email import decode_email_token
 from services.user.user import Onboard
 from models.user.user import OnboardSchema
 
@@ -205,8 +206,8 @@ def verify_email(token: str = Query(...)):
         raise HTTPException(status_code=400, detail=str(e))
 
     # Activate user
-    result = user_collection.update_one({"email":email},{"$set"{"u_verified": "VERIFIED"}})
-    if result.matched_count==1:
+    result = user_collection.update_one({"email":email},{"$set":{"u_verified": "VERIFIED"}})
+    if result.matched_count==1: 
         return {"message": f"Email {email} successfully verified!"}
     else:
         raise HTTPException(status_code=404, detail="invalid email or user email not found")
