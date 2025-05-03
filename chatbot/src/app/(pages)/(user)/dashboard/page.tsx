@@ -1,5 +1,5 @@
 "use client"
-import { Users, Search, Settings2Icon } from 'lucide-react';
+import { Users, Search, Settings2Icon, EllipsisVertical, Edit2, Eye } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -8,11 +8,10 @@ import ProtectedRoute from '@/context/ProtectedRoute';
 import { useAuth } from '@/hooks/auth';
 import { useQuery } from '@tanstack/react-query';
 import { GetUsers } from '@/lib/functions/username/profile';
-import { User } from '@/types/profile';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import UpdateStatusRoleDialog from './_components/UpdateStatusRoleDialog';
 import AdminSpec from './_components/AdminSpec';
+import { useRouter } from 'next/navigation';
 
 const Page = () => {
 
@@ -26,7 +25,6 @@ const Page = () => {
     const [statusFilter, setStatusFilter] = useState('all');
     const [pageSize, setPageSize] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
-    console.log(users)
     const usersList=users;
     const filteredUsers = usersList?.filter(user => {
           const matchesSearch = 
@@ -41,21 +39,20 @@ const Page = () => {
         (currentPage - 1) * pageSize,
         currentPage * pageSize
       );
-      const {hasPermission}=useAuth();
-      const [statusopen,setStatusOpen]=useState(false);
-      const [user,setUser]=useState();
+      const {hasPermission,isSelf}=useAuth();
   if (isLoading){
     return <>Loading....</>
   }
+  const router=useRouter();
  return (
     <ProtectedRoute>
-      <UpdateStatusRoleDialog open={statusopen} onOpenChange={setStatusOpen} user={user}/>
     <div className="w-full min-h-screen">
-      <div className="">
+      <div className="p-8">
+       
     {hasPermission(["admin"]) && <AdminSpec/>}
         <div className="grid grid-cols-1 gap-6">
  <div className="lg:col-span-2">
-   <div className=" p-6 rounded-xl shadow-sm">
+   <div className="pt-6 rounded-xl shadow-sm">
      <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
        <Users size={20} />
        Users
@@ -78,8 +75,8 @@ const Page = () => {
          </SelectTrigger>
          <SelectContent>
            <SelectItem value="all">All Status</SelectItem>
-           <SelectItem value="active">Active</SelectItem>
-           <SelectItem value="offline">Offline</SelectItem>
+           <SelectItem value="active">ACTIVATED</SelectItem>
+           <SelectItem value="offline">DEACTIVATED</SelectItem>
          </SelectContent>
        </Select>
      </div>
@@ -92,8 +89,9 @@ const Page = () => {
              <TableCell>Name</TableCell>
              <TableCell>Email</TableCell>
              <TableCell>Status</TableCell>
-             <TableCell>Last Active</TableCell>
              {hasPermission(['admin'])&&<TableCell>Role</TableCell>}
+             
+           <TableCell>Actions</TableCell>
            </TableRow>
          </TableHeader>
          <TableBody>
@@ -102,28 +100,26 @@ const Page = () => {
                <TableCell>{user.username}</TableCell>
                <TableCell>{user.email}</TableCell>
                <TableCell className='gap-4 flex'>{user.u_status}
-                {/* {hasPermission(['admin'])&&<DropdownMenu modal={false}>
-                  <DropdownMenuTrigger>
-                    <Button variant={'outline'} size={'sm'}>
-                      <Settings2Icon size={10}/>
-                      </Button>
-                    </DropdownMenuTrigger>
-                  <DropdownMenuGroup>
-                  <DropdownMenuContent side={'right'}><DropdownMenuItem>Edit</DropdownMenuItem>
-                  </DropdownMenuContent></DropdownMenuGroup></DropdownMenu>} */}
                   </TableCell>
                <TableCell>{user.u_role}</TableCell>
-               {hasPermission(['admin'])&&<TableCell className='gap-4 flex'>{user.role}
+               <TableCell className='gap-4 flex'>{user.role}
                <DropdownMenu modal={false}>
                   <DropdownMenuTrigger>
-                    <Button variant={'outline'} size={'sm'}>
-                      <Settings2Icon size={10}/>
+                    <Button variant={'outline'} size={'sm'} onClick={()=>{
+                      console.log("@user",user);
+                      
+                    console.log(user._id);}}>
+                      <EllipsisVertical size={10}/>
                       </Button>
                     </DropdownMenuTrigger>
                   <DropdownMenuGroup>
-                  <DropdownMenuContent side={'bottom'}><DropdownMenuItem><Button variant={'ghost'} onClick={()=>{setStatusOpen((prev)=>!prev);setUser(user)}}>Edit</Button></DropdownMenuItem>
+                  <DropdownMenuContent side={'bottom'}>
+                    <DropdownMenuItem onSelect={()=>{
+                      console.log("@user",user);
+                    console.log(user._id);
+                    isSelf(user._id)?router.push('/settings'):router.push(`/user/user-details/${user._id}`)}}>{hasPermission(["admin"])?<><Edit2/>Edit</>:<><Eye/>View Details</>}</DropdownMenuItem>
                   </DropdownMenuContent></DropdownMenuGroup></DropdownMenu>
-                </TableCell>}
+                </TableCell>
              </TableRow>
            ))}
          </TableBody>

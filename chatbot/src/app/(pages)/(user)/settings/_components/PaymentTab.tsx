@@ -23,24 +23,6 @@ type Subscription = {
 function PaymentTab() {
     const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   
-    // Mock data
-    const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([
-      {
-        id: 'pm_1',
-        type: 'credit',
-        name: 'Visa ending in',
-        lastFour: '4242',
-        expiryDate: '05/25',
-        isDefault: true,
-      },
-      {
-        id: 'pm_2',
-        type: 'paypal',
-        name: 'PayPal',
-        isDefault: false,
-      }
-    ]);
-    
     const [subscription, setSubscription] = useState<Subscription>({
       plan: 'Professional',
       status: 'active',
@@ -57,18 +39,6 @@ function PaymentTab() {
       }).format(price);
     };
     
-    const setDefaultPaymentMethod = (id: string) => {
-      setPaymentMethods(methods => 
-        methods.map(method => ({
-          ...method,
-          isDefault: method.id === id
-        }))
-      );
-    };
-    
-    const removePaymentMethod = (id: string) => {
-      setPaymentMethods(methods => methods.filter(method => method.id !== id));
-    };
   return (
     <div className="space-y-6">
       <Card>
@@ -153,66 +123,6 @@ function PaymentTab() {
               </div>
             </div>
           )}
-        </CardContent>
-      </Card>
-      
-      <Card>
-        <CardContent className="p-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <div className="rounded-full p-2">
-                <CreditCard className="h-5 w-5" />
-              </div>
-              <h2 className="text-lg font-medium">Payment Methods</h2>
-            </div>
-            <Button variant="outline" className="text-sm">
-              <Plus className="h-4 w-4 mr-2" />
-              Add Payment
-            </Button>
-          </div>
-          
-          <div className="space-y-3">
-            {paymentMethods.map((method) => (
-              <div key={method.id} className="border rounded-lg p-4 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="rounded-lg p-2">
-                    <CreditCard className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <p>
-                      {method.name} {method.lastFour && <span>•••• {method.lastFour}</span>}
-                    </p>
-                    {method.expiryDate && (
-                      <p className="text-sm text-opacity-75">Expires {method.expiryDate}</p>
-                    )}
-                  </div>
-                  {method.isDefault && (
-                    <span className="text-xs px-2 py-1 rounded-full">
-                      Default
-                    </span>
-                  )}
-                </div>
-                <div className="flex gap-2">
-                  {!method.isDefault && (
-                    <Button 
-                      variant="outline" 
-                      className="text-xs px-2 py-1 h-auto"
-                      onClick={() => setDefaultPaymentMethod(method.id)}
-                    >
-                      Make Default
-                    </Button>
-                  )}
-                  <Button 
-                    variant="outline" 
-                    className="text-xs px-2 py-1 h-auto"
-                    onClick={() => removePaymentMethod(method.id)}
-                  >
-                    Remove
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
         </CardContent>
       </Card>
       

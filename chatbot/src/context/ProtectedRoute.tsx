@@ -1,5 +1,5 @@
 "use client"
-import { ReactNode } from 'react';
+import { ReactNode, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '../hooks/auth';
 import { UserRole } from '../types/auth';
@@ -20,6 +20,12 @@ const ProtectedRoute = ({ children, requiredRoles = [],isdev=ENV.ISDEV }: Protec
   console.log(isActivated(),hasPermission)
   const isDashboard = pathname === '/dashboard' || pathname === '/dashboard/';
   const isPublic= pathname==='/settings/'||pathname==='/help/'
+  useEffect(() => {
+    if (!isAuthenticated) {
+      router.push('/login'); // ✅ This runs *after* initial render
+    }
+  }, [isAuthenticated, router]);
+
   if (isdev) {
     console.log(isdev)
     return <>{children}</>
@@ -27,12 +33,6 @@ const ProtectedRoute = ({ children, requiredRoles = [],isdev=ENV.ISDEV }: Protec
 
  
  
-
-  else if (!isAuthenticated) {
-    router.push('/signin');
-    return null;
-  }
-
   // else if (requiredRoles.length > 0 && !hasPermission(requiredRoles)) {
   //   router.push('/unauthorized');
   //   return null;

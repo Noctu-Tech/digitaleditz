@@ -38,3 +38,7 @@ export const GetProfile = async()=>{
 export const EditProfile=async(values:any)=>{
 
 }
+
+export const GetProfilebyId=async(id:string)=>{
+  
+}

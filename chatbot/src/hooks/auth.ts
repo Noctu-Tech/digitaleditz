@@ -34,6 +34,10 @@ export const useAuth = () => {
 
  
   // Modified permission checking with dev mode
+  const isSelf= (id:string)=>{
+    console.log(id,user._id)
+    if (id===user._id) return true;
+  }
   const hasPermission = (requiredRoles: UserRole[]) => {
     if (isDev) return true; // In development mode, grant all permissions
     if (!user) return false;
@@ -58,5 +62,6 @@ export const useAuth = () => {
     hasPermission,
     isActivated,
     isVerified,
+    isSelf
   };
 };

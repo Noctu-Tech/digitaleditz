@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import SecurityTab from './_components/SecurityTab';
 import AccountTab from './_components/AccountTab';
 import ProfilePage from './_components/ProfilePage';
+import PaymentTab from './_components/PaymentTab';
 
 export default function AccountPage() {
   const [activeTab, setActiveTab] = useState<'profile'|'account' | 'payment' | 'security'>('profile');
@@ -19,40 +20,40 @@ export default function AccountPage() {
             onClick={() => setActiveTab('profile')}
           >
             Profile</button>
-          {/* <button
+          <button
             className={`px-4 py-2 font-medium text-sm ${activeTab === 'account' ? 'border-b-2' : ''}`}
             onClick={() => setActiveTab('account')}
           >
             Account
-          </button> */}
-          {/* <button
+          </button>
+          <button
             className={`px-4 py-2 font-medium text-sm ${activeTab === 'payment' ? 'border-b-2' : ''}`}
             onClick={() => setActiveTab('payment')}
           >
             Payment
-          </button> */}
-          {/* <button
+          </button>
+          <button
             className={`px-4 py-2 font-medium text-sm ${activeTab === 'security' ? 'border-b-2' : ''}`}
             onClick={() => setActiveTab('security')}
           >
             Security
-          </button> */}
+          </button>
         </div>
         {activeTab=="profile" && (<ProfilePage/>)}
         {/* Account Tab Content */}
-        {/* {activeTab === 'account' && (
+        {activeTab === 'account' && (
           <AccountTab/>
-        )} */}
+        )}
         
         {/* Payment Tab Content */}
-        {/* {activeTab === 'payment' && (
+        {activeTab === 'payment' && (
           <PaymentTab/>
         )}
-         */}
+        
         {/* Security Tab Content */}
-        {/* {activeTab === 'security' && (
+        {activeTab === 'security' && (
          <SecurityTab/>
-        )} */}
+        )}
       </div>
     </div>
   );

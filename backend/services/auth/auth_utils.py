@@ -35,11 +35,11 @@ def set_auth_cookie(response: Response, token: str, token_key: str, max_age_minu
     """Sets an authentication cookie."""
     response.set_cookie(
         httponly=True,
-        secure=False,  # Use True in production with HTTPS
+        secure=True,  # Use True in production with HTTPS
         key=token_key,
         domain='.realtixx.in',
         value=token,
-        samesite="lax",
+        samesite="none",
         max_age=max_age_minutes * 60,  # Convert minutes to seconds
         path="/",
     )

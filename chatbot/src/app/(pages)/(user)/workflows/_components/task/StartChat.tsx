@@ -12,7 +12,7 @@ export const StartChatTask = {
         required: true,
         hideHandle: true,
     },],
-    body:{name:"Message Body",type:TaskParamType.STRING,helperText:"Message Body",required:true,hidehandle:true},
+    body:{name:"Message Body",variant:"textarea",type:TaskParamType.STRING,helperText:"Message Body",required:true,hidehandle:true},
     outputs:[ {
                 name:"Action-1",
                 type:TaskParamType.STRING,

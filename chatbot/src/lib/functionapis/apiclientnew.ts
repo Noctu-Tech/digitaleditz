@@ -41,11 +41,12 @@ apiClientNew.interceptors.response.use((response) => {
       const secure = cookieStr.toLowerCase().includes('secure');
       const path = cookieStr.match(/Path=([^;]+)/i)?.[1] || '/';
       
+      console.log("@MAXAGE",maxAge)
       Cookies.set(name.trim(), value.trim(), {
         expires: maxAge ? maxAge : undefined,
         secure: secure,
         path: path,
-        sameSite: 'lax'
+        sameSite: 'none'
       });
     }
   });

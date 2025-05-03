@@ -7,6 +7,7 @@ import { cookies } from "next/headers";
 export const handleOnboarding=async(form:OnboardingFormData )=>{
 const {success,data}=onboardingSchema.safeParse(form);
 if(!success){
+    console.log("@OnboardData",data);
     throw new Error("invalid form data")
 }
 

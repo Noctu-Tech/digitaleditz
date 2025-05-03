@@ -7,8 +7,11 @@ export async function middleware(request: NextRequest) {
   
   const isDev=true;
   const cookieStore=await cookies()
+  console.log('@cookieStore',cookieStore);
   const accessToken = cookieStore.get('access-token')?.value;
   const refreshToken = cookieStore.get('refresh-token')?.value;
+  console.log('@accessToken',accessToken)
+  console.log('@refreshToken',refreshToken)
   // if (isDev){
   //   return NextResponse.next();
   // }
@@ -19,7 +22,7 @@ export async function middleware(request: NextRequest) {
       path.startsWith('/help') || 
       path.startsWith('/settings')) {
    
-    if (!accessToken && !refreshToken) {
+    if (!accessToken || !refreshToken) {
         return NextResponse.redirect(new URL('/signin', request.url));
     }
     

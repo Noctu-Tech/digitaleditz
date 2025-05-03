@@ -45,7 +45,9 @@ apiClient.interceptors.response.use(async (response) => {
         
         const maxAgeMatch = header.match(/Max-Age=(\d+)/i);
         const maxAge = maxAgeMatch ? parseInt(maxAgeMatch[1], 10) : undefined;
-        
+        // if(name==="refresh-token"){
+        //   const maxAge=86400;
+        // }
         const secure = header.toLowerCase().includes('secure');
         const httpOnly = header.toLowerCase().includes('httponly');
         const path = header.match(/Path=([^;]+)/i)?.[1] || '/';
@@ -57,7 +59,7 @@ apiClient.interceptors.response.use(async (response) => {
           secure,
           httpOnly,
           path,
-          sameSite: 'lax',
+          sameSite: 'none',
         });
       }
     } catch (error) {

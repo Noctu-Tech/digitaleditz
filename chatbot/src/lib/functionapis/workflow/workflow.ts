@@ -1,8 +1,8 @@
 
-import { ActivateFlowData, WorkFlow, WorkflowData } from "@/types/workflow";
 
-import apiClient from "../apiclient";
+import { ActivateFlowData, WorkFlow, WorkflowData } from "@/types/workflow";
 import apiClientNew from "../apiclientnew";
+import apiClient from "../apiclient";
 export const getWorkflowApi = async ({ workflowId }: { workflowId: string; }) => {
   const workflow =await apiClient.get(`/workflow/get/${workflowId}`)
     return workflow;
@@ -27,7 +27,7 @@ return response.data;
 }
 export async function createnewworkflow({Data}:{Data:WorkflowData}){
 try{
-const response=await apiClient.post('/workflow/create',Data)
+const response=await apiClientNew.post('/workflow/create',Data)
 console.log("response",response);
 return response.data
 }

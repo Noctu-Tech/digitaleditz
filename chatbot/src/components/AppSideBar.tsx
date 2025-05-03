@@ -1,5 +1,5 @@
 'use client'
-import { ChevronUp, LogOut, Settings } from 'lucide-react';
+import { ChevronUp, LogOut, Settings, SettingsIcon, UserRoundCog } from 'lucide-react';
 import { ModeToggle } from '@/components/mode-toggle';
 import {
   Sidebar,
@@ -13,7 +13,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import SidebarMenuWrapper from './SideBarMenuWrapper';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
@@ -22,6 +22,7 @@ import Logo from './Logo';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { useState } from 'react';
 import { useAuth } from '@/hooks/auth';
+import { Separator } from './ui/separator';
 
 
 export function AppSidebar({collapsed}: { collapsed: boolean }) {
@@ -54,7 +55,7 @@ const [signout,setSignout]=useState(false);
             <SidebarMenuItem className='w-full'>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-  <div className={`w-full h-full flex ${collapsed ? 'flex-col items-start gap-2':'justify-between'  }`}>
+  <div className={`w-full h-full flex items-center ${collapsed ? 'flex-col items-start gap-2':'justify-between'  }`}>
   <SidebarMenuButton className="w-full h-full">
     <div className={`flex flex-row gap-5 items-center`}>
       <Avatar className="h-10 w-10 mb-2">
@@ -75,15 +76,17 @@ const [signout,setSignout]=useState(false);
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                   side="right"
-                  className="w-[--radix-popper-anchor-width]"
+                  className="w-[--radix-popper-anchor-width] flex flex-col gap-1"
                 >
-                  <DropdownMenuItem className='flex justify-center items-center'>
-                    <Button variant={"ghost"} className='w-full flex justify-start h-full' onClick={()=>{router.push('/settings')}}>
-                      <Settings className="h-4 w-4 mr-2" />
-                    <span>Settings</span></Button>
+                  <DropdownMenuLabel className='w-full h-full flex justify-start items-center text-md'><SettingsIcon className="h-4 w-4 mr-2" /><span>Settings</span></DropdownMenuLabel>
+                  <Separator/>
+                  <DropdownMenuItem className='flex justify-center items-center' asChild>
+                    <Button variant={"ghost"} className='w-full flex justify-start p-2 h-full' onClick={()=>{router.push('/settings')}}>
+                      <UserRoundCog className="h-4 w-4 mr-2" />
+                    <span>Account</span></Button>
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="text-destructive">
-                  <Button variant={"destructive"} className='w-full flex justify-start h-full' onClick={()=>{setSignout((prev)=>!prev)}}>
+                  <DropdownMenuItem  asChild>
+                  <Button variant={"destructive"} className='w-full flex justify-start p-2 h-full' onClick={()=>{setSignout((prev)=>!prev)}}>
                       <LogOut className="h-4 w-4 mr-2" />
                     <span>Sign out</span></Button>
                   </DropdownMenuItem>

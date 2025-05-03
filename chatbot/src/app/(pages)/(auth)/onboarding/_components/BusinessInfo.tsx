@@ -111,7 +111,7 @@ function BusinessInfo({form}:{form:UseFormReturn<OnboardingFormData>}){
         <FormItem>
           <FormLabel>Website</FormLabel>
           <FormControl>
-            <Input placeholder="www.example.com" {...field} />
+            <Input placeholder="https://www.example.com" {...field} />
           </FormControl>
           <FormMessage />
         </FormItem>
