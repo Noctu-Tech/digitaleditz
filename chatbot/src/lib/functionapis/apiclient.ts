@@ -55,6 +55,7 @@ apiClient.interceptors.response.use(async (response) => {
         cookieStore.set({
           name: name.trim(),
           value: value.trim(),
+          domain:".realtixx.in",
           maxAge,
           secure,
           httpOnly,

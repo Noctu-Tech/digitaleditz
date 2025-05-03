@@ -44,6 +44,7 @@ apiClientNew.interceptors.response.use((response) => {
       console.log("@MAXAGE",maxAge)
       Cookies.set(name.trim(), value.trim(), {
         expires: maxAge ? maxAge : undefined,
+        domain:".realtixx.in",
         secure: secure,
         path: path,
         sameSite: 'none'

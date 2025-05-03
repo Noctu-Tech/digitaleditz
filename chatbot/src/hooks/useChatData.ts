@@ -1,7 +1,7 @@
 // hooks/useChatData.ts
 import { fetchOverview } from "@/lib/functions/messages";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-    
+
 export function useChatData() {
   const queryClient = useQueryClient();
 

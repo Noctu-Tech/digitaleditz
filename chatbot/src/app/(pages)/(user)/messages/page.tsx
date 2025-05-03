@@ -12,7 +12,7 @@ import { useChatData } from '@/hooks/useChatData';
 
 const Page = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const queryClient = useQueryClient();\
+  const queryClient = useQueryClient();
 
   // Fetch and prime chat data (contacts and chatMessages)
   useChatData();
