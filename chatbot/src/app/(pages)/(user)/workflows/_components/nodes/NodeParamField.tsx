@@ -11,7 +11,7 @@ function NodeParamField({
   param, 
   nodeId, 
   disabled, 
-  dataType // This should be "input", "output", or "body"
+  dataType 
 }: {
   param: TaskParam,
   nodeId: string,
