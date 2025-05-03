@@ -5,7 +5,7 @@ from enum import Enum
 from uuid import uuid4
 import os
 from datetime import datetime
-
+from database.mongo import get_database
 class MessageDirection(str, Enum):
     INCOMING = "incoming"
     OUTGOING = "outgoing"
@@ -20,9 +20,7 @@ class WhatsAppMessage(BaseModel):
     additional_metadata: Optional[Dict[str, Any]] = None
 
 class MongoMessageManager:
-    def __init__(self, 
-                 mongo_uri: str = os.getenv('MONGO_URI', 'mongodb://localhost:27017/'),
-                 database_name: str = 'whatsapp_workflows'):
+    def __init__(self):
         """
         Initialize MongoDB connection for message logging
         
@@ -31,11 +29,8 @@ class MongoMessageManager:
         """
         try:
             # Connect to MongoDB
-            self.client = MongoClient(mongo_uri)
-            self.db = self.client[database_name]
-            
             # Collections
-            self.messages_collection = self.db['messages']
+            self.messages_collection = get_database('messages')
             
             # Create indexes for efficient querying
             self.messages_collection.create_index('phone_number')
