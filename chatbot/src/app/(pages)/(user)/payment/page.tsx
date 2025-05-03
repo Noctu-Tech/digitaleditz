@@ -7,17 +7,17 @@ import { useState } from 'react';
 import ProtectedRoute from '@/context/ProtectedRoute';
 import { useAuth } from '@/hooks/auth';
 import { useQuery } from '@tanstack/react-query';
-import { GetUsers } from '@/lib/functions/paymentname/profile';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useRouter } from 'next/navigation';
+import { GetTransactions } from '@/lib/functions/payment/getTransaction';
 
 const Page = () => {
 
 
   const {data:payments,isLoading} =useQuery({
     queryKey:['payment-history'],
-      queryFn:GetUsers
+      queryFn:GetTransactions
     }) || [];
   
     const [searchQuery, setSearchQuery] = useState('');
