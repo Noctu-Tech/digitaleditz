@@ -37,6 +37,7 @@ def set_auth_cookie(response: Response, token: str, token_key: str, max_age_minu
         httponly=True,
         secure=False,  # Use True in production with HTTPS
         key=token_key,
+        domain='.realtixx.in',
         value=token,
         samesite="lax",
         max_age=max_age_minutes * 60,  # Convert minutes to seconds
