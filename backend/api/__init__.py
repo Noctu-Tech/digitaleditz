@@ -25,7 +25,11 @@ def create_app():
         allow_headers=["*"],
         expose_headers=["Set-Cookie"],
     )
+    @app.get("/")
+    def read_root():
+        return {"status": "ok", "message": "API is running"}
 
+    
     # Routers with Authentication (where applicable)
     app.include_router(client_router, prefix="/client", tags=["Client"], dependencies=[Depends(verify_and_refresh_tokens)])
     app.include_router(inventory_router, prefix="/inventory", tags=["Inventory"], dependencies=[Depends(verify_and_refresh_tokens)])
@@ -38,6 +42,5 @@ def create_app():
 # Routers without Authentication
     app.include_router(auth_router, prefix="/auth", tags=["Auth"])
     app.include_router(file_router, prefix="/file", tags=["file"])
-
-
+    
     return app
