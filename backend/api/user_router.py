@@ -1,6 +1,7 @@
 from bson import ObjectId, errors
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from typing import Any, Dict, List, Optional
+from fastapi.params import Query
 from fastapi.responses import JSONResponse
 from pydantic import create_model, BaseModel
 
@@ -180,6 +181,8 @@ async def get_business_profile(
         if not user:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
         
+        print(user)
+        print(profile)
         del profile["user_id"]
         del user['_id']
         del user['password']
@@ -192,5 +195,18 @@ async def get_business_profile(
         raise he
     except Exception as e:
         await handle_exception(e, "Error fetching user")
-    
-    
+
+
+@router.get("/verify-email")
+def verify_email(token: str = Query(...)):
+    try:
+        email = decode_email_token(token)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+    # Activate user
+    result = user_collection.update_one({"email":email},{"$set"{"u_verified": "VERIFIED"}})
+    if result.matched_count==1:
+        return {"message": f"Email {email} successfully verified!"}
+    else:
+        raise HTTPException(status_code=404, detail="invalid email or user email not found")

@@ -28,7 +28,7 @@ class Status(str, Enum):
     DEACTIVATED = "DEACTIVATED"
 
 users_collection = get_database("users")
-
+profile_collection=get_database("profile")
 class UserSignup(BaseModel):
     username: constr(min_length=3, max_length=50) = Field(..., description="Username")
     email: EmailStr = Field(..., description="Email address")
@@ -97,8 +97,10 @@ def create_user(user: UserSignup, res: Response) -> Dict[str, Any]:
 @auth_router.post('/login')
 def login(user: UserLogin, res: Response) -> Dict[str, Any]:
     user_data = users_collection.find_one({'email': user.email})
-
-    if not user_data or not verify_password(user.password, user_data['password']):
+    print("@user_data",user_data)
+    profile_data=profile_collection.find_one({"user_id":user_data["_id"]})
+    if not user_data or not verify_password(user.password, user_data['password']) or not profile_data:
+        users_collection.delete_one({'email': user.email})
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
 
     access_token = create_access_token(str(user_data["_id"]), str(user_data["u_role"]))

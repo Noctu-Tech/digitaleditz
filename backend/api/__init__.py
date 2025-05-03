@@ -19,7 +19,7 @@ def create_app():
     # CORS Configuration (Adjust for production)
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["http://localhost:3000"],  # Adjust for production
+        allow_origins=["http://localhost:3000","https://e996-2401-4900-80a9-2ba8-f800-6aae-a637-5fae.ngrok-free.app"],  # Adjust for production
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
