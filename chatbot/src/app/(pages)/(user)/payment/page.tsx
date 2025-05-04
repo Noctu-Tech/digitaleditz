@@ -41,7 +41,7 @@ const Page = () => {
       );
       const {hasPermission,isSelf}=useAuth();
   if (isLoading){
-    return <>Loading....</>
+    return <>Loading.... new</>
   }
  return (
     <ProtectedRoute>
