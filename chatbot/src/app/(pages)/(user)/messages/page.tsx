@@ -12,13 +12,11 @@ import { useChatData } from '@/hooks/useChatData';
 
 const Page = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const queryClient = useQueryClient();
-
-  // Fetch and prime chat data (contacts and chatMessages)
   useChatData();
 
-  const { data: contacts = [] } = useQuery(['contacts']);
-  const { data: chatMessages = {} } = useQuery(['chatMessages']);
+  const queryClient = useQueryClient();
+  const contacts = queryClient.getQueryData(['contacts']) || [];
+  const chatMessages = queryClient.getQueryData(['chatMessages']) || {};
 
   const [selectedContact, setSelectedContact] = useState<any>(null);
   const [message, setMessage] = useState('');
