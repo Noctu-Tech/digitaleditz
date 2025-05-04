@@ -62,15 +62,14 @@ export default function HelpPage() {
 
         {/* Tickets List */}
         <div className="space-y-4">
-          {tickets?.length === 0 && (
+          {tickets?.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-8 text-gray-500">
               <Ticket className="h-12 w-12 mb-4 opacity-50" />
               <p className="text-lg font-medium">No Support Tickets</p>
               <p className="text-sm">Create a new ticket to get help from our support team</p>
             </div>
-          )}
-          {tickets?.length!==0 && tickets?.map((ticket) => (
-            <TicketList ticket={{ ...ticket, status: ticket.status as "open" | "closed" }} key={ticket.id} />
+          ): tickets?.map((ticket) => (
+            <TicketList ticket={{ ...ticket, status: ticket.status as "open" | "closed" }} key={ticket._id} />
           ))}
         </div>
       </section>
