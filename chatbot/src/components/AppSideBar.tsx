@@ -56,7 +56,7 @@ const [signout,setSignout]=useState(false);
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
   <div className={`w-full h-full flex items-center ${collapsed ? 'flex-col items-start gap-2':'justify-between'  }`}>
-  <SidebarMenuButton className="w-full h-full">
+  <SidebarMenuButton className="w-full h-full" asChild>
     <div className={`flex flex-row gap-5 items-center`}>
       <Avatar className="h-10 w-10 mb-2">
         <AvatarImage src={data?.u_pfp} alt={data?.username} />
