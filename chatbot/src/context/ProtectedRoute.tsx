@@ -22,6 +22,9 @@ const ProtectedRoute = ({ children, requiredRoles = [],isdev=ENV.ISDEV }: Protec
   const isPublic= pathname==='/settings/'||pathname==='/help/'
   useEffect(() => {
     if (!isAuthenticated) {
+      document.cookie.split(';').forEach(cookie => {
+        document.cookie = cookie.replace(/^ +/, '').replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
+      });
       router.push('/signin');
     }
   }, [isAuthenticated, router]);
