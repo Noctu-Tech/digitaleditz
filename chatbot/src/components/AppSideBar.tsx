@@ -65,7 +65,7 @@ const [signout,setSignout]=useState(false);
       {!collapsed && <span>{data?.username || 'User'}</span>}
     </div>
 </SidebarMenuButton>
-    <SidebarMenuButton className="w-fit h-fit hover:bg-transparent">
+    <SidebarMenuButton className="w-fit h-fit hover:bg-transparent" asChild>
 <div className="w-fit h-fit">
       <ModeToggle />
     </div>
