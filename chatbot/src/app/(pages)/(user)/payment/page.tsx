@@ -178,10 +178,11 @@ const Page = () => {
         <CardContent className="pt-6 flex flex-col items-center text-center space-y-5">
           <ReceiptIndianRupeeIcon />
           <div className="space-y-2">
-            <h3 className="text-xl font-semibold tracking-tight">No Conversations Found</h3>
+            <h3 className="text-xl font-semibold tracking-tight">No Transactions Found</h3>
             <p className="text-sm text-muted-foreground">
-              This might be because there are no active workflows or no messages from the users
+              This might be because you might not have made any transactions. if you have made a transaction you can raise a ticket in the help section
             </p>
+            <Button variant={'secondary'} onClick={()=>{router.push('/help')}}>Raise a Ticket</Button>
           </div>
         </CardContent>
       </Card>
