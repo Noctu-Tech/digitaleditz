@@ -72,7 +72,7 @@ def create_user(user: UserSignup, res: Response) -> Dict[str, Any]:
 
     user_document = {
         'username': user.username,
-        'email': user.email,
+        'email': user.email.lower(),
         'password': hashed_password,
         'u_pfp': pfp_url,
         'u_subscription': Subscription.FREE,
@@ -96,7 +96,8 @@ def create_user(user: UserSignup, res: Response) -> Dict[str, Any]:
 
 @auth_router.post('/login')
 def login(user: UserLogin, res: Response) -> Dict[str, Any]:
-    user_data = users_collection.find_one({'email': user.email})
+
+    user_data = users_collection.find_one({'email': user.email.lower()})
     print("@user_data",user_data)
     profile_data=profile_collection.find_one({"user_id":user_data["_id"]})
     if not user_data or not verify_password(user.password, user_data['password']) or not profile_data:
