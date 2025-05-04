@@ -10,6 +10,7 @@ export const handleSignin = async (form: UserSigninSchemaType) => {
     } 
  
     try { 
+        data.email=data.email.toLowerCase()
         const response = await handleSigninApi(data);
         if (!response) { 
             throw new Error("Signin failed: No response from server"); 
@@ -29,7 +30,7 @@ export const handleSignup = async (form: UserSignupSchemaType) => {
  
     const newData = { 
         username: data.username, 
-        email: data.email, 
+        email: data.email.toLowerCase(), 
         password: data.password 
     }; 
  
