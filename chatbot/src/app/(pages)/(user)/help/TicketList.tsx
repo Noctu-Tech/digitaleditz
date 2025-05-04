@@ -20,7 +20,7 @@ const TicketList = (props:TicketListProps) => {
           {props.ticket.status}
         </Badge>
         <DropdownMenu modal={false}>
-                  <DropdownMenuTrigger>
+                  <DropdownMenuTrigger asChild>
                     <Button variant={'outline'} size={'sm'}>
                       <EllipsisVertical size={10}/>
                       </Button>

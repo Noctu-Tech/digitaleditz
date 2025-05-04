@@ -33,7 +33,7 @@ const UserWorkflow = ({workflow}: {workflow: WorkFlow}) => {
         <>
         <DeleteWorkFlowDialog open={showdelete} setOpen={setShowdelete} workFlowName={workflow.name} workFlowId={workflow._id}/>
         <DropdownMenu>
-          <DropdownMenuTrigger>
+          <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon">
             <MoreVertical size={20} />
             </Button>

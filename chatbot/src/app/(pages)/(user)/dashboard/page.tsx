@@ -104,7 +104,7 @@ const Page = () => {
                <TableCell>{user.u_role}</TableCell>
                <TableCell className='gap-4 flex'>{user.role}
                <DropdownMenu modal={false}>
-                  <DropdownMenuTrigger>
+                  <DropdownMenuTrigger asChild>
                     <Button variant={'outline'} size={'sm'} onClick={()=>{
                       console.log("@user",user);
                       
