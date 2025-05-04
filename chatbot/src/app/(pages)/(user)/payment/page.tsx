@@ -15,6 +15,7 @@ import { GetTransactions } from '@/lib/functions/payment/getTransaction';
 const Page = () => {
 
 
+  const router=useRouter();
   const {data:payments,isLoading} =useQuery({
     queryKey:['payment-history'],
       queryFn:GetTransactions
@@ -42,7 +43,6 @@ const Page = () => {
   if (isLoading){
     return <>Loading....</>
   }
-  const router=useRouter();
  return (
     <ProtectedRoute>
     <div className="w-full min-h-screen">
