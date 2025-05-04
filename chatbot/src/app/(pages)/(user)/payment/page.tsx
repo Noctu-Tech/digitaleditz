@@ -1,5 +1,5 @@
 "use client"
-import { Users, Search, Settings2Icon, EllipsisVertical, Edit2, Eye } from 'lucide-react';
+import { Users, Search, Settings2Icon, EllipsisVertical, Edit2, Eye, MessageCircleOff, ReceiptIndianRupeeIcon } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useRouter } from 'next/navigation';
 import { GetTransactions } from '@/lib/functions/payment/getTransaction';
+import { Card, CardContent } from '@/components/ui/card';
 
 const Page = () => {
 
@@ -43,12 +44,12 @@ const Page = () => {
   if (isLoading){
     return <>Loading.... new</>
   }
+  if(payments && payments.length>0){
  return (
     <ProtectedRoute>
     <div className="w-full min-h-screen">
       <div className="p-8">
        
-    {hasPermission(["admin"]) && <AdminSpec/>}
         <div className="grid grid-cols-1 gap-6">
  <div className="lg:col-span-2">
    <div className="pt-6 rounded-xl shadow-sm">
@@ -171,4 +172,19 @@ const Page = () => {
   );
 };
 
+  return (
+    <div className="flex items-center justify-center h-full w-full p-6">
+      <Card className="w-full max-w-md border border-dashed bg-muted/10">
+        <CardContent className="pt-6 flex flex-col items-center text-center space-y-5">
+          <ReceiptIndianRupeeIcon />
+          <div className="space-y-2">
+            <h3 className="text-xl font-semibold tracking-tight">No Conversations Found</h3>
+            <p className="text-sm text-muted-foreground">
+              This might be because there are no active workflows or no messages from the users
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );}
 export default Page;
