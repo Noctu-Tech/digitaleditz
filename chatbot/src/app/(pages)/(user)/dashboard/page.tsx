@@ -16,6 +16,7 @@ import { useRouter } from 'next/navigation';
 const Page = () => {
 
 
+  const router=useRouter();
   const {data:users,isLoading} =useQuery({
     queryKey:['users'],
       queryFn:GetUsers
@@ -43,7 +44,6 @@ const Page = () => {
   if (isLoading){
     return <>Loading....</>
   }
-  const router=useRouter();
  return (
     <ProtectedRoute>
     <div className="w-full min-h-screen">
