@@ -22,7 +22,7 @@ export async function middleware(request: NextRequest) {
       path.startsWith('/help') || 
       path.startsWith('/settings')) {
    
-    if (!accessToken || !refreshToken) {
+    if (!accessToken && !refreshToken) {
         return NextResponse.redirect(new URL('/signin', request.url));
     }
     
