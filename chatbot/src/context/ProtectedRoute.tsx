@@ -6,6 +6,7 @@ import { UserRole } from '../types/auth';
 import { ENV } from '@/lib/functionapis/config';
 import VerificationPending from '@/components/verification-pending';
 import { VerificationTimeline } from '@/components/verification-timeline';
+import { handleSignout } from '@/lib/functions/auth';
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -22,9 +23,7 @@ const ProtectedRoute = ({ children, requiredRoles = [],isdev=ENV.ISDEV }: Protec
   const isPublic= pathname==='/settings/'||pathname==='/help/'
   useEffect(() => {
     if (!isAuthenticated) {
-      document.cookie.split(';').forEach(cookie => {
-        document.cookie = cookie.replace(/^ +/, '').replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
-      });
+      handleSignout();
       router.push('/signin');
     }
   }, [isAuthenticated, router]);
