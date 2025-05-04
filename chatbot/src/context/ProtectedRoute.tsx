@@ -21,12 +21,20 @@ const ProtectedRoute = ({ children, requiredRoles = [],isdev=ENV.ISDEV }: Protec
   console.log(isActivated(),hasPermission)
   const isDashboard = pathname === '/dashboard' || pathname === '/dashboard/';
   const isPublic= pathname==='/settings/'||pathname==='/help/'
+  import { useEffect } from 'react';
+  import { useRouter } from 'next/router';
+  
   useEffect(() => {
-    if (!isAuthenticated) {
-      handleSignout();
-      router.push('/signin');
-    }
+    const checkAuth = async () => {
+      if (!isAuthenticated) {
+        await handleSignout(); // should remove cookies & possibly call logout endpoint
+        router.push('/signin');
+      }
+    };
+  
+    checkAuth();
   }, [isAuthenticated, router]);
+  
 
   if (isdev) {
     console.log(isdev)
