@@ -23,7 +23,7 @@ const ProtectedRoute = ({ children, requiredRoles = [],isdev=ENV.ISDEV }: Protec
   const isPublic= pathname==='/settings/'||pathname==='/help/'
   
   useEffect(() => {
-    const checkAuth = async () => {
+    const checkAuth = () => {
       if (!isAuthenticated) {
         router.push('/signin');
       }
