@@ -5,6 +5,8 @@ import { AxiosError } from "axios";
 import { handleSetCookieHeaders } from "./cookies";
 
 export const handleSigninApi = async (data: AuthData) => {
+    console.log("apiCLient",apiClient)
+    console.log("@DATA",data)
     try {
         const response = await apiClient.post('/auth/login', data);
         // console.log('RESPONSE',response)
