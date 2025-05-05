@@ -6,7 +6,7 @@ import { UserRole } from '../types/auth';
 import { ENV } from '@/lib/functionapis/config';
 import VerificationPending from '@/components/verification-pending';
 import { VerificationTimeline } from '@/components/verification-timeline';
-import { handleSignout } from '@/lib/functions/auth';
+
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -25,7 +25,6 @@ const ProtectedRoute = ({ children, requiredRoles = [],isdev=ENV.ISDEV }: Protec
   useEffect(() => {
     const checkAuth = async () => {
       if (!isAuthenticated) {
-        await handleSignout(); // should remove cookies & possibly call logout endpoint
         router.push('/signin');
       }
     };
