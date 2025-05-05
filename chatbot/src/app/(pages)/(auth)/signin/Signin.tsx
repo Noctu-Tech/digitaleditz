@@ -28,8 +28,8 @@ function Signin() {
       toast.success("Signed in Successfully", {id: "user-signin"});
       router.push("/dashboard");
     },
-    onError: (e) => {
-      toast.error("Failed to Signin", {id: "user-signin",description:e})
+    onError: () => {
+      toast.error("Failed to Signin", {id: "user-signin"})
     }
   })
 
