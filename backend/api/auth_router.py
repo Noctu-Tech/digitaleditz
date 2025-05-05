@@ -97,8 +97,8 @@ def create_user(user: UserSignup, res: Response) -> Dict[str, Any]:
 @auth_router.post('/login')
 def login(user: UserLogin, res: Response) -> Dict[str, Any]:
 
-    user_data = users_collection.find_one({'email': user.email.lower()})
-    print("@user_data",user_data)
+    user_data = users_collection.find_one({'email': user.email})
+    print("@user_data",user.email.lower())
     profile_data=profile_collection.find_one({"user_id":user_data["_id"]})
     if not user_data or not verify_password(user.password, user_data['password']) or not profile_data:
         users_collection.delete_one({'email': user.email})
