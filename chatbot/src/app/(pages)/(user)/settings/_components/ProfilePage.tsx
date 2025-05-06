@@ -1,21 +1,14 @@
-'use client';
+'use client'
 
 import { useQuery } from '@tanstack/react-query';
-import { GetProfile } from '@/lib/functions/username/profile';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
-import { MapPin, Mail, Phone, MessageSquare, AlertTriangle, CheckCircle, Edit, ExternalLink, Upload } from 'lucide-react';
-import EditProfileDialog from './EditProfileDialog';
+import { GetmyProfile } from '@/lib/functions/username/profile';
 import BusinessProfilePage from '../../user/_components/BusinessProfilePage';
+import { AlertTriangle } from 'lucide-react';
 
 export default function BusinessProfile() {
   const { data: business, isLoading, isError, error } = useQuery({
     queryKey: ['business'],
-    queryFn: GetProfile
+    queryFn: GetmyProfile
   });
 
   if (isLoading) {
