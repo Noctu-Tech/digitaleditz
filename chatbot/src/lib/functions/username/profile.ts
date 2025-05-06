@@ -1,4 +1,4 @@
-import { GetMyProfile,GetMy } from "@/lib/functionapis/profile";
+import { GetMyProfile,GetMy, GetProfile } from "@/lib/functionapis/profile";
 import { GetAllUsers } from "@/lib/functionapis/user";
 
 export async function GetMe() {
@@ -23,7 +23,7 @@ try{
 }
  }
 
-export const GetProfile = async()=>{
+export const GetmyProfile = async()=>{
   try {
     console.log("SOMETHING HERE !")
     const data= await GetMyProfile()
@@ -40,5 +40,13 @@ export const EditProfile=async(values:any)=>{
 }
 
 export const GetProfilebyId=async(id:string)=>{
-  
+  try {
+    console.log(id)
+    const data= await GetProfile(id)
+    console.log(data)
+    return data
+  } catch (error) {
+    console.error("Get Profile",error)
+    throw error
+  }
 }
