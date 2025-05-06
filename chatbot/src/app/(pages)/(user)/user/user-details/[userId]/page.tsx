@@ -1,3 +1,4 @@
+'use client'
 import { GetProfilebyId } from "@/lib/functions/username/profile";
 import { useQuery } from "@tanstack/react-query";
 import { AlertTriangle } from "lucide-react";
