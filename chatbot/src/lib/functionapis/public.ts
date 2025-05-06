@@ -1,28 +1,22 @@
-import { ENV } from "./config";
-import axios from "axios";
+'use server'
 import apiClient from "./apiclient";
+const handleDemo = async (form: any) => {
+  
+console.log("apiClient:", apiClient);
+console.log("typeof apiClient.post:", typeof apiClient?.post);
 
-const url = ENV.BACKEND_URL;
-
-const handleDemo = async (form: any): Promise<{ success: boolean; data?: any; error?: string }> => {
+  console.log("@FORM",form)
   try {
     const response = await apiClient.post(`/demo/`, form);
+    console.log("@OUTSIDE",response);
+    
     if (response.status === 200) {
-      return {
-        success: true,
-        data: response.data
-      };
+      console.log("@INSIde",response);
+      return response.data
     }
-    return {
-      success: false,
-      error: 'Failed to process request'
-    };
   } catch (error: any) {
-    return {
-      success: false,
-      error: error.message || 'An error occurred'
-    };
-  }
+  console.error("Somethng went wrong",error)  
+}
 };
 
 export { handleDemo };
