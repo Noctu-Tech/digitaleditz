@@ -197,6 +197,30 @@ async def get_business_profile(
     except Exception as e:
         await handle_exception(e, "Error fetching user")
 
+@router.get('/{id}')
+async def get_business_profile(id:str,
+    user_data: tuple = Depends(extract_user_data_from_token)
+    ):
+    try:
+        user_id, tok = user_data['user_id'], user_data['authority']
+        
+        user=user_collection.find_one({"_id":ObjectId(id)})
+        if user["u_role"]!=UserRole.CUSTOMER:
+            profile = profile_collection.find_one({'user_id':ObjectId(id)})
+            profile['_id']=str(profile['_id'])
+            del profile["user_id"]
+            del user['_id']
+            del user['password']
+            combined_data={**user,**profile}
+        
+        if not user:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+        
+        return JSONResponse(content=combined_data)
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        await handle_exception(e, "Error fetching user")
 
 @router.get("/verify-email")
 def verify_email(token: str = Query(...)):
