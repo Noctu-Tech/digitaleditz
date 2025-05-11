@@ -1,5 +1,5 @@
 
-function CustomerProfilePage() {
+function CustomerProfilePage({data}:{data:any}) {
   return (
     <div>CustomerProfile</div>
   )

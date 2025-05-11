@@ -1,5 +1,4 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card" 
-import { Separator } from "@/components/ui/separator"
 import { ENV } from "@/lib/functionapis/config"
 import { User } from "lucide-react"
 

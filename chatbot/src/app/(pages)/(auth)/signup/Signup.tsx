@@ -4,7 +4,6 @@ import { useCallback } from 'react'
 import { useForm } from 'react-hook-form'
 import { useMutation } from '@tanstack/react-query'
 import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card"
@@ -26,7 +25,7 @@ function Signup() {
   const router = useRouter();
   const {mutate, isPending, isError, error} = useMutation({
     mutationFn: handleSignup,
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast.success("Signed up Successfully", {id: "user-signup"});
       router.push("/onboarding");
     },

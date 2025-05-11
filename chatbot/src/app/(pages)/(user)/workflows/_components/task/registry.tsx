@@ -1,7 +1,7 @@
 import { TaskType } from "@/types/task";
 import { ActionMessageTask } from "./ActionMessage";
 import { EndChatTask } from "./EndChatTask";
-import { ProductMessageTask } from "./ProductMessage";
+import { FindProductMessageTask, SaveProductMessageTask } from "./ProductMessage";
 import { StartChatTask } from "./StartChat";
 import {  WorkflowTasks } from "@/types/workflow";
 import { AuthenticationTask } from "./Authentication";
@@ -11,7 +11,8 @@ type Registry={
 export const TaskRegistry:Registry = {
     START_CHAT: StartChatTask,
     ACTION_MESSAGE:ActionMessageTask,
-    PRODUCT_MESSAGE:ProductMessageTask,
+    FIND_PRODUCT_MESSAGE:FindProductMessageTask,
+    SAVE_PRODUCT_MESSAGE:SaveProductMessageTask,
     AUTHENTICATION_TASK:AuthenticationTask,
     END_CHAT:EndChatTask
 }

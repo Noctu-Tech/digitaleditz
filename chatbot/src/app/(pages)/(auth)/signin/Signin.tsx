@@ -45,7 +45,7 @@ function Signin() {
         <CardHeader>
           <CardTitle className="text-2xl">Sign in</CardTitle>
           <CardDescription>
-            Don't have an account?&nbsp;
+            Don&apos;t have an account?&nbsp;
             <Link href="../signup" className="underline underline-offset-4 hover:text-primary">
               Join us
             </Link>

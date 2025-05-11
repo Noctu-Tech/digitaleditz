@@ -4,13 +4,13 @@ import { useQuery } from '@tanstack/react-query';
 import { GetmyProfile } from '@/lib/functions/username/profile';
 import BusinessProfilePage from '../../user/_components/BusinessProfilePage';
 import { AlertTriangle } from 'lucide-react';
+import { useAuth } from '@/hooks/auth';
 
 export default function BusinessProfile() {
   const { data: business, isLoading, isError, error } = useQuery({
     queryKey: ['business'],
     queryFn: GetmyProfile
   });
-
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -19,7 +19,7 @@ export default function BusinessProfile() {
     );
   }
 
-  if (isError) {
+  if (!business||isError) {
     return (
       <div className="flex justify-center items-center h-64">
         <div className="text-center">

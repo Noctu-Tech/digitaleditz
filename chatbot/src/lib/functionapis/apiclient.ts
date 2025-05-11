@@ -55,12 +55,12 @@ apiClient.interceptors.response.use(async (response) => {
         cookieStore.set({
           name: name.trim(),
           value: value.trim(),
-          domain:".realtixx.in",
+          // domain:".realtixx.in",
           maxAge,
           secure,
           httpOnly,
           path,
-          sameSite: 'none',
+          sameSite: 'lax',
         });
       }
     } catch (error) {

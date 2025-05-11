@@ -8,7 +8,7 @@ export default function TooltipWrapper({children,content}:{children:React.ReactN
     return(
 <TooltipProvider>
   <Tooltip>
-    <TooltipTrigger>
+    <TooltipTrigger asChild>
     {children}</TooltipTrigger>
     <TooltipContent>
       <p>{content}</p>

@@ -4,7 +4,6 @@ import { UpdateWorkflow } from '@/lib/functions/workflow/updateWorkflow';
 import { useMutation } from '@tanstack/react-query';
 import { useReactFlow } from '@xyflow/react';
 import { CheckIcon } from 'lucide-react'
-import { revalidatePath } from 'next/cache';
 import { toast } from 'sonner';
 
 
@@ -16,7 +15,6 @@ function SaveBtn({workflowId}:{workflowId:string}) {
       mutationFn:UpdateWorkflow,
       onSuccess: ()=>{
         toast.success("Flow saved Succeessfully",{id:"save-workflow"});
-        // revalidatePath(`/workflows/studio/${workflowId}`);
       },
       onError:()=>{toast.error(
         "Something went wrong",{id:"save-workflow"}

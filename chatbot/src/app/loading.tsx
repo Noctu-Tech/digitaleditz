@@ -3,7 +3,7 @@ export default function loading() {
 
 
   return (
-    <div className="w-full flex flex-col items-center justify-center py-12 space-y-6">
+    <div className="w-full h-full flex flex-col items-center justify-center py-12 space-y-6">
     
       <div className="relative w-16 h-16 flex items-center justify-center">
         <svg

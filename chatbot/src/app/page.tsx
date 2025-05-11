@@ -1,5 +1,5 @@
 
-import HomePage from './(pages)/HomePage'
+import HomePage from './(pages)/_components/HomePage'
 
 function Page() {
   return (

@@ -29,7 +29,7 @@ function SubmitTab() {
         <h2 className="text-2xl font-semibold mb-6">Welcome {form.getValues('businessName')}!</h2>
         <div className="space-y-4 text-left">
           <p className="text-muted-foreground">
-            We've received your business information and our team will review it shortly.
+            We&apos;ve received your business information and our team will review it shortly.
           </p>
           <p className="text-muted-foreground">
             You will receive a verification email at{' '}

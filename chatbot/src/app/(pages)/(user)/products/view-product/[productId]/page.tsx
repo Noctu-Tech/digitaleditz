@@ -1,17 +1,11 @@
 import PropertyItemPage from "../../_components/PropertyItemPage";
 
 interface Props {
-  params: {productId: string}
-
-}
-function page({params}:Props) {
-    const {productId} = params;
-
-  return (
-   <>
-   <PropertyItemPage propertyId={productId}/>
-   </>
-  )
+  params: Promise<{ productId: string }>;
 }
 
-export default page
+
+export default async function Page({ params }: Props) {
+  const { productId } = await params;
+  return <PropertyItemPage propertyId={productId} />;
+}

@@ -22,8 +22,6 @@ function ContactSidebar({contacts,handleContactSelect}:{contacts:any; handleCont
             <Search className="absolute left-3 top-2.5" size={20} />
           </div>
         </div>
-
-        {/* Contacts List */}
         <div className="flex-1 overflow-y-auto">
           {contacts.map((contact) => (
             <ContactItem key={contact.id} contact={contact} handleContactSelect={handleContactSelect} selectedContact={contact.id} />

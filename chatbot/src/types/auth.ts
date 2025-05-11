@@ -7,7 +7,7 @@ export interface AuthData {
 export interface SignupData extends AuthData {
     username: string;
 }
-export type UserRole = 'admin' | 'manager' | 'user';
+export type UserRole = 'admin' | 'client' | 'customer';
 
 export interface User {
   id: string;

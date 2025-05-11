@@ -4,10 +4,10 @@ import { useRouter } from "next/navigation";
 import { useTransition, useEffect } from "react";
 import { SidebarMenuItem, SidebarMenuButton, SidebarMenu } from "@/components/ui/sidebar";
 import { BadgeIndianRupeeIcon, Bell, Box, HelpCircle, Home, MessageCircle, Workflow } from "lucide-react";
+import SideButton from "./SideButton";
 
-export default function SidebarMenuWrapper() {
+export default function SidebarMenuWrapper({collapsed}:{collapsed:boolean}) {
   const router = useRouter();
-  const [isPending, startTransition] = useTransition();
   const items = [
     { icon: Home, title: 'Home', url: "/dashboard" },
     { icon: Workflow, title: 'Workflow', url: "/workflows" },
@@ -24,12 +24,11 @@ export default function SidebarMenuWrapper() {
     <SidebarMenu>
       {items.map((item) => (
         <SidebarMenuItem className="h-full w-full" key={item.title}>
-          <SidebarMenuButton className="p-4"  onClick={() => startTransition(() => router.push(item.url))}
-              disabled={isPending}>
-            
+          <SidebarMenuButton asChild>
+            <SideButton url={item.url}>
               <item.icon />
-              <span>{item.title}</span>
-            
+              {!collapsed && <span className="m-1">{item.title}</span>}
+            </SideButton>
           </SidebarMenuButton>
         </SidebarMenuItem>
       ))}

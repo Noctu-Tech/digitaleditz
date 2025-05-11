@@ -37,6 +37,7 @@ function BusinessInfo({form}:{form:UseFormReturn<OnboardingFormData>}){
               </SelectTrigger>
             </FormControl>
             <SelectContent>
+              <SelectItem value="select-type">Select Business Type</SelectItem>
               <SelectItem value="residential">Residential</SelectItem>
               <SelectItem value="commercial">Commercial</SelectItem>
               <SelectItem value="agricultural">Agricultural</SelectItem>
@@ -93,6 +94,7 @@ function BusinessInfo({form}:{form:UseFormReturn<OnboardingFormData>}){
               </SelectTrigger>
             </FormControl>
             <SelectContent>
+              <SelectItem value='select-employees'>Select Employee range</SelectItem>
               <SelectItem value="1-10">1-10</SelectItem>
               <SelectItem value="10-50">10-50</SelectItem>
               <SelectItem value="50-200">50-200</SelectItem>

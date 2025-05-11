@@ -1,10 +1,9 @@
-function page({ params }:{params:{userId:string}} ) {
-    const { userId }=params
-    return (
-    <div>
-        {userId}
-    </div>
-  )
+interface Props {
+  params: Promise<{ ticketId: string }>;
 }
 
-export default page
+
+export default async function Page({ params }: Props) {
+  const { ticketId } = await params;
+  return <>{ticketId}</>;
+}

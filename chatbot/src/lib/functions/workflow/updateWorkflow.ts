@@ -1,6 +1,5 @@
 import { getWorkflowApi, updateWorkflowApi } from "@/lib/functionapis/workflow/workflow";
 import { WorkflowStatus } from "@/types/workflow";
-import { revalidatePath } from "next/cache";
 
 export const UpdateWorkflow=async({workflowId,definition}:{workflowId:string,definition:string})=>{
     try{

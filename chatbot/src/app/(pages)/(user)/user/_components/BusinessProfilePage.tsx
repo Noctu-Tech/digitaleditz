@@ -6,13 +6,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { MapPin, Mail, Phone, MessageSquare, AlertTriangle, CheckCircle, Edit, ExternalLink, Upload } from 'lucide-react';
+import { MapPin, Mail, Phone, MessageSquare, AlertTriangle, CheckCircle, Edit, ExternalLink, Upload, Clock, Trash2, UserCog } from 'lucide-react';
 import EditProfileDialog from '../../settings/_components/EditProfileDialog';
+import { useAuth } from '@/hooks/auth';
 
 
 
-export default async function BusinessProfilePage({data}:{data:any}) {
-   const getStatusBadge = (status: string) => {
+export default function BusinessProfilePage({data}:{data:any}) {
+  const {isSelf,hasPermission}=useAuth()
+  const getStatusBadge = (status: string) => {
     switch (status) {
       case 'ACTIVE':
         return { variant: 'default' as const, icon: <CheckCircle className="h-3 w-3 mr-1" /> };
@@ -46,7 +48,8 @@ export default async function BusinessProfilePage({data}:{data:any}) {
 
   const statusBadge = getStatusBadge(data.u_status);
   const verificationBadge = getVerificationBadge(data.u_verified);
-
+  const self=isSelf(data._id)
+console.log("@ISSELF  ",self)
   return (
     <>
     {/* Main container */}
@@ -54,7 +57,7 @@ export default async function BusinessProfilePage({data}:{data:any}) {
       {/* Header with status information */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">{data?.businessName}</h1>
+          {self && <h1 className="text-2xl font-bold tracking-tight">{data?.businessName}</h1>}
           <div className="flex items-center space-x-2 mt-1">
             <Badge variant={statusBadge.variant} className="text-xs">
               {statusBadge.icon} {data?.u_status}
@@ -66,6 +69,20 @@ export default async function BusinessProfilePage({data}:{data:any}) {
           </div>
         </div>
         <div className="flex space-x-2 mt-4 md:mt-0">
+           {self && hasPermission(["admin"]) && <div className="flex gap-2">
+      <Button size="sm" variant="destructive" className="flex items-center gap-1">
+        <Trash2 size={14} />
+        Delete
+      </Button>
+      <Button size="sm" variant="outline" className="flex items-center gap-1 text-amber-400">
+        <UserCog size={14} />
+        Change Role
+      </Button>
+      <Button size="sm" variant="outline" className="flex items-center gap-1 text-green-400">
+        <Clock size={14} />
+        Change Status
+      </Button>
+    </div>}
           <EditProfileDialog triggerEl={<Button variant="outline" size="sm">
             <Edit className="h-4 w-4 mr-2" />
             Edit Profile

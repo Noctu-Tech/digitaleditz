@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogOverlay, DialogTitle } from "@/components/ui/dialog"
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { UpdateStatusRole } from "@/lib/functions/username/dashboard"
+import { UpdateStatus } from "@/lib/functions/username/dashboard"
 import { useMutation } from "@tanstack/react-query"
 import { Loader2Icon } from "lucide-react"
 import { useCallback } from "react"
@@ -15,31 +15,30 @@ import { toast } from "sonner"
 interface Props{
     open:boolean
     onOpenChange:(open:boolean)=>void
-    user:any
+    status?: "ACTIVATED"|"DEACTIVATED"
+    userId: string | string[];
 }
-function UpdateStatusRoleDialog({open,onOpenChange,user}:Props) {
+function UpdateStatusDialog({open,onOpenChange,status,userId}:Props) {
     const form = useForm({
         defaultValues: {
-            status: user?.status,
-            role: user?.role,
+            status: status,
         }
     })
     const{mutate,isPending}=useMutation({
-        mutationFn:UpdateStatusRole,
+        mutationFn:UpdateStatus,
         onSuccess:()=>{
-            toast.success("User Status and Role Updated", {id:"update-user-status-role"})
+            toast.success("User Status Updated", {id:"update-user-status"})
             onOpenChange(false)
         },
         onError:()=>{
-            toast.error("Failed to update user status and role", {id:"update-user-status-role"})
+            toast.error("Failed to update user status", {id:"update-user-status"})
         }
     })
 const onSubmit = useCallback((values:any) => {
-    toast.loading("Updating User Status or Role...", {id:"update-user-status-role"})
+    toast.loading("Updating User Status...", {id:"update-user-status"})
     mutate({
         // userId:user?.id,
         status:values.status,
-        role:values.role
     })
 },[mutate])
   return (
@@ -78,21 +77,6 @@ const onSubmit = useCallback((values:any) => {
         </FormItem>
       )}
     />
-         
-         <FormField
-      control={form.control}
-      name="role"
-      rules={{ required: "Role is required" }}
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel>Role</FormLabel>
-          <FormControl>
-            <Input {...field} />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
 
 <DialogFooter>
     <Button variant={'outline'} onClick={() => onOpenChange(false)}>
@@ -110,4 +94,4 @@ const onSubmit = useCallback((values:any) => {
   )
 }
 
-export default UpdateStatusRoleDialog
+export default UpdateStatusDialog

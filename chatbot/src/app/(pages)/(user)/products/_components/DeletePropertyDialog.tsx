@@ -4,7 +4,6 @@ import { AlertDialog, AlertDialogTitle,AlertDialogCancel, AlertDialogContent, Al
 import { Input } from "@/components/ui/input";
 import { deleteProperty } from "@/lib/functions/property/deleteproperty";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { revalidatePath } from "next/cache";
 import { useState } from "react";
 import { toast } from "sonner";
 interface Props{

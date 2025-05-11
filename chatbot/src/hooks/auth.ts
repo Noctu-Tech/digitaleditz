@@ -3,9 +3,10 @@ import { useQuery } from '@tanstack/react-query';
 
 import { UserRole } from '../types/auth';
 import apiClientNew from '@/lib/functionapis/apiclientnew';
+import { ENV } from '@/lib/functionapis/config';
 
 // Add this constant at the top level
-const isDev = false
+const isDev = ENV.ISDEV
 
 // React Query keys
 export const authKeys = {

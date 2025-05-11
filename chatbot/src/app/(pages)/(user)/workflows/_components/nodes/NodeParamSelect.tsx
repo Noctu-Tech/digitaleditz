@@ -7,7 +7,7 @@ import { useCallback } from "react";
 import { ProductMessageTask } from "../task/ProductMessage";
 import ProductParam from "../param/ProductParam";
 
-function NodeParamField({ 
+function NodeParamSelect({ 
   param, 
   nodeId, 
   disabled, 
@@ -84,4 +84,4 @@ function NodeParamField({
   }
 }
 
-export default NodeParamField;
+export default NodeParamSelect;

@@ -7,6 +7,7 @@ import { Particles } from '@/components/magicui/particles'
 import Link from 'next/link'
 import { useDebounce } from '@/hooks/use-debounce'
 import { handleDemo } from '@/lib/functionapis/public'
+import ContactForm from './ContactForm'
 const HomePage = () => {
   const sections = [
     { id: 'home', label: 'Home' },
@@ -26,8 +27,6 @@ const HomePage = () => {
     const element = document.getElementById(id)
     element?.scrollIntoView({ behavior: 'smooth' })
   }
-  const [demo,setDemo]=useState({name:"",email:"",message:""})
-  const demoform=useDebounce(demo,500)
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-background/50">
@@ -204,31 +203,7 @@ const HomePage = () => {
         />
         <h2 className="text-4xl font-bold text-center mb-12">Get in Touch</h2>
         <div className="max-w-md mx-auto">
-          <form className="space-y-4">
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Name</label>
-          <input
-            className="w-full p-2 border rounded-md"
-            placeholder="Your name"
-          />
-        </div>
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Email</label>
-          <input
-            type="email"
-            className="w-full p-2 border rounded-md"
-            placeholder="you@example.com"
-          />
-        </div>
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Message</label>
-          <textarea
-            className="w-full p-2 border rounded-md h-32"
-            placeholder="Your message"
-          />
-        </div>
-        <Button className="w-full" onClick={()=>{handleDemo(demoform)}}>Send Message</Button>
-          </form>
+       <ContactForm/>
         </div>
       </section>
     </div>

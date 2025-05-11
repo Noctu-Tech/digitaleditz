@@ -46,57 +46,61 @@ const [signout,setSignout]=useState(false);
         <SidebarGroup>
           <SidebarGroupLabel>Application</SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenuWrapper/>
+            <SidebarMenuWrapper collapsed={collapsed}/>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent> 
       <SidebarFooter>
-          <SidebarMenu>
-            <SidebarMenuItem className='w-full'>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-  <div className={`w-full h-full flex items-center ${collapsed ? 'flex-col items-start gap-2':'justify-between'  }`}>
-  <SidebarMenuButton className="w-full h-full" asChild>
-    <div className={`flex flex-row gap-5 items-center`}>
-      <Avatar className="h-10 w-10 mb-2">
-        <AvatarImage src={data?.u_pfp} alt={data?.username} />
-        <AvatarFallback>{data?.username.charAt(0)}</AvatarFallback>
-      </Avatar>
-      {!collapsed && <span>{data?.username || 'User'}</span>}
-    </div>
-</SidebarMenuButton>
-    <SidebarMenuButton className="w-fit h-fit hover:bg-transparent" asChild>
-<div className="w-fit h-fit">
-      <ModeToggle />
-    </div>
-
-</SidebarMenuButton>
-</div>
-
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  side="right"
-                  className="w-[--radix-popper-anchor-width] flex flex-col gap-1"
-                >
-                  <DropdownMenuLabel className='w-full h-full flex justify-start items-center text-md'><SettingsIcon className="h-4 w-4 mr-2" /><span>Settings</span></DropdownMenuLabel>
-                  <Separator/>
-                  <DropdownMenuItem className='flex justify-center items-center' asChild>
-                    <Button variant={"ghost"} className='w-full flex justify-start p-2 h-full' onClick={()=>{router.push('/settings')}}>
-                      <UserRoundCog className="h-4 w-4 mr-2" />
-                    <span>Account</span></Button>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem  asChild>
-                  <Button variant={"destructive"} className='w-full flex justify-start p-2 h-full' onClick={()=>{setSignout((prev)=>!prev)}}>
-                      <LogOut className="h-4 w-4 mr-2" />
-                    <span>Sign out</span></Button>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+  <SidebarMenu>
+    <div className={`w-full h-full flex ${collapsed ? 'flex-col justify-center items-center gap-2' : 'flex-row justify-between items-center'}`}>
+   
+    <SidebarMenuItem className='w-full'>
+    <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          
+            <SidebarMenuButton className={`${collapsed ? 'w-full flex justify-center' : 'w-full'} h-full`} asChild>
+              <div className={`flex flex-row gap-2 items-center`}>
+                <Avatar className="h-10 w-10">
+                  <AvatarImage src={data?.u_pfp} alt={data?.username} />
+                  <AvatarFallback>{data?.username?.charAt(0)}</AvatarFallback>
+                </Avatar>
+                {!collapsed && <span>{data?.username || 'User'}</span>}
+              </div>
+            </SidebarMenuButton>         
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          side="right"
+          className="w-[--radix-popper-anchor-width] flex flex-col gap-1"
+        >
+          <DropdownMenuLabel className='w-full h-full flex justify-start items-center text-md'>
+            <SettingsIcon className="h-4 w-4 mr-2" /><span>Settings</span>
+          </DropdownMenuLabel>
+          <Separator/>
+          <DropdownMenuItem className='flex justify-center items-center' asChild>
+            <Button variant={"ghost"} className='w-full flex justify-start p-2 h-full' onClick={()=>{router.push('/settings')}}>
+              <UserRoundCog className="h-4 w-4 mr-2" />
+              <span>Account</span>
+            </Button>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Button variant={"destructive"} className='w-full flex justify-start p-2 h-full' onClick={()=>{setSignout((prev)=>!prev)}}>
+              <LogOut className="h-4 w-4 mr-2" />
+              <span>Sign out</span>
+            </Button>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </SidebarMenuItem>
+    <SidebarMenuItem>
+    <SidebarMenuButton className="w-fit h-fit hover:bg-transparent mt-1" asChild>
+              <div className={`${collapsed ? 'mx-auto mt-1' : ''}`}>
+                <ModeToggle />
+              </div>
+            </SidebarMenuButton>
             </SidebarMenuItem>
-            <SidebarMenuItem>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarFooter>
+    </div>
+  </SidebarMenu>
+</SidebarFooter>
     </Sidebar>
 </>  )
 }

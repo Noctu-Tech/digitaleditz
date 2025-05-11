@@ -1,51 +1,152 @@
 "use client"
-import { Users, Search, Settings2Icon, EllipsisVertical, Edit2, Eye } from 'lucide-react';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Users, Search } from 'lucide-react';
+import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components/ui/table';
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import ProtectedRoute from '@/context/ProtectedRoute';
 import { useAuth } from '@/hooks/auth';
 import { useQuery } from '@tanstack/react-query';
-import { GetUsers } from '@/lib/functions/username/profile';
-import { Button } from '@/components/ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import AdminSpec from './_components/AdminSpec';
-import { useRouter } from 'next/navigation';
-
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Checkbox } from '@/components/ui/checkbox';
+import EditBar from './_components/EditBar';
+import apiClientNew from '@/lib/functionapis/apiclientnew';
+import DeleteUserDialog from './_components/DeleteUserDialog';
+import UpdateStatusDialog from './_components/UpdateStatusDialog';
+import UpdateRoleDialog from './_components/UpdateRoleDialog';
+import { User } from '@/types/user';
+import UserActions from './_components/UserActions';
+import PaginationBar from '@/components/PaginationBar';
+import UserSkeleton from './_components/UserSkeleton';
 const Page = () => {
 
 
   const router=useRouter();
-  const {data:users,isLoading} =useQuery({
-    queryKey:['users'],
-      queryFn:GetUsers
-    }) || [];
-  
+  const { data: users = [], isLoading } = useQuery({
+    queryKey: ['users'],
+    queryFn: async () => {
+      try {
+        const response = await apiClientNew.get('/user/all');
+        return response.data;
+      } catch (e) {
+        console.error("Something went wrong", e);
+        throw e; 
+      }
+    },
+  });
+  const searchParams = useSearchParams();
+  const dialogType = searchParams.get("dialog");
+  const ids = searchParams.getAll("id");
+  const [dialogOpen,setDialogOpen]=useState(false)
+    const [showEditBar,setShoweditbar]=useState(false)
     const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
+    const [disable,setDisable]=useState({role:false,status:false})
     const [pageSize, setPageSize] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
-    const usersList=users;
-    const filteredUsers = usersList?.filter(user => {
+    const [changeRole,setChangeRole]=useState<"admin"|"client">();
+    const [changeStatus,setChangeStatus]=useState<"ACTIVATED"|"DEACTIVATED">();
+
+    const filteredUsers = users?.filter((user:User) => {
           const matchesSearch = 
             user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
             user.email.toLowerCase().includes(searchQuery.toLowerCase());
-          const matchesStatus = statusFilter === 'all' || user.status.toLowerCase() === statusFilter.toLowerCase();
+          const matchesStatus = statusFilter === 'all' || user.u_status.toLowerCase() === statusFilter.toLowerCase();
           return matchesSearch && matchesStatus;
         });
     
-      const totalPages = Math.ceil((filteredUsers ?? []).length / pageSize);
+        const totalPages = Math.ceil((filteredUsers ?? []).length / pageSize);
       const paginatedUsers = (filteredUsers ?? []).slice(
         (currentPage - 1) * pageSize,
         currentPage * pageSize
       );
-      const {hasPermission,isSelf}=useAuth();
-  if (isLoading){
-    return <>Loading....</>
-  }
+      useEffect(() => {
+
+        if (dialogType && ids.length > 0) {
+          setDialogOpen(true);
+        }
+      }, [dialogType, ids]);
+      const {hasPermission}=useAuth();
+      const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
+      const allSelected = paginatedUsers.length > 0 && selectedUserIds.length === paginatedUsers.length;
+      // const someSelected = selectedUserIds.length > 0 && selectedUserIds.length < paginatedUsers.length;
+        const handleSelectAll = () => {
+          if (allSelected) {
+            // If all are selected, unselect all
+            setSelectedUserIds([]);
+            setShoweditbar(false); // Hide edit bar when no items selected
+          } else {
+            // If none or some are selected, select all
+            const allUserIds = paginatedUsers.map((user: { _id: string; }) => user._id);
+
+            setSelectedUserIds(allUserIds);
+            setShoweditbar(true); // Show edit bar when items are selected
+          }
+        };
+      
+const handleCloseDialog = () => {
+  setDialogOpen(false);
+  router.push("?", { scroll: false });
+};
+  const handleSelectUser = (userId:string) => {
+    setSelectedUserIds(prev => {
+      let newSelection;
+      if (prev.includes(userId)) {
+        // Remove user ID if already selected
+        newSelection = prev.filter(id => id !== userId);
+      } else {
+        // Add user ID if not selected
+        newSelection = [...prev, userId];
+      }
+      
+      // Update edit bar visibility based on whether any items are selected
+      setShoweditbar(newSelection.length > 0);
+      return newSelection;
+    });
+  };
+  
+  useEffect(() => {
+    const selectedUsers = users.filter((user:User) => selectedUserIds.includes(user._id));
+  
+    const allSameRole = selectedUsers.every(
+      (user:User) => user.u_role === selectedUsers[0]?.u_role
+    );
+  
+    const allSameStatus = selectedUsers.every(
+      (user:User) => user.u_status === selectedUsers[0]?.u_status
+    );
+    setDisable({role:allSameRole,status:allSameStatus})
+    if(allSameRole || allSameStatus){
+      setChangeRole(selectedUsers[0]?.u_role);
+      setChangeStatus(selectedUsers[0]?.u_status)}
+    console.log("All users have the same role:", allSameRole,changeRole,changeStatus);
+  }, [users, selectedUserIds]);
+  
  return (
     <ProtectedRoute>
+      {dialogType === "delete" && (
+  <DeleteUserDialog
+    open={dialogOpen}
+    setOpen={handleCloseDialog}
+    userId={ids}
+  />
+)}
+      {dialogType === "role" && (
+  <UpdateRoleDialog
+    open={dialogOpen}
+    role={changeRole}
+    onOpenChange={handleCloseDialog}
+    userId={ids}
+  />
+)}      {dialogType === "status" && (
+  <UpdateStatusDialog
+    open={dialogOpen}
+    status={changeStatus}
+    onOpenChange={handleCloseDialog}
+    userId={ids}
+  />
+)}
     <div className="w-full min-h-screen">
       <div className="p-8">
        
@@ -75,50 +176,54 @@ const Page = () => {
          </SelectTrigger>
          <SelectContent>
            <SelectItem value="all">All Status</SelectItem>
-           <SelectItem value="active">ACTIVATED</SelectItem>
-           <SelectItem value="offline">DEACTIVATED</SelectItem>
+           <SelectItem value="ACTIVATED">Activated</SelectItem>
+           <SelectItem value="DEACTIVATED">DeActivated</SelectItem>
          </SelectContent>
        </Select>
      </div>
 
      {/* Table */}
+     {showEditBar&&<EditBar disable={disable} selectedUserIds={selectedUserIds}/>}
      <div className="overflow-x-auto">
        <Table>
          <TableHeader>
            <TableRow>
+            {hasPermission(['admin']) && (
+              <TableCell>
+                <Checkbox 
+                  checked={allSelected?allSelected:"indeterminate"}
+                  onCheckedChange={handleSelectAll}
+                />
+              </TableCell>
+            )}
              <TableCell>Name</TableCell>
              <TableCell>Email</TableCell>
              <TableCell>Status</TableCell>
              {hasPermission(['admin'])&&<TableCell>Role</TableCell>}
              
-           <TableCell>Actions</TableCell>
+           {!showEditBar&&<TableCell>Actions</TableCell>}
            </TableRow>
          </TableHeader>
          <TableBody>
-           {paginatedUsers.map((user, index) => (
+           { isLoading?
+    (<><UserSkeleton/></>):
+  paginatedUsers.map((user:User, index:number) => (
              <TableRow key={index}>
+            {hasPermission(['admin']) && (
+                <TableCell>
+                  <Checkbox 
+                    checked={selectedUserIds.includes(user._id)}
+                    onCheckedChange={() => handleSelectUser(user._id)}
+                  />
+                </TableCell>
+              )}
                <TableCell>{user.username}</TableCell>
                <TableCell>{user.email}</TableCell>
                <TableCell className='gap-4 flex'>{user.u_status}
                   </TableCell>
                <TableCell>{user.u_role}</TableCell>
-               <TableCell className='gap-4 flex'>{user.role}
-               <DropdownMenu modal={false}>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant={'outline'} size={'sm'} onClick={()=>{
-                      console.log("@user",user);
-                      
-                    console.log(user._id);}}>
-                      <EllipsisVertical size={10}/>
-                      </Button>
-                    </DropdownMenuTrigger>
-                  <DropdownMenuGroup>
-                  <DropdownMenuContent side={'bottom'}>
-                    <DropdownMenuItem onSelect={()=>{
-                      console.log("@user",user);
-                    console.log(user._id);
-                    isSelf(user._id)?router.push('/settings'):router.push(`/user/user-details/${user._id}`)}}>{hasPermission(["admin"])?<><Edit2/>Edit</>:<><Eye/>View Details</>}</DropdownMenuItem>
-                  </DropdownMenuContent></DropdownMenuGroup></DropdownMenu>
+               <TableCell className='gap-4 flex'>
+               {!showEditBar && <UserActions userId={user._id}/> }
                 </TableCell>
              </TableRow>
            ))}
@@ -128,39 +233,13 @@ const Page = () => {
 
      {/* Pagination Controls */}
      <div className="flex items-center justify-between mt-4">
-       <Select value={pageSize.toString()} onValueChange={(v) => {
-         setPageSize(Number(v));
-         setCurrentPage(1);
-       }}>
-         <SelectTrigger className="w-[100px]">
-           <SelectValue placeholder="Per page" />
-         </SelectTrigger>
-         <SelectContent>
-           <SelectItem value="10">10 rows</SelectItem>
-           <SelectItem value="15">15 rows</SelectItem>
-           <SelectItem value="20">20 rows</SelectItem>
-         </SelectContent>
-       </Select>
-
-       <div className="flex items-center gap-2">
-         <button
-           className="px-3 py-1 rounded border disabled:opacity-50"
-           onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-           disabled={currentPage === 1}
-         >
-           Previous
-         </button>
-         <span className="text-sm">
-           Page {currentPage} of {totalPages}
-         </span>
-         <button
-           className="px-3 py-1 rounded border disabled:opacity-50"
-           onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-           disabled={currentPage === totalPages}
-         >
-           Next
-         </button>
-       </div>
+       <PaginationBar
+        totalPages={totalPages}
+        currentPage={currentPage} 
+        setCurrentPage={setCurrentPage}
+        pageSize={pageSize}
+        setPageSize={setPageSize}
+        />
      </div>
    </div>
  </div>

@@ -43,6 +43,6 @@ export default function ProfileRenderer({ userId }: { userId: string }) {
     profile.u_role === "customer"
       ? CustomerProfilePage
       : BusinessProfilePage;
-
+  
   return <Component data={profile} />;
 }

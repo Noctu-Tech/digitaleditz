@@ -12,6 +12,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem,
 import { useRouter } from 'next/navigation';
 import { GetTransactions } from '@/lib/functions/payment/getTransaction';
 import { Card, CardContent } from '@/components/ui/card';
+import PaginationBar from '@/components/PaginationBar';
 
 const Page = () => {
 
@@ -128,39 +129,13 @@ const Page = () => {
 
      {/* Pagination Controls */}
      <div className="flex items-center justify-between mt-4">
-       <Select value={pageSize.toString()} onValueChange={(v) => {
-         setPageSize(Number(v));
-         setCurrentPage(1);
-       }}>
-         <SelectTrigger className="w-[100px]">
-           <SelectValue placeholder="Per page" />
-         </SelectTrigger>
-         <SelectContent>
-           <SelectItem value="10">10 rows</SelectItem>
-           <SelectItem value="15">15 rows</SelectItem>
-           <SelectItem value="20">20 rows</SelectItem>
-         </SelectContent>
-       </Select>
-
-       <div className="flex items-center gap-2">
-         <button
-           className="px-3 py-1 rounded border disabled:opacity-50"
-           onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-           disabled={currentPage === 1}
-         >
-           Previous
-         </button>
-         <span className="text-sm">
-           Page {currentPage} of {totalPages}
-         </span>
-         <button
-           className="px-3 py-1 rounded border disabled:opacity-50"
-           onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-           disabled={currentPage === totalPages}
-         >
-           Next
-         </button>
-       </div>
+     <PaginationBar
+        totalPages={totalPages}
+        currentPage={currentPage} 
+        setCurrentPage={setCurrentPage}
+        pageSize={pageSize}
+        setPageSize={setPageSize}
+        />
      </div>
    </div>
  </div>

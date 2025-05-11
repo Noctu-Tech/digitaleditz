@@ -1,5 +1,5 @@
 // hooks/useChatData.ts
-import { fetchOverview } from "@/lib/functions/messages";
+import apiClient from "@/lib/functionapis/apiclient";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 export function useChatData() {
@@ -7,7 +7,15 @@ export function useChatData() {
 
   return useQuery({
     queryKey: ["chatOverview"],
-    queryFn: fetchOverview,
+    queryFn: async()=>{
+      try {
+        const response = await apiClient.get('/');
+        return response.data;
+      } catch (e) {
+        console.error("Something went wrong", e);
+        throw e; 
+      }
+    },
     staleTime: 60 * 1000,
     onSuccess: (data) => {
       queryClient.setQueryData(["contacts"], data.contacts);

@@ -1,10 +1,18 @@
-interface Props {
-    // userId:string,
+interface StatusProps {
     status:string,
-    role:string
+   
 }
-export const UpdateStatusRole = async ({
+interface RoleProps{
+    role:string,
+}
+export const UpdateStatus = async ({
     // userId,
-    status,role}:Props) => {
+    status}:StatusProps) => {
+  
+}
+
+export const UpdateRole = async ({
+    // userId,
+    role}:RoleProps) => {
   
 }
