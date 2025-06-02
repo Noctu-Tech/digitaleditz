@@ -1,1 +1,0 @@
-## change monngo uri, backend uri from localhost to mongodb,backend rspv before deploying
